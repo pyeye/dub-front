@@ -1,0 +1,103 @@
+$response-duration: 0.5s;
+$response-duration-fast: 0.3s;
+$response-easing: cubic-bezier(0.75, 0.02, 0.5, 1);
+$color-gray60: #252525;
+$color-white: #ffffff;
+
+
+.aui-response {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+
+  &__effect {
+    $size: 40px;
+    content: '';
+    display: block;
+    position: absolute;
+    width: $size;
+    height: $size;
+    margin: ($size / -2) 0 0 ($size / -2);
+    border-radius: 50%;
+
+    &--large {
+      $size: 60px;
+      width: $size;
+      height: $size;
+      margin: ($size / -2) 0 0 ($size / -2);
+    }
+
+    &--small {
+      $size: 25px;
+      width: $size;
+      height: $size;
+      margin: ($size / -2) 0 0 ($size / -2);
+    }
+  }
+
+  &--masked {
+    overflow: hidden;
+  }
+
+  &.is-animating &__effect {
+    animation: aui-response-dark $response-duration $response-easing both;
+  }
+
+  &.is-animating-fast &__effect {
+    animation: aui-response-dark $response-duration-fast $response-easing both;
+  }
+
+  &.aui-theme-light.is-animating &__effect,
+  .aui-button.aui-theme-light &.is-animating &__effect {
+    animation: aui-response-light $response-duration $response-easing both;
+  }
+}
+
+/**
+ * Invert effect, when used with Primary Button
+ */
+
+.aui-button--primary .aui-response.is-animating .aui-response__effect {
+  animation: aui-response-light $response-duration $response-easing both;
+}
+
+.aui-button--primary.aui-theme-light .aui-response.is-animating .aui-response__effect {
+  animation: aui-response-dark $response-duration $response-easing both;
+}
+
+/**
+ * Animations
+ */
+
+@keyframes aui-response-dark {
+  0% {
+    opacity: 1;
+    box-shadow: inset 0 0 0 30px rgba($color-gray60, 0.3);
+    transform: scale3d(0.01, 0.01, 1);
+  }
+
+  100% {
+    opacity: 0;
+    box-shadow: inset 0 0 0 1px rgba($color-gray60, 1);
+    transform: scale3d(1.7, 1.7, 1);
+  }
+}
+
+@keyframes aui-response-light {
+  0% {
+    opacity: 1;
+    box-shadow: inset 0 0 0 30px rgba($color-white, 0.3);
+    transform: scale3d(0.01, 0.01, 1);
+  }
+
+  100% {
+    opacity: 0;
+    box-shadow: inset 0 0 0 1px rgba($color-white, 0.7);
+    transform: scale3d(1.7, 1.7, 1);
+  }
+}
