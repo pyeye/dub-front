@@ -2,7 +2,7 @@
 
   <div class="catalog">
     <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
-      <router-view/>
+      <router-view :key="$route.params.category" />
     </transition>
   </div>
 
@@ -16,14 +16,14 @@ export default {
   methods: {
     // animations
     enterEl(el, done) {
-      TweenLite.from(el, 0.2, {
+      TweenLite.from(el, 0.15, {
         autoAlpha: 0,
         onComplete: done,
         ease: Power4.easeOut,
       });
     },
     leaveEl(el, done) {
-      TweenLite.to(el, 0.1, {
+      TweenLite.to(el, 0.15, {
         autoAlpha: 0,
         onComplete: done,
         ease: Power4.easeOut,

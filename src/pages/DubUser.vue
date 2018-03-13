@@ -58,13 +58,15 @@ export default {
     enterEl(el, done) {
       TweenLite.from(el, 0.2, {
         autoAlpha: 0,
+        y: 50,
         onComplete: done,
         ease: Power4.easeOut,
       });
     },
     leaveEl(el, done) {
-      TweenLite.to(el, 0.1, {
+      TweenLite.to(el, 0.2, {
         autoAlpha: 0,
+        y: 50,
         onComplete: done,
         ease: Power4.easeOut,
       });
