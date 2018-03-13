@@ -31,7 +31,6 @@ const routes = [
   },
   {
     path: '/catalog/:category',
-    name: 'DubCatalog',
     component: DubCatalog,
     children: [
       {
@@ -48,7 +47,6 @@ const routes = [
   },
   {
     path: '/news',
-    name: 'DubNews',
     component: DubNews,
     children: [
       {
@@ -69,12 +67,8 @@ const routes = [
     component: DubCart,
     children: [
       {
-        path: '',
-        name: 'DubCartInfo',
-        component: DubCartInfo,
-      },
-      {
         path: 'info',
+        alias: '/',
         name: 'DubCartInfo',
         component: DubCartInfo,
       },
@@ -93,12 +87,8 @@ const routes = [
     meta: { requiresGuest: true },
     children: [
       {
-        path: '',
-        name: 'DubAuthLogin',
-        component: DubAuthLogin,
-      },
-      {
         path: 'login',
+        alias: '/',
         name: 'DubAuthLogin',
         component: DubAuthLogin,
       },
@@ -116,12 +106,8 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '',
-        name: 'DubUserProfile',
-        component: DubUserProfile,
-      },
-      {
         path: 'profile',
+        alias: '/',
         name: 'DubUserProfile',
         component: DubUserProfile,
       },
