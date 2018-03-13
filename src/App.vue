@@ -1,19 +1,28 @@
 <template>
   <div id="app">
-    <div v-if="!agreement" class="loader">
-      <div class="cover"></div>
-      <div class="agreement">
-        <div class="agreement-title">ВНИМАНИЕ</div>
-        <div class="agreement-info">Сайт содержит информацию, которая не рекомендована лицам, моложе 18 лет. Нажимая на кнопку "ПРОДОЛЖИТЬ", вы подтверждаете своё совершеннолетие.</div>
-        <div class="agreement-info">Сведения, размещенные на сайте, не являются рекламой, носят исключительно информационный характер, и предназначены только для личного использования.</div>
-        <div class="agreement-actions">
-          <dub-button type="secondary" class="agree" @click.native="agree()">продолжить</dub-button>
+    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
+      <div v-if="!agreement" class="loader" key="agreement">
+        <!-- Agreement block -->
+        <div class="cover"></div>
+        <div class="agreement">
+          <div class="agreement-title">ВНИМАНИЕ</div>
+          <div class="agreement-info">Сайт содержит информацию, которая не рекомендована лицам, моложе 18 лет. Нажимая на кнопку "ПРОДОЛЖИТЬ", вы подтверждаете своё совершеннолетие.</div>
+          <div class="agreement-info">Сведения, размещенные на сайте, не являются рекламой, носят исключительно информационный характер, и предназначены только для личного использования.</div>
+          <div class="agreement-actions">
+            <dub-button type="secondary" class="agree" @click.native="agree()">продолжить</dub-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <dub-header></dub-header>
-    <router-view/>
+      <div v-else key="content">
+        <!-- Main content -->
+        <dub-header></dub-header>
+         <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
+            <router-view/>
+         </transition>
+      </div>
+    </transition>
+    
+    <!-- Notifications -->
     <notifications group="dubbel" position="bottom right"  width="350" />
       
     <notifications group="cart" position="bottom right" width="350">
@@ -26,7 +35,6 @@
           </router-link>
       </template>
     </notifications>
-    </div>
     
   </div>
 </template>
@@ -35,6 +43,7 @@
 
 import request from '@/request/index';
 import DubHeader from '@/components/base/DubHeader';
+import { TweenLite, Power4 } from 'gsap';
 
 export default {
   components: {
@@ -48,6 +57,21 @@ export default {
     agree() {
       sessionStorage.setItem('agreement', true);
       this.agreement = true;
+    },
+    // animations
+    enterEl(el, done) {
+      TweenLite.from(el, 0.2, {
+        autoAlpha: 0,
+        onComplete: done,
+        ease: Power4.easeOut,
+      });
+    },
+    leaveEl(el, done) {
+      TweenLite.to(el, 0.1, {
+        autoAlpha: 0,
+        onComplete: done,
+        ease: Power4.easeOut,
+      });
     },
   },
   created() {
@@ -100,12 +124,6 @@ export default {
 
   .notification-title {
     font-size: 14px;
-  }
-
-  .notification-content {
-    /*
-    Style for content 
-    */
   }
 
   &.warn {
