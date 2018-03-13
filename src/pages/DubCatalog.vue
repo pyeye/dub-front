@@ -1,7 +1,7 @@
 <template>
 
   <div class="catalog">
-    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="in-out">
+    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
       <router-view/>
     </transition>
   </div>

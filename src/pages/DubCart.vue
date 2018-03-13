@@ -1,7 +1,7 @@
 <template>
   <div class="cart">
     <div class="title">Корзина</div>
-    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="in-out">
+    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
       <router-view/>
     </transition>
   </div>

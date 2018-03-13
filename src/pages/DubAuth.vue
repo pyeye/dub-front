@@ -1,5 +1,5 @@
 <template>
-   <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="in-out">
+   <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
      <router-view/>
    </transition>
 </template>
