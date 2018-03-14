@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
+    <transition name="fade"  mode="out-in">
       <div v-if="!agreement" class="loader" key="agreement">
         <!-- Agreement block -->
         <div class="cover"></div>
@@ -16,7 +16,7 @@
       <div v-else key="content">
         <!-- Main content -->
         <dub-header></dub-header>
-         <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
+         <transition name="fade" mode="out-in">
             <router-view/>
          </transition>
       </div>
@@ -43,7 +43,6 @@
 
 import request from '@/request/index';
 import DubHeader from '@/components/base/DubHeader';
-import { TweenLite, Power4 } from 'gsap';
 
 export default {
   components: {
@@ -57,21 +56,6 @@ export default {
     agree() {
       sessionStorage.setItem('agreement', true);
       this.agreement = true;
-    },
-    // animations
-    enterEl(el, done) {
-      TweenLite.from(el, 0.2, {
-        autoAlpha: 0,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
-    },
-    leaveEl(el, done) {
-      TweenLite.to(el, 0.2, {
-        autoAlpha: 0,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
     },
   },
   created() {
@@ -150,6 +134,13 @@ export default {
     background: #fc0;
     border-left-color: #fc0;
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .15s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 
 .loader {

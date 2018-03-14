@@ -1,37 +1,29 @@
 <template>
-   <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
-     <router-view/>
-   </transition>
+    <div>
+      <transition name="fade" mode="out-in">
+        <router-view/>
+      </transition>
+    </div>
+   
 </template>
 
 <script>
-import { TweenLite, Power4 } from 'gsap';
 
 export default {
   name: 'DubAuth',
   data: () => ({
   }),
-  methods: {
-    // animations
-    enterEl(el, done) {
-      TweenLite.from(el, 0.2, {
-        autoAlpha: 0,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
-    },
-    leaveEl(el, done) {
-      TweenLite.to(el, 0.2, {
-        autoAlpha: 0,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
-    },
-  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+
+.fade-enter-active, .fade-leave-active {
+   transition: opacity .15s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 
 </style>

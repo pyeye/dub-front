@@ -21,7 +21,7 @@
     </div>
 
     <div class="content">
-      <transition @enter="enterEl" @leave="leaveEl" :css="false" mode="out-in">
+      <transition name="fade" mode="out-in">
         <router-view/>
       </transition>
     </div>
@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import { TweenLite, Power4 } from 'gsap';
 
 export default {
   name: 'DubUser',
@@ -53,23 +52,6 @@ export default {
       this.$store.dispatch('logoutUser');
       this.$store.dispatch('setActiveCart');
       this.$router.push('/');
-    },
-    // animations
-    enterEl(el, done) {
-      TweenLite.from(el, 0.2, {
-        autoAlpha: 0,
-        y: 50,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
-    },
-    leaveEl(el, done) {
-      TweenLite.to(el, 0.2, {
-        autoAlpha: 0,
-        y: 50,
-        onComplete: done,
-        ease: Power4.easeOut,
-      });
     },
   },
   created() {
@@ -168,6 +150,14 @@ export default {
 position: relative;
   top: 4px;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .15s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 
 
 @media (max-width: 1450px) {
