@@ -27,8 +27,8 @@
             <span class="time">Ежедневно c 9:00-22:00</span>
         </div>
       </div>
-   
-    <div class="header-nav">
+    <div :class="{'fixed-dummy': navFixed}"></div>
+    <div id="nav" class="header-nav" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
         <img class="logo-text" src="./../../assets/dubbel_text.png">
         <!--
         <div class="nav-item">
@@ -106,6 +106,13 @@ export default {
     guestPanelActive: false,
     selfGuestPanelActive: false,
     activeCategories: [],
+    navFixed: false,
+    navVisible: false,
+    navBottomOffcet: 175,
+    navTopOffcet: 115,
+    scrollPositionY: -1,
+    scrollTicking: false,
+    scrollDirection: 'none',
   }),
   computed: mapGetters({
     categories: 'getCategories',
@@ -114,6 +121,10 @@ export default {
   }),
   created() {
     this.$store.dispatch('requestCategories');
+    window.addEventListener('scroll', this.scrollHandler);
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.scrollHandler);
   },
   methods: {
     activatePanel(categoryCode) {
@@ -122,6 +133,35 @@ export default {
     },
     isSelected(path) {
       return this.$route.path.includes(path);
+    },
+    scrollUpdate() {
+      if (!this.navFixed && this.scrollPositionY > this.navBottomOffcet) {
+        this.navFixed = true;
+      }
+      if (this.navFixed && this.scrollPositionY < this.navTopOffcet) {
+        this.navFixed = false;
+      }
+      if (this.scrollDirection === 'top') {
+        setTimeout(() => {
+          this.navVisible = true;
+        }, 200);
+      } else {
+        setTimeout(() => {
+          this.navVisible = false;
+        }, 100);
+      }
+      this.scrollTicking = false;
+    },
+    scrollRequestTick() {
+      if (!this.scrollTicking) {
+        window.requestAnimationFrame(this.scrollUpdate);
+        this.scrollTicking = true;
+      }
+    },
+    scrollHandler() {
+      this.scrollDirection = this.scrollPositionY > window.scrollY ? 'top' : 'down';
+      this.scrollPositionY = window.scrollY;
+      this.scrollRequestTick();
     },
   },
 };
@@ -294,10 +334,6 @@ export default {
         
     }
 
-.guest-icon:hover {
-   
-}
-
 .guest-panel {
   position: absolute;
   top: 65px;
@@ -364,6 +400,20 @@ export default {
 
 .nav-search {
     margin-right: 0;
+}
+
+.is-fixed {
+    position: fixed;
+    top: -65px;
+    transition: top .3s ease;
+}
+
+.is-fixed-visible {
+    top: 0;
+}
+
+.fixed-dummy {
+    height: 60px;
 }
 
 
