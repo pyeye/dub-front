@@ -1,8 +1,9 @@
 <template>
   <div class="user">
     <div class="flex-box">
-     
+     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="nav-panel">
+      
       <div class="title">Личный кабинет</div>
       <div class="nav-item" @click="tabIndex = 'profile'" :class="{ 'nav-item-active': tabIndex == 'profile' }">
         <router-link class="tab-link" to="/user/profile" :class="{ 'tab-link-active': tabIndex == 'profile' }">Профиль</router-link>
@@ -37,6 +38,12 @@ export default {
   name: 'DubUser',
   data: () => ({
     tabIndex: '',
+    avalableViews: {
+      profile: 'Профиль',
+      orders: 'Заказы',
+      doneorders: 'Архив',
+      carts: 'Шаблоны',
+    },
   }),
   computed: {
     user() {
@@ -44,6 +51,13 @@ export default {
     },
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
+    },
+    breadcrumbs() {
+      return [
+        { label: 'Главная', link: '/' },
+        { label: 'Личный кабинет', link: '' },
+        { label: this.avalableViews[this.tabIndex], link: '' },
+      ];
     },
   },
   methods: {
@@ -81,8 +95,7 @@ export default {
 
 .nav-panel {
   z-index: 1;
-  padding: 24px 0;
-  margin-top: 24px;
+  margin: 4px 0 24px 0;
   
   @include prefix((
       display: flex,

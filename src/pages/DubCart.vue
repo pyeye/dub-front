@@ -1,6 +1,5 @@
 <template>
   <div class="cart">
-    <div class="title">Корзина</div>
     <transition name="fade" mode="out-in">
       <router-view/>
     </transition>
@@ -24,16 +23,6 @@ export default {
     flex: 1;
     width: 80%;
     margin: 0 auto;
-}
-
-.title {
-  padding: 24px 0;
-    font-size: 38px;
-    font-weight: 600;
-    letter-spacing: .025em;
-    line-height: 42px;
-    font-family: 'Roboto', sans-serif;
-    margin: 24px 0 8px 0;
 }
 
 .fade-enter-active, .fade-leave-active {

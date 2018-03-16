@@ -6,6 +6,7 @@ import { Switch, Checkbox, Select, InputNumber, Dialog, Collapse, CollapseItem }
 
 import DubButton from './components/base/DubButton';
 import DubInput from './components/base/DubInput';
+import DubBreadcrumbs from './components/base/DubBreadcrumbs';
 import Response from './directives/response/response';
 import './directives/response/response.scss';
 import './../node_modules/swiper/dist/css/swiper.min.css';
@@ -24,6 +25,7 @@ Vue.directive('response', Response);
 
 Vue.component('dub-button', DubButton);
 Vue.component('dub-input', DubInput);
+Vue.component('dub-breadcrumbs', DubBreadcrumbs);
 
 // element ui
 Vue.component(Switch.name, Switch);

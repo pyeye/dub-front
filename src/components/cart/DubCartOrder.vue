@@ -1,5 +1,7 @@
 <template>
-  <div class="cart-order"> 
+  <div class="cart-order">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+    <div class="title">Корзина</div>
      <div class="cart-step" v-if="orderActive" key="order">
             <div class="cart-items">
                 <div class="steps">
@@ -145,6 +147,11 @@ export default {
     orderActive: true,
     buttonActive: false,
     btnProfileActive: false,
+    breadcrumbs: [
+      { label: 'Главная', link: '/' },
+      { label: 'Корзина', link: '/cart' },
+      { label: 'Оформление', link: '' },
+    ],
     order: {
       name: '',
       surname: '',
@@ -272,14 +279,12 @@ export default {
 }
 
 .title {
-  padding: 24px 0;
     font-size: 38px;
     font-weight: 600;
     letter-spacing: .025em;
     line-height: 42px;
     font-family: 'Roboto', sans-serif;
-    margin-bottom: 16px;
-    margin-top: 24px;
+    margin: 24px 0;
 }
 
 .subtitle {

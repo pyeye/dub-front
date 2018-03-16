@@ -1,5 +1,6 @@
 <template>
   <div class="news-list">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
       <div class="news-header">
         <div class="title">Новости</div>
         <div class="filter-menu">
@@ -27,6 +28,10 @@ export default {
   },
   data: () => ({
     filterBy: 'all',
+    breadcrumbs: [
+      { label: 'Главная', link: '/' },
+      { label: 'Новости', link: '' },
+    ],
   }),
   computed: {
     news() {
@@ -81,8 +86,7 @@ export default {
       flex-direction: row,
       align-items: flex-end,
     ), webkit ms);
-    margin: 24px 0 8px 0;
-     padding: 24px 0;
+    margin: 24px 0 ;
 
   .title {
     @include prefix((
