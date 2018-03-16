@@ -1,7 +1,9 @@
 <template>
   <div class="news-detail">
+     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+      <div class="detail-content">
+   
       <div class="hero" :style="'background-image: url('+ article.image.original +');'">
-        <router-link to="/news"> <icon class="icon-link"  name="angle-left"></icon> </router-link>
         <div class="cover"></div>
         <div class="cover-text">
           
@@ -14,6 +16,7 @@
         </div>    
       </div>
       <div class="description" v-html="markdown(article.description)"></div>
+  </div>
   </div>
 </template>
 
@@ -40,6 +43,12 @@ export default {
     },
     article() {
       return this.articleFromState || this.articleFromRequest;
+    },
+    breadcrumbs() {
+      return [
+        { label: 'Главная', link: '/' },
+        { label: 'Новости', link: '/news' },
+        { label: this.article.title, link: '' }];
     },
   },
   methods: {
@@ -92,7 +101,13 @@ export default {
 .news-detail {
     position: relative;
     width: 80%;
-    margin: 24px auto;
+    margin: 0 auto;
+
+}
+
+.detail-content {
+    position: relative;
+     margin: 24px auto;
      background-color: $upper_layer_color;
       border-radius: 2px;
       box-shadow: 0 1px 1px rgba(0,0,0,.2);

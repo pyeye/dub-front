@@ -1,5 +1,6 @@
 <template>
   <div class="product-detail">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
       <div class="content">
           <div class="product-image">
               <div class="image-box">
@@ -102,6 +103,13 @@ export default {
     product() {
       return this.productFromState || this.productFromRequest;
     },
+    breadcrumbs() {
+      return [
+        { label: 'Главная', link: '/' },
+        { label: this.product.category.name, link: `/catalog/${this.product.category.code}` },
+        { label: this.product.name, link: '' },
+      ];
+    },
   },
   methods: {
     getProductFromRequest(id) {
@@ -145,7 +153,8 @@ export default {
     position: relative;
     flex: 1;
     width: 80%;
-    margin: 54px auto;
+    margin: 0 auto;
+    
 }
 
 .content {
@@ -157,7 +166,7 @@ export default {
       border-radius: 2px;
       box-shadow: 0 1px 1px rgba(0,0,0,.2);
       width: 100%;
-      
+      margin: 24px 0;
     
 }
 

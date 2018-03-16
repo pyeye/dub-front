@@ -1,5 +1,6 @@
 <template>
   <div class="auth-login">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
       <div class="title">Авторизация</div>
         <div class="auth-forms">
           <div class="form-login">
@@ -52,6 +53,10 @@ export default {
       password: '',
     },
     loginBtnActive: false,
+    breadcrumbs: [
+      { label: 'Главная', link: '/' },
+      { label: 'Авторизация', link: '' },
+    ],
   }),
   validations: {
     loginForm: {
@@ -124,13 +129,12 @@ export default {
 }
 
 .title {
-  padding: 24px 0;
     font-size: 38px;
     font-weight: 600;
     letter-spacing: .025em;
     line-height: 42px;
     font-family: 'Roboto', sans-serif;
-    margin-top: 24px;
+    margin: 24px 0;
 }
 
 .form-title {

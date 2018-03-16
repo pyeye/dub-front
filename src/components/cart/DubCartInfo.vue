@@ -1,6 +1,7 @@
 <template>
   <div class="cart-info">
-        
+         <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+         <div class="title">Корзина</div>
           <div class="cart-step">
             <div class="cart-items">
                 <div class="steps">
@@ -99,6 +100,10 @@ export default {
     cartName: '',
     buttonActive: false,
     dialogVisible: false,
+    breadcrumbs: [
+      { label: 'Главная', link: '/' },
+      { label: 'Корзина', link: '' },
+    ],
   }),
   validations: {
     cartName: {
@@ -155,14 +160,12 @@ export default {
 }
 
 .title {
-  padding: 24px 0;
     font-size: 38px;
     font-weight: 600;
     letter-spacing: .025em;
     line-height: 42px;
     font-family: 'Roboto', sans-serif;
-    margin-bottom: 16px;
-    margin-top: 24px;
+    margin: 24px 0;
 }
 
 .subtitle {

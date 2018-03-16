@@ -1,5 +1,6 @@
 <template>
   <div class="catalog-list">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="filter-menu">
       <div class="filter-item">
         <div class="filter-description">Форма поиска:</div>
@@ -129,6 +130,12 @@ export default {
     categoryTags() {
       return this.tags.find(tag => tag.category === this.category.code);
     },
+    breadcrumbs() {
+      return [
+        { label: 'Главная', link: '/' },
+        { label: this.category.name, link: '' },
+      ];
+    },
   },
   methods: {
     setTag(tag) {
@@ -144,19 +151,16 @@ export default {
 .catalog-list {
     position: relative;
     flex: 1;
-    
+    width: 80%;
+    margin: 0 auto;
 }
 
 .filter-tag-menu {
-  width: 80%;
-  margin: 0 auto;
   padding: 16px 0 32px 0;
 }
 
 .filter-menu {
-  width: 80%;
-  margin: 0 auto;
-  padding: 32px 0 16px 0;
+  padding: 16px 0;
 
   @include prefix((
     display: flex,
@@ -203,9 +207,6 @@ export default {
     flex-direction: row
   ), webkit ms);
 
-  width: 80%;
-  margin: 0 auto;
-
   .filter-panel {
     position: relative;
     height: 100%;
@@ -235,8 +236,7 @@ export default {
       flex-direction: row,
       flex-wrap: wrap,
     ), webkit ms);
-
-    width: 80%;
+    width: 100%;
 
     .grid-cell {
       @include prefix((
@@ -332,19 +332,9 @@ export default {
 
 
 @media (max-width: 1450px) {
-    .filter-tag-menu {
+    .catalog-list {
   width: 85%;
 }
-
-.filter-menu {
-  width: 85%;
-}
-.content {
-  width: 85%;
-}
- .grid {
-    width: 85%;
- }
 
 }
 
