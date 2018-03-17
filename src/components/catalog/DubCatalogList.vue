@@ -25,8 +25,8 @@
 
     <div class="filter-tag-menu">
       <swiper :options="swiperTagOption">
-        <swiper-slide v-for="tag in categoryTags.values" :key="tag">
-            <div class="tag" @click="setTag(tag)" :class="{ 'tag-active': tagBy == tag }">{{tag}}</div>
+        <swiper-slide v-for="tag in tags" :key="tag">
+            <div class="tag" :class="{ 'tag-active': tagBy.includes(tag) }" v-response.small.masked @click="setTag(tag)" >{{tag}}</div>
         </swiper-slide>
       </swiper>
     </div>
@@ -52,7 +52,7 @@
         </el-collapse>
 
       <div class="grid" > 
-        <dub-catalog-list-item class="grid-cell" v-for="product in products" :key="product.pk" :product="product" :category="category"></dub-catalog-list-item>
+        <dub-catalog-list-item class="grid-cell" v-for="product in filteredProducts" :key="product.pk" :product="product" :category="category"></dub-catalog-list-item>
       </div>
     </div>
   </div>
@@ -71,21 +71,8 @@ export default {
     sortBy: 'name',
     showBy: '15',
     categories: [],
-    tags: [
-      {
-        category: 'beer',
-        values: ['Горькое', 'Безглютеновое', 'Драфт', 'Стаут', 'Нефильтрованное', 'Темное'],
-      },
-      {
-        category: 'whiskey',
-        values: ['Американский ', 'Шотландский', 'Бурбон', 'Стрейт'],
-      },
-      {
-        category: 'wine',
-        values: ['Американский ', 'Шотландский', 'Бурбон', 'Стрейт'],
-      },
-    ],
-    tagBy: '',
+    filteredProducts: [],
+    tagBy: [],
     categoryName: '',
     swiperOption: {
       loop: true,
@@ -120,15 +107,21 @@ export default {
           category,
         });
       }
-
       return products;
     },
     category() {
       const routeCategory = this.$route.params.category;
       return this.$store.getters.getCategory(routeCategory) || {};
     },
-    categoryTags() {
-      return this.tags.find(tag => tag.category === this.category.code);
+    tags() {
+      const category = this.$route.params.category;
+      const tags = this.$store.getters.getProductTags(category);
+
+      if (!tags) {
+        this.$store.dispatch('requestProductTags', category);
+      }
+
+      return tags;
     },
     breadcrumbs() {
       return [
@@ -139,7 +132,39 @@ export default {
   },
   methods: {
     setTag(tag) {
-      this.tagBy = tag;
+      const index = this.tagBy.indexOf(tag);
+      if (index === -1) {
+        this.tagBy.push(tag);
+      } else {
+        this.tagBy.splice(index, 1);
+      }
+    },
+  },
+  watch: {
+    products: {
+      immediate: true,
+      handler(val) {
+        this.filteredProducts = val;
+      },
+    },
+    tagBy: {
+      handler(val) {
+        // if (!this.tags || !this.products) {
+        //   this.filteredProducts = this.products;
+        //   return;
+        // }
+        if (val.length === 0) {
+          this.filteredProducts = this.products;
+          return;
+        }
+
+        const tagsSet = new Set(val);
+        this.filteredProducts = this.products.filter((product) => {
+          const productTagsSet = new Set(product.tags);
+          const intersection = new Set([...tagsSet].filter(x => productTagsSet.has(x)));
+          return intersection.size === tagsSet.size;
+        });
+      },
     },
   },
 };
