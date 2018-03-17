@@ -6,6 +6,7 @@ const store = {
   state: {
     products: {},
     categories: [],
+    tags: {},
   },
   // getters
   getters: {
@@ -29,6 +30,9 @@ const store = {
     getCategory(state, getters) {
       return categoryCode => getters.getCategories.find(category => category.code === categoryCode);
     },
+    getProductTags(state) {
+      return category => state.tags[category] || null;
+    },
   },
   // actions
   actions: {
@@ -49,11 +53,22 @@ const store = {
         context.commit('setCategories', response.data);
       });
     },
+    requestProductTags(context, category) {
+      request.get(`tags/${category}/`).then((response) => {
+        context.commit('setProductTags', {
+          category,
+          items: response.data,
+        });
+      });
+    },
   },
   // mutations
   mutations: {
     setProducts(state, products) {
       Vue.set(state.products, products.category, products.items);
+    },
+    setProductTags(state, tags) {
+      Vue.set(state.tags, tags.category, tags.items);
     },
     setCategories(state, categories) {
       state.categories = categories;
