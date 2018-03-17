@@ -1,5 +1,5 @@
 <template>
-  <div class="product-detail">
+  <div class="product-detail" v-if="!isEmptyObject(product)" key="initiial render">
     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
       <div class="content">
           <div class="product-image">
@@ -80,7 +80,7 @@ import request from '@/request/index';
 export default {
   name: 'DubProductDetail',
   data: () => ({
-    productFromRequest: { main_image: '' },
+    productFromRequest: {},
     quantity: 1,
     selectedPrice: {},
     // TODO: make amount & quantity properties of cart | vuex problem
@@ -104,6 +104,12 @@ export default {
       return this.productFromState || this.productFromRequest;
     },
     breadcrumbs() {
+      if (this.isEmptyObject(this.product)) {
+        return [
+          { label: 'Главная', link: '/' },
+          { label: 'Загрузка...', link: '' },
+        ];
+      }
       return [
         { label: 'Главная', link: '/' },
         { label: this.product.category.name, link: `/catalog/${this.product.category.code}` },
@@ -131,6 +137,9 @@ export default {
         title: 'Добавленно',
         text: `Товар ${this.product.name} добавлен в корзину`,
       });
+    },
+    isEmptyObject(obj) {
+      return Object.keys(obj).length === 0 && obj.constructor === Object;
     },
   },
   watch: {
