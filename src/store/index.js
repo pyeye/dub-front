@@ -5,6 +5,7 @@ import cart from './modules/cart';
 import user from './modules/user';
 import news from './modules/news';
 import home from './modules/home';
+import session from './modules/session';
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     user,
     news,
     home,
+    session,
   },
   strict: debug,
 });

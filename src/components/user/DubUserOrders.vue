@@ -99,7 +99,7 @@ export default {
   }),
   computed: {
     activeOrders() {
-      return this.$store.getters.getActiveOrders;
+      return this.$store.getters['user/orders'];
     },
   },
   methods: {
@@ -122,7 +122,7 @@ export default {
   },
   created() {
     if (this.activeOrders.length === 0) {
-      this.$store.dispatch('requestOrders').then(() => {
+      this.$store.dispatch('user/requestOrders').then(() => {
         this.selectedOrder = this.activeOrders[0];
       });
     } else {

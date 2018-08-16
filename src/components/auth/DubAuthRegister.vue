@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters['user/profile'];
     },
   },
   methods: {
@@ -133,25 +133,24 @@ export default {
     registerUser() {
       this.registerBtnActive = true;
       if (this.registerForm.is_company) {
-        this.registerForm.company = {
+        this.registerForm.profile_object = {
           name: this.registerForm.company_name,
         };
       } else {
-        this.registerForm.individual = {
+        this.registerForm.profile_object = {
           surname: '',
         };
       }
       this.registerForm.company_name = undefined;
-      this.$store.dispatch('registerUser', this.registerForm)
+      this.$store.dispatch('user/register', this.registerForm)
       .then(() => {
         this.$notify({
           group: 'dubbel',
           title: 'Регистрация успешна',
           type: 'success',
         });
-        this.$store.dispatch('deleteActiveCart', localStorage.getItem('guest-user'));
-        this.$store.dispatch('deleteGuest');
-        this.$store.dispatch('setActiveCart');
+        const cart = this.$store.getters['cart/prpoducts'];
+        this.$store.dispatch('session/cart/set', cart);
         const nextView = this.getNextView();
         this.$router.push(nextView);
       })
@@ -161,9 +160,6 @@ export default {
           type: 'error',
         });
       });
-    },
-    companyNameValidator() {
-
     },
   },
 };

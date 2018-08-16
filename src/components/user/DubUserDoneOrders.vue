@@ -111,7 +111,7 @@ export default {
   }),
   computed: {
     activeOrders() {
-      return this.$store.getters.getDoneOrders;
+      return this.$store.getters['user/doneOrders'];
     },
   },
   methods: {
@@ -130,12 +130,12 @@ export default {
     },
     addToCart(cart) {
       const copy = JSON.parse(JSON.stringify(cart.order));
-      this.$store.dispatch('addFromSaved', copy);
+      this.$store.dispatch('cart/addProducts', copy);
     },
   },
   created() {
     if (this.activeOrders.length === 0) {
-      this.$store.dispatch('requestOrders').then(() => {
+      this.$store.dispatch('user/requestOrders').then(() => {
         this.selectedOrder = this.activeOrders[0];
       });
     } else {

@@ -1,35 +1,48 @@
 import request from '../../request/index';
 
 const store = {
+  namespaced: true,
   // state
   state: {
-    userToken: localStorage.getItem('user-token') || '',
     user: {},
     orders: [],
     userCarts: [],
-    guest: {},
+    userRatings: [],
   },
   // getters
   getters: {
-    isAuthenticated: state => !!state.userToken,
-    getUser: state => state.user,
-    getUserToken: state => state.userToken,
-    getUserCarts: state => state.userCarts,
-    getGuest: state => state.guest,
-    getActiveOrders: state => state.orders.filter(order => order.status.code !== 'done'),
-    getDoneOrders: state => state.orders.filter(order => order.status.code === 'done'),
+    isAuthenticated: state => Object.keys(state.user).length !== 0,
+    profile: state => state.user,
+    carts: state => state.userCarts,
+    ratings: state => state.userRatings,
+    orders: state => state.orders.filter(order => order.status.code !== 'done'),
+    doneOrders: state => state.orders.filter(order => order.status.code === 'done'),
   },
   // actions
   actions: {
-    loginUser(context, payload) {
+    login({ dispatch }, { email, password }) {
       return new Promise((resolve, reject) => {
-        request.post('/auth/', payload)
-        .then((response) => {
-          const token = response.data;
-          localStorage.setItem('user-token', token);
-          request.defaults.headers.common.Authorization = `JWT ${token}`;
-          context.commit('setToken', token);
-          context.dispatch('requestUser').then((user) => {
+        const application = JSON.parse(localStorage.getItem('auth-application')) || null;
+        if (!application) {
+          reject();
+        }
+        const data = `grant_type=password&username=${email}&password=${password}`;
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          auth: {
+            username: application.id,
+            password: application.secret,
+          },
+        };
+        request.post('/auth/token/', data, config).then((response) => {
+          const token = response.data.access_token;
+          const tokenType = response.data.token_type;
+          localStorage.removeItem('guest-token');
+          localStorage.setItem('user-token', JSON.stringify(response.data));
+          request.defaults.headers.common.Authorization = `${tokenType} ${token}`;
+          dispatch('requestUser').then((user) => {
             resolve(user);
           });
         })
@@ -39,10 +52,10 @@ const store = {
         });
       });
     },
-    registerUser(context, payload) {
+    register(context, payload) {
       // check promise chain
       return request.post('/customers/', payload).then(() => {
-        context.dispatch('loginUser', {
+        context.dispatch('login', {
           email: payload.email,
           password: payload.password,
         });
@@ -56,14 +69,22 @@ const store = {
         });
       });
     },
-    logoutUser(context) {
+    requestGuestToken() {
+      return new Promise((resolve) => {
+        request.post('/auth/guest/').then((response) => {
+          resolve(response.data);
+        });
+      });
+    },
+    logout(context) {
       localStorage.removeItem('user-token');
       delete request.defaults.headers.common.Authorization;
       context.commit('deleteUser');
       // create guest
-      const id = Math.random().toString(13).replace('0.', '');
-      localStorage.setItem('guest-user', id);
-      context.commit('setGuest', { id });
+      context.dispatch('requestGuestToken').then((responseToken) => {
+        localStorage.setItem('guest-token', responseToken);
+        request.defaults.headers.common.Authorization = `JWT ${responseToken}`;
+      });
     },
     updatePass(context, payload) {
       return new Promise((resolve, reject) => {
@@ -74,10 +95,10 @@ const store = {
         });
       });
     },
-    updateUser(context, payload) {
+    update({ commit }, { userId, form }) {
       return new Promise((resolve) => {
-        request.patch(`/customers/${payload.userId}/`, payload.form).then((response) => {
-          context.commit('setUser', response.data);
+        request.patch(`/customers/${userId}/`, form).then((response) => {
+          commit('setUser', response.data);
           resolve();
         });
       });
@@ -90,17 +111,17 @@ const store = {
         });
       });
     },
-    pushUserActiveOrders(context, payload) {
-      if (context.getters.getActiveOrders.length > 0) {
+    pushActiveOrders(context, payload) {
+      if (context.getters.orders.length > 0) {
         context.commit('pushOrders', payload);
       }
     },
     pushUserCarts(context, payload) {
-      if (context.getters.getUserCarts.length > 0) {
+      if (context.getters.carts.length > 0) {
         context.commit('pushUserCarts', payload);
       }
     },
-    requestUserCarts(context) {
+    requestCarts(context) {
       return new Promise((resolve) => {
         request.get('/carts/').then((response) => {
           context.commit('setUserCarts', response.data);
@@ -108,31 +129,48 @@ const store = {
         });
       });
     },
-    saveUserCart(context, cart) {
+    saveCart(context, cart) {
       return new Promise((resolve) => {
         request.post('/carts/', cart).then((response) => {
-          this.$store.dispatch('pushUserCarts', response.data);
+          context.dispatch('pushUserCarts', response.data);
           resolve(response.data);
         });
       });
     },
-    deleteGuest(context) {
-      localStorage.removeItem('guest-user');
-      context.commit('deleteGuest');
+    requestRatings(context) {
+      return new Promise((resolve) => {
+        request.get('/ratings/').then((response) => {
+          const ratings = response.data.map((rating) => {
+            const formattedRating = rating;
+            formattedRating.rating = parseFloat(formattedRating.rating);
+            return formattedRating;
+          });
+          context.commit('setUserRatings', ratings);
+          resolve();
+        });
+      });
+    },
+    updateRating(context, { pk, value }) {
+      context.commit('updateUserRating', { pk, value });
+    },
+    saveRating(context, { pk, value }) {
+      return new Promise((resolve) => {
+        request.patch(`/ratings/${pk}/`, { rating: value }).then(() => {
+          resolve();
+        });
+      });
     },
   },
   // mutations
   mutations: {
-    setToken(state, token) {
-      state.userToken = token;
-    },
     setUser(state, user) {
       state.user = user;
     },
     deleteUser(state) {
       state.user = {};
-      state.userToken = '';
       state.orders = [];
+      state.userCarts = [];
+      state.userRatings = [];
     },
     setOrders(state, payload) {
       state.orders = payload;
@@ -146,11 +184,14 @@ const store = {
     setUserCarts(state, payload) {
       state.userCarts = payload;
     },
-    setGuest(state, guest) {
-      state.guest = guest;
+    setUserRatings(state, payload) {
+      state.userRatings = payload;
     },
-    deleteGuest(state) {
-      state.guest = {};
+    updateUserRating(state, { pk, value }) {
+      const record = state.userRatings.find(rating => rating.pk === pk);
+      if (record) {
+        record.rating = value;
+      }
     },
   },
 };

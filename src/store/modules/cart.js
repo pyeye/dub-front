@@ -1,104 +1,78 @@
 import request from '../../request/index';
 
 const store = {
+  namespaced: true,
   state: {
-    added: [],
+    products: [],
   },
   getters: {
-    cartProducts: state => state.added,
+    products: state => state.products,
     getTotalPrice(state) {
       let price = 0;
-      if (state.added.length > 0) {
-        price = state.added.reduce((total, cart) => total + (cart.price.value * cart.quantity), 0);
-      }
+      price = state.products.reduce((total, cart) => total + (cart.price.value * cart.quantity), 0);
       return price;
     },
   },
   actions: {
-    addToCart(context, product) {
+    addProduct(context, product) {
       context.commit('addToCart', product);
-      context.dispatch('setActiveCart');
+      context.dispatch('session/cart/set', context.getters.products, { root: true });
     },
-    addFromSaved(context, payload) {
+    addProducts(context, payload) {
       payload.forEach((cart) => {
         context.commit('addToCart', cart);
       });
-      context.dispatch('setActiveCart');
+      context.dispatch('session/cart/set', context.getters.products, { root: true });
     },
     updateQuantity(context, payload) {
       context.commit('updateQuantity', payload);
-      context.dispatch('setActiveCart');
+      context.dispatch('session/cart/set', context.getters.products, { root: true });
     },
     checkout(context, order) {
       return new Promise((resolve) => {
         request.post('/orders/', order).then((response) => {
-          context.dispatch('pushUserActiveOrders', response.data);
+          context.dispatch('user/pushActiveOrders', response.data, { root: true });
           context.commit('resetCart');
-          context.dispatch('setActiveCart');
+          context.dispatch('session/cart/set', context.getters.products, { root: true });
           resolve();
         });
       });
     },
-    deleteProductFromCart(context, payload) {
-      context.commit('deleteProductFromCart', payload);
-      context.dispatch('setActiveCart');
+    deleteProduct(context, payload) {
+      context.commit('cart/deleteProduct', payload);
+      context.dispatch('session/cart/set', context.getters.products, { root: true });
     },
-    requestActiveCart(context) {
-      const id = context.rootGetters.isAuthenticated ?
-        context.rootGetters.getUser.id :
-        context.rootGetters.getGuest.id;
-      request.get('/carts/active/', {
-        params: {
-          user: id,
-        },
-      }).then((response) => {
-        if (response.data.length !== 0) {
-          context.commit('setCart', response.data);
-        }
-      });
+    set({ commit }, cart) {
+      commit('setCart', cart);
     },
-    deleteActiveCart(context, id) {
-      const payload = {
-        user: id,
-        cart: [],
-      };
-      request.post('/carts/active/', payload);
-    },
-    setActiveCart(context) {
-      const user = context.rootGetters.isAuthenticated ?
-        context.rootGetters.getUser :
-        context.rootGetters.getGuest;
-      const payload = {
-        user: user.id,
-        cart: context.getters.cartProducts,
-      };
-      request.post('/carts/active/', payload);
+    reset({ commit }) {
+      commit('resetCart');
     },
   },
   mutations: {
     addToCart(state, cart) {
-      const record = state.added.find(p => p.price.pk === cart.price.pk);
+      const record = state.products.find(p => p.price.pk === cart.price.pk);
       if (record) {
         record.quantity += cart.quantity;
       } else {
-        state.added.push(cart);
+        state.products.push(cart);
       }
     },
     setCart(state, cart) {
-      state.added = cart;
+      state.products = cart;
     },
-    deleteProductFromCart(state, { cartId }) {
-      const cartIndex = state.added.findIndex(cart => cart.price.pk === cartId);
-      state.added.splice(cartIndex, 1);
+    deleteProduct(state, { cartId }) {
+      const cartIndex = state.products.findIndex(cart => cart.price.pk === cartId);
+      state.products.splice(cartIndex, 1);
     },
     updateQuantity(state, { cartId, quantity }) {
-      const record = state.added.find(p => p.price.pk === cartId);
+      const record = state.products.find(p => p.price.pk === cartId);
       if (record) {
         record.quantity = quantity;
       }
     },
     resetCart(state) {
-      state.added = [];
+      state.products = [];
     },
   },
 };

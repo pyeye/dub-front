@@ -115,12 +115,12 @@ export default {
     scrollDirection: 'none',
   }),
   computed: mapGetters({
-    categories: 'getCategories',
-    isAuthenticated: 'isAuthenticated',
-    cart: 'cartProducts',
+    categories: 'products/categories',
+    isAuthenticated: 'user/isAuthenticated',
+    cart: 'cart/products',
   }),
   created() {
-    this.$store.dispatch('requestCategories');
+    this.$store.dispatch('products/requestCategories');
     window.addEventListener('scroll', this.scrollHandler);
   },
   destroyed() {

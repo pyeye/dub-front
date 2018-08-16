@@ -88,37 +88,37 @@ export default {
   }),
   computed: {
     newsFeed() {
-      const news = this.$store.getters.getNewsFeed;
+      const news = this.$store.getters['home/getNewsFeed'];
 
       if (news.length === 0) {
-        this.$store.dispatch('requestNewsFeed');
+        this.$store.dispatch('home/requestNewsFeed');
       }
 
       return news;
     },
     banners() {
-      const banners = this.$store.getters.getBanners;
+      const banners = this.$store.getters['home/getBanners'];
 
       if (banners.length === 0) {
-        this.$store.dispatch('requestBanners');
+        this.$store.dispatch('home/requestBanners');
       }
 
       return banners;
     },
     posters() {
-      const posters = this.$store.getters.getPosters;
+      const posters = this.$store.getters['home/getPosters'];
 
       if (posters.length === 0) {
-        this.$store.dispatch('requestPosters');
+        this.$store.dispatch('home/requestPosters');
       }
 
       return posters;
     },
     bestsellers() {
-      const bestsellers = this.$store.getters.getBestsellers;
+      const bestsellers = this.$store.getters['home/getBestsellers'];
 
       if (bestsellers.length === 0) {
-        this.$store.dispatch('requestBestsellers');
+        this.$store.dispatch('home/requestBestsellers');
       }
 
       return bestsellers;

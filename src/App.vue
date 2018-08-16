@@ -61,24 +61,34 @@ export default {
   created() {
     this.agreement = sessionStorage.getItem('agreement') || false;
 
-    const token = localStorage.getItem('user-token');
+    localStorage.setItem('auth-application', JSON.stringify({
+      id: 'QnQvjcQwVBzdAVt68QuQzM5Mx6',
+      secret: 'Hla8bHr8ZXok2M6WLZBhdRDTwFoEMaK',
+    }));
+
+    const token = JSON.parse(localStorage.getItem('user-token')) || null;
     if (token) {
-      request.defaults.headers.common.Authorization = `JWT ${token}`;
-      this.$store.dispatch('requestUser').then(() => {
-        this.$store.dispatch('requestActiveCart');
+      request.defaults.headers.common.Authorization = `${token.token_type} ${token.access_token}`;
+      this.$store.dispatch('user/requestUser').then(() => {
+        this.$store.dispatch('session/watched/requestProducts');
+        this.$store.dispatch('session/cart/get').then((cart) => {
+          this.$store.dispatch('cart/set', cart);
+        });
       });
     } else {
-      const id = localStorage.getItem('guest-user');
-      const guest = {};
-      if (id) {
-        guest.id = id;
+      const guestToken = localStorage.getItem('guest-token');
+      if (guestToken) {
+        request.defaults.headers.common.Authorization = `JWT ${guestToken}`;
+        this.$store.dispatch('session/watched/requestProducts');
+        this.$store.dispatch('session/cart/get').then((cart) => {
+          this.$store.dispatch('cart/set', cart);
+        });
       } else {
-        const generatedId = Math.random().toString(13).replace('0.', '');
-        localStorage.setItem('guest-user', generatedId);
-        guest.id = generatedId;
+        this.$store.dispatch('user/requestGuestToken').then((responseToken) => {
+          localStorage.setItem('guest-token', responseToken);
+          request.defaults.headers.common.Authorization = `JWT ${responseToken}`;
+        });
       }
-      this.$store.commit('setGuest', guest);
-      this.$store.dispatch('requestActiveCart');
     }
   },
 };

@@ -112,10 +112,10 @@ export default {
   },
   computed: {
     cartProducts() {
-      return this.$store.getters.cartProducts;
+      return this.$store.getters['cart/products'];
     },
     totalPrice() {
-      return this.$store.getters.getTotalPrice;
+      return this.$store.getters['cart/getTotalPrice'];
     },
   },
   methods: {
@@ -133,7 +133,7 @@ export default {
       }));
       savedCart.name = this.cartName;
 
-      this.$store.dispatch('saveUserCart', savedCart).then((cart) => {
+      this.$store.dispatch('user/saveCart', savedCart).then((cart) => {
         this.cartName = '';
         this.buttonActive = false;
         this.dialogVisible = false;

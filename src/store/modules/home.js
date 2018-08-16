@@ -1,6 +1,7 @@
 import request from '../../request/index';
 
 const store = {
+  namespaced: true,
   state: {
     banners: [],
     bestsellers: [],

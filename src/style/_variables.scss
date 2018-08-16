@@ -4,7 +4,8 @@ $text_color: #252525;
 $body_color: #ecf0f3;
 $upper_layer_color: #fff;
 $disable_color: #d1d1d1;
-$error_color: #f56c6c;
+$error_color: #D32F2F;
+$success_color: #68CD86;
 
 @mixin prefix($declarations, $prefixes: ()) {
     @each $property, $value in $declarations {

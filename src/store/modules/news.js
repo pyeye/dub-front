@@ -1,13 +1,14 @@
 import request from '../../request/index';
 
 const store = {
+  namespaced: true,
   state: {
     news: [],
     newsCategories: [],
   },
   getters: {
-    getNews: state => state.news,
-    getArticle(state, getters) {
+    list: state => state.news,
+    detail(state, getters) {
       return (id) => {
         const news = getters.getNews;
         try {
@@ -17,7 +18,7 @@ const store = {
         }
       };
     },
-    getNewsCategories: state => state.newsCategories,
+    categories: state => state.newsCategories,
   },
   actions: {
     requestNews(context) {
@@ -50,7 +51,7 @@ const store = {
         });
       });
     },
-    requestNewsCategories(context) {
+    requestCategories(context) {
       return new Promise((resolve) => {
         request.get('/news/categories/').then((response) => {
           context.commit('setNewsCategories', response.data);

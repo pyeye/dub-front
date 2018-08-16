@@ -2,6 +2,7 @@ import Vue from 'vue';
 import request from '../../request/index';
 
 const store = {
+  namespaced: true,
   // state
   state: {
     products: {},
@@ -10,12 +11,12 @@ const store = {
   },
   // getters
   getters: {
-    getProducts(state) {
+    products(state) {
       return category => state.products[category] || null;
     },
-    getProduct(state, getters) {
+    product(state, getters) {
       return (category, id) => {
-        const products = getters.getProducts(category);
+        const products = getters.products(category);
         let product;
         try {
           product = products.find(item => item.pk.toString() === id);
@@ -26,11 +27,11 @@ const store = {
         return product;
       };
     },
-    getCategories: state => state.categories,
-    getCategory(state, getters) {
-      return categoryCode => getters.getCategories.find(category => category.code === categoryCode);
+    categories: state => state.categories,
+    category(state, getters) {
+      return categoryCode => getters.categories.find(category => category.code === categoryCode);
     },
-    getProductTags(state) {
+    tags(state) {
       return category => state.tags[category] || null;
     },
   },
@@ -42,10 +43,33 @@ const store = {
           category: payload.category,
         },
       }).then((response) => {
-        context.commit('setProducts', {
-          items: response.data,
-          category: payload.category,
-        });
+        const products = response.data;
+        if (context.rootGetters['user/isAuthenticated']) {
+          request.get('ratings/user/', {
+            params: {
+              category: payload.category,
+            },
+          }).then((responseRatings) => {
+            const productsWithRatings = products.map((product) => {
+              const tmpProduct = product;
+              const record = responseRatings.data.find(rating => rating.product === tmpProduct.pk);
+              if (record) {
+                record.floatRating = parseFloat(record.rating);
+                tmpProduct.rating = record;
+              }
+              return tmpProduct;
+            });
+            context.commit('setProducts', {
+              items: productsWithRatings,
+              category: payload.category,
+            });
+          });
+        } else {
+          context.commit('setProducts', {
+            items: products,
+            category: payload.category,
+          });
+        }
       });
     },
     requestCategories(context) {
@@ -53,13 +77,16 @@ const store = {
         context.commit('setCategories', response.data);
       });
     },
-    requestProductTags(context, category) {
+    requestTags(context, category) {
       request.get(`tags/${category}/`).then((response) => {
         context.commit('setProductTags', {
           category,
           items: response.data,
         });
       });
+    },
+    updateRating(context, payload) {
+      context.commit('updateProductRating', payload);
     },
   },
   // mutations
@@ -72,6 +99,14 @@ const store = {
     },
     setCategories(state, categories) {
       state.categories = categories;
+    },
+    updateProductRating(state, { pk, category, rating }) {
+      const record = state.products[category].find(product => product.pk === pk);
+      if (record) {
+        const stringRating = parseFloat(rating).toFixed(1);
+        Vue.set(record.rating, 'rating', stringRating);
+        Vue.set(record.rating, 'floatRating', rating);
+      }
     },
   },
 };

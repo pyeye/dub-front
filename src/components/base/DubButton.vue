@@ -2,7 +2,7 @@
   <div 
     v-response.masked.large="active" 
     class="my-button"
-    :class="[type === 'primary' ? 'my-button-primary' : 'my-button-secondary', { 'button-active': active } ]">
+    :class="btnStyle">
     <div v-if="active">
       <hollow-dots-spinner
         :animation-duration="1000"
@@ -30,12 +30,27 @@ export default {
       type: String,
       default: 'primary',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     HollowDotsSpinner,
   },
   data: () => ({
   }),
+  computed: {
+    btnStyle() {
+      return {
+        'my-button-primary': this.type === 'primary',
+        'my-button-secondary': this.type === 'secondary',
+        'button-active': this.active,
+        'button-primary-disabled': this.type === 'primary' && this.disabled,
+        'button-secondary-disabled': this.type === 'secondary' && this.disabled,
+      };
+    },
+  },
 };
 </script>
 
@@ -95,6 +110,21 @@ export default {
 .button-active {
     cursor: default;
     pointer-events: none;
+}
+
+.button-primary-disabled {
+  background-color: $disable_color;
+  border-top: 1px solid darken($disable_color, 5%);
+  color: darken($disable_color, 30%);
+  cursor: default;
+  pointer-events: none;
+}
+
+.button-secondary-disabled {
+  border: 2px solid $disable_color;
+  color: darken($disable_color, 20%);
+  cursor: default;
+  pointer-events: none;
 }
 
 </style>

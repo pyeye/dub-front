@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueAwesomeSwiper from 'vue-awesome-swiper';
 import Notifications from 'vue-notification';
 import Vuelidate from 'vuelidate';
-import { Switch, Checkbox, Select, InputNumber, Dialog, Collapse, CollapseItem } from 'element-ui';
+import { Switch, Checkbox, Select, InputNumber, Dialog, Collapse, CollapseItem, Rate, Popover } from 'element-ui';
 
 import DubButton from './components/base/DubButton';
 import DubInput from './components/base/DubInput';
@@ -35,6 +35,8 @@ Vue.component(InputNumber.name, InputNumber);
 Vue.component(Dialog.name, Dialog);
 Vue.component(Collapse.name, Collapse);
 Vue.component(CollapseItem.name, CollapseItem);
+Vue.component(Rate.name, Rate);
+Vue.component(Popover.name, Popover);
 
 Vue.use(Vuelidate);
 Vue.use(VueAwesomeSwiper);

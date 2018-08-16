@@ -100,10 +100,10 @@ export default {
   computed: {
     products() {
       const category = this.$route.params.category;
-      const products = this.$store.getters.getProducts(category);
+      const products = this.$store.getters['products/products'](category);
 
       if (!products) {
-        this.$store.dispatch('requestProducts', {
+        this.$store.dispatch('products/requestProducts', {
           category,
         });
       }
@@ -111,14 +111,14 @@ export default {
     },
     category() {
       const routeCategory = this.$route.params.category;
-      return this.$store.getters.getCategory(routeCategory) || {};
+      return this.$store.getters['products/category'](routeCategory) || {};
     },
     tags() {
       const category = this.$route.params.category;
-      const tags = this.$store.getters.getProductTags(category);
+      const tags = this.$store.getters['products/tags'](category);
 
       if (!tags) {
-        this.$store.dispatch('requestProductTags', category);
+        this.$store.dispatch('products/requestTags', category);
       }
 
       return tags;

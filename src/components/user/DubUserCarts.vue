@@ -76,12 +76,12 @@ export default {
   }),
   computed: {
     userCarts() {
-      return this.$store.getters.getUserCarts;
+      return this.$store.getters['user/carts'];
     },
   },
   created() {
     if (this.userCarts.length === 0) {
-      this.$store.dispatch('requestUserCarts').then(() => {
+      this.$store.dispatch('user/requestCarts').then(() => {
         this.selectedCart = this.userCarts[0];
       });
     } else {
@@ -91,7 +91,7 @@ export default {
   methods: {
     addToCart(cart) {
       const copy = JSON.parse(JSON.stringify(cart.user_cart));
-      this.$store.dispatch('addFromSaved', copy);
+      this.$store.dispatch('cart/addProducts', copy);
     },
     totalPrice(products) {
       if (!products) {

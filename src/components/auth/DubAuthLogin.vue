@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters['user/profile'];
     },
   },
   methods: {
@@ -86,7 +86,7 @@ export default {
     },
     loginUser() {
       this.loginBtnActive = true;
-      this.$store.dispatch('loginUser', this.loginForm).then((user) => {
+      this.$store.dispatch('user/login', this.loginForm).then((user) => {
         this.$notify({
           group: 'dubbel',
           title: 'Вход выполнен',
@@ -98,9 +98,10 @@ export default {
           email: '',
           password: '',
         };
-        this.$store.dispatch('deleteActiveCart', localStorage.getItem('guest-user'));
-        this.$store.dispatch('deleteGuest');
-        this.$store.dispatch('requestActiveCart');
+        this.$store.dispatch('session/cart/get').then((cart) => {
+          this.$store.dispatch('cart/addProducts', cart);
+        });
+        this.$store.dispatch('session/watched/requestProducts');
         const nextView = this.getNextView();
         this.$router.push(nextView);
       }).catch(() => {

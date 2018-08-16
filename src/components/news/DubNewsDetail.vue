@@ -32,7 +32,7 @@ export default {
   computed: {
     articleFromState() {
       const id = this.$route.params.id;
-      const article = this.$store.getters.getArticle(id);
+      const article = this.$store.getters['news/detail'](id);
 
       if (!article) {
         this.getArticleFromRequest(id);

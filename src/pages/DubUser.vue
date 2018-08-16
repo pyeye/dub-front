@@ -11,11 +11,14 @@
       <div class="nav-item" @click="tabIndex = 'orders'" :class="{ 'nav-item-active': tabIndex == 'orders' }">
         <router-link class="tab-link" to="/user/orders" :class="{ 'tab-link-active': tabIndex == 'orders' }">Заказы</router-link>
       </div>
-      <div class="nav-item"  @click="tabIndex = 'doneorders'" :class="{ 'nav-item-active': tabIndex == 'doneorders' }">
-        <router-link class="tab-link" to="/user/doneorders" :class="{ 'tab-link-active': tabIndex == 'doneorders' }">Архив</router-link>
+      <div class="nav-item"  @click="tabIndex = 'archive'" :class="{ 'nav-item-active': tabIndex == 'archive' }">
+        <router-link class="tab-link" to="/user/archive" :class="{ 'tab-link-active': tabIndex == 'archive' }">Архив</router-link>
       </div>
-      <div class="nav-item"  @click="tabIndex = 'carts'" :class="{ 'nav-item-active': tabIndex == 'carts' }">
-        <router-link class="tab-link" to="/user/carts"  :class="{ 'tab-link-active': tabIndex == 'carts' }">Шаблоны</router-link>
+      <div class="nav-item"  @click="tabIndex = 'templates'" :class="{ 'nav-item-active': tabIndex == 'templates' }">
+        <router-link class="tab-link" to="/user/templates"  :class="{ 'tab-link-active': tabIndex == 'templates' }">Шаблоны</router-link>
+      </div>
+      <div class="nav-item"  @click="tabIndex = 'ratings'" :class="{ 'nav-item-active': tabIndex == 'ratings' }">
+        <router-link class="tab-link" to="/user/ratings"  :class="{ 'tab-link-active': tabIndex == 'ratings' }">Оценки</router-link>
       </div>
       <div class="nav-item-flex"></div>
       <div class="nav-item"><span class="logout" @click="logOutUser">Выход <icon class="icon-link"  name="sign-out"></icon> </span></div>
@@ -41,16 +44,17 @@ export default {
     avalableViews: {
       profile: 'Профиль',
       orders: 'Заказы',
-      doneorders: 'Архив',
-      carts: 'Шаблоны',
+      archive: 'Архив',
+      templates: 'Шаблоны',
+      ratings: 'Оценки',
     },
   }),
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters['user/profile'];
     },
     isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
+      return this.$store.getters['user/isAuthenticated'];
     },
     breadcrumbs() {
       return [
@@ -62,9 +66,9 @@ export default {
   },
   methods: {
     logOutUser() {
-      this.$store.dispatch('deleteActiveCart', this.user.id);
-      this.$store.dispatch('logoutUser');
-      this.$store.dispatch('setActiveCart');
+      this.$store.dispatch('cart/reset');
+      this.$store.dispatch('session/watched/reset');
+      this.$store.dispatch('user/logout');
       this.$router.push('/');
     },
   },

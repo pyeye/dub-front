@@ -10,6 +10,7 @@ import 'vue-awesome/icons/times';
 import 'vue-awesome/icons/sign-out';
 import 'vue-awesome/icons/angle-right';
 import 'vue-awesome/icons/angle-left';
+import 'vue-awesome/icons/check-square-o';
 
 import Icon from 'vue-awesome/components/Icon';
 

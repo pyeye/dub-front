@@ -35,19 +35,19 @@ export default {
   }),
   computed: {
     news() {
-      const news = this.$store.getters.getNews;
+      const news = this.$store.getters['news/list'];
 
       if (news.length === 0) {
-        this.$store.dispatch('requestNews');
+        this.$store.dispatch('news/requestNews');
       }
 
       return news;
     },
     categories() {
-      const categories = this.$store.getters.getNewsCategories;
+      const categories = this.$store.getters['news/categories'];
 
       if (categories.length === 0) {
-        this.$store.dispatch('requestNewsCategories');
+        this.$store.dispatch('news/requestCategories');
       }
 
       return categories;

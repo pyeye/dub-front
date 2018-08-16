@@ -114,7 +114,7 @@
                 </router-link>
 
               <router-link to="/">
-                <dub-button type="secondary">В каталог</dub-button>
+                <dub-button class="in-catalog" type="secondary">В каталог</dub-button>
               </router-link>
               </div>
               <div class="cart-box">
@@ -180,13 +180,13 @@ export default {
   },
   computed: {
     cartProducts() {
-      return this.$store.getters.cartProducts;
+      return this.$store.getters['cart/products'];
     },
     totalPrice() {
-      return this.$store.getters.getTotalPrice;
+      return this.$store.getters['cart/getTotalPrice'];
     },
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters['user/profile'];
     },
   },
   methods: {
@@ -203,7 +203,7 @@ export default {
         phone: this.order.phone,
         is_company: this.user.is_company,
       };
-      this.$store.dispatch('updateUser', { form: profile, userId: this.user.id }).then(() => {
+      this.$store.dispatch('user/update', { form: profile, userId: this.user.id }).then(() => {
         this.$notify({
           group: 'dubbel',
           title: 'Профиль изменен',
@@ -223,7 +223,7 @@ export default {
         price_id: cart.price.pk,
         quantity: cart.quantity,
       }));
-      this.$store.dispatch('checkout', {
+      this.$store.dispatch('cart/checkout', {
         phone: this.order.phone,
         address: this.order.address,
         products: this.order.products,
@@ -254,7 +254,7 @@ export default {
           phone: user.phone,
         };
         if (!user.is_company) {
-          order.surname = user.individual.surname;
+          order.surname = user.profile_object.surname;
         }
         this.order = order;
       },
@@ -606,6 +606,10 @@ export default {
 
   .button {
     margin-bottom: 16px;
+  }
+
+  .in-catalog {
+    margin-top: 16px;
   }
 
 @media (max-width: 1450px) {

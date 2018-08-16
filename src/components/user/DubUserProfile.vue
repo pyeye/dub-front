@@ -66,28 +66,19 @@ export default {
   },
   validations: {
     passForm: {
-      old_password: {
-        required,
-      },
-      password: {
-        required,
-      },
+      old_password: { required },
+      password: { required },
     },
     profileForm: {
-      name: {
-        required,
-      },
-      email: {
-        required,
-        email,
-      },
+      name: { required },
+      email: { required, email },
     },
   },
   computed: {
     user() {
-      const user = this.$store.getters.getUser;
+      const user = this.$store.getters['user/profile'];
       if (Object.keys(user).length === 0 && user.constructor === Object) {
-        this.profileForm = { individual: {}, company: {} };
+        this.profileForm = { profile_object: {} };
       } else {
         const form = {
           name: user.name,
@@ -95,9 +86,9 @@ export default {
           phone: user.phone,
         };
         if (user.is_company) {
-          form.company_name = user.company.name;
+          form.company_name = user.profile_object.name;
         } else {
-          form.surname = user.individual.surname;
+          form.surname = user.profile_object.surname;
         }
         this.profileForm = form;
       }
@@ -110,7 +101,7 @@ export default {
       this.$v.passForm.$touch();
       if (!this.$v.passForm.$error) {
         this.passBtnActive = true;
-        this.$store.dispatch('updatePass', this.passForm).then(() => {
+        this.$store.dispatch('user/updatePass', this.passForm).then(() => {
           this.$notify({
             group: 'dubbel',
             title: 'Пароль изменен',
@@ -142,18 +133,18 @@ export default {
       }
       this.profileBtnActive = true;
       if (this.user.is_company) {
-        this.profileForm.company = {
+        this.profileForm.profile_object = {
           name: this.profileForm.company_name,
         };
         this.profileForm.company_name = undefined;
       } else {
-        this.profileForm.individual = {
+        this.profileForm.profile_object = {
           surname: this.profileForm.surname,
         };
         this.profileForm.surname = undefined;
       }
       this.profileForm.is_company = this.user.is_company;
-      this.$store.dispatch('updateUser', { form: this.profileForm, userId: this.user.id }).then(() => {
+      this.$store.dispatch('user/update', { form: this.profileForm, userId: this.user.id }).then(() => {
         this.$notify({
           group: 'dubbel',
           title: 'Профиль изменен',

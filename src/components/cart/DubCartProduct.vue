@@ -32,13 +32,13 @@ export default {
   },
   methods: {
     handleQuantityChange(quantity) {
-      this.$store.dispatch('updateQuantity', {
+      this.$store.dispatch('cart/updateQuantity', {
         cartId: this.cart.price.pk,
         quantity,
       });
     },
     deleteProcuct() {
-      this.$store.dispatch('deleteProductFromCart', {
+      this.$store.dispatch('cart/deleteProduct', {
         cartId: this.cart.price.pk,
       });
     },

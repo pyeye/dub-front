@@ -13,6 +13,7 @@ import DubUserProfile from '@/components/user/DubUserProfile';
 import DubUserOrders from '@/components/user/DubUserOrders';
 import DubUserDoneOrders from '@/components/user/DubUserDoneOrders';
 import DubUserCarts from '@/components/user/DubUserCarts';
+import DubUserRatings from '@/components/user/DubUserRatings';
 import DubCartInfo from '@/components/cart/DubCartInfo';
 import DubCartOrder from '@/components/cart/DubCartOrder';
 import DubAuthLogin from '@/components/auth/DubAuthLogin';
@@ -117,14 +118,19 @@ const routes = [
         component: DubUserOrders,
       },
       {
-        path: 'doneorders',
+        path: 'archive',
         name: 'DubUserDoneOrders',
         component: DubUserDoneOrders,
       },
       {
-        path: 'carts',
+        path: 'templates',
         name: 'DubUserCarts',
         component: DubUserCarts,
+      },
+      {
+        path: 'ratings',
+        name: 'DubUserRatings',
+        component: DubUserRatings,
       },
     ],
   },
@@ -136,7 +142,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // этот путь требует авторизации, проверяем залогинен ли
     // пользователь, и если нет, перенаправляем на страницу логина
-    if (store.getters.isAuthenticated) {
+    if (store.getters['user/isAuthenticated']) {
       next();
     } else {
       next({
@@ -146,7 +152,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.requiresGuest)) {
     // этот путь доступен тольлоко для не залогиненных пользователей
-    if (!store.getters.isAuthenticated) {
+    if (!store.getters['user/isAuthenticated']) {
       next();
     } else {
       next('/');
