@@ -57,11 +57,9 @@ export default {
   padding: 24px;
   transition: box-shadow 0.25s ease;
   height: 100%;
-
   &:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
-
   .link-box {
     @include prefix(
       (
@@ -73,7 +71,6 @@ export default {
     height: 100%;
     text-decoration: none;
     color: $text_color;
-
     .image-box {
       @include prefix(
         (
@@ -83,11 +80,9 @@ export default {
         webkit ms
       );
     }
-
     .image {
       height: 220px;
     }
-
     .name {
       text-align: center;
       padding: 16px 0 8px 0;
@@ -98,7 +93,6 @@ export default {
     }
   }
 }
-
 .prices {
   @include prefix(
     (
@@ -109,7 +103,6 @@ export default {
     ),
     webkit ms
   );
-
   .price {
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
@@ -118,7 +111,6 @@ export default {
     line-height: 18px;
   }
 }
-
 a {
   text-decoration: none;
   color: $text_color;

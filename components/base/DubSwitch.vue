@@ -157,7 +157,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-
   .input-switch {
     position: absolute;
     width: 100%;
@@ -166,7 +165,6 @@ export default {
     opacity: 0;
     cursor: pointer;
   }
-
   .text-switch {
     position: absolute;
     display: block;
@@ -178,7 +176,6 @@ export default {
     justify-content: center;
     white-space: nowrap;
     overflow: hidden;
-
     .icons-switch {
       font-size: 0.8rem;
       display: flex;
@@ -188,31 +185,26 @@ export default {
       max-width: 16px;
       padding: 0px 2px;
     }
-
     &.text-on {
       padding-left: 6px;
       left: 0px;
       color: rgb(255, 255, 255);
       transform: translate(10px);
     }
-
     &.text-off {
       right: 0px;
       padding-right: 5px;
       color: rgb(160, 160, 160);
       transform: translate(-10px);
     }
-
     &.active-text {
       opacity: 1;
       transform: translate(0px);
     }
   }
-
   &:disabled {
     opacity: 0.5;
   }
-
   .vs-circle-switch {
     display: block;
     width: 18px;
@@ -225,14 +217,12 @@ export default {
     transition: all 0.25s ease;
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
   }
-
   &:active:not(.vs-circle-switch) {
     .vs-circle-switch {
       width: 24px;
       border-radius: 15px;
     }
   }
-
   &.vs-switch-active {
     &:active {
       .vs-circle-switch {
@@ -240,16 +230,13 @@ export default {
         margin-left: calc(100% - 29px);
       }
     }
-
     .vs-circle-switch {
       margin-left: calc(100% - 22px);
     }
   }
 }
-
 .vs-switch-primary {
   background: rgb(226, 226, 226);
-
   &.vs-switch-active {
     background: $primary_color;
   }

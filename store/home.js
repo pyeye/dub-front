@@ -27,22 +27,7 @@ const actions = {
   },
   async requestNews({ commit }) {
     const { data } = await this.$api.get('/home/news/');
-    // TODO format date on backend
-    const news = data.map(article => {
-      const formatedArticle = article;
-      const date = new Date(formatedArticle.updated_at);
-      const options = {
-        day: 'numeric',
-        month: 'long',
-      };
-      const [day, month] = date.toLocaleString('ru', options).split(/ |,|\./g);
-      formatedArticle.date = {
-        day,
-        month,
-      };
-      return formatedArticle;
-    });
-    commit('setNews', news);
+    commit('setNews', data);
   },
 };
 

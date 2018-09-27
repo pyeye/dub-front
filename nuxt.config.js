@@ -1,15 +1,18 @@
 const nodeExternals = require('webpack-node-externals');
+const pkg = require('./package');
 
 module.exports = {
+  mode: 'universal',
+
   /*
   ** Headers of the page
   */
   head: {
-    title: 'dubbel',
+    title: pkg.name,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Nuxt.js project' },
+      { hid: 'description', name: 'description', content: pkg.description },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -20,10 +23,17 @@ module.exports = {
       },
     ],
   },
+
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+  },
+
   /*
-  ** Customize the progress bar color
+  ** Customize the progress-bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#fff' },
+
   plugins: [
     { src: '~/plugins/api' },
     { src: '~/plugins/icons' },
@@ -32,21 +42,40 @@ module.exports = {
     { src: '~/plugins/directives/response', ssr: false },
     { src: '~/plugins/spinner', ssr: false },
   ],
+
+  /*
+  ** Global CSS
+  */
   css: [
     '@/assets/directives/response.scss',
     '@/assets/reset.css',
     'swiper/dist/css/swiper.css',
   ],
-  modules: [['nuxt-sass-resources-loader', ['@/assets/variables.scss']]],
+
+  /*
+  ** Nuxt.js modules
+  */
+  modules: [
+    // Doc: https://github.com/nuxt-community/axios-module#usage
+    '@nuxtjs/axios',
+    ['nuxt-sass-resources-loader', ['@/assets/variables.scss']],
+  ],
+  /*
+  ** Axios module configuration
+  */
+  axios: {
+    // See https://github.com/nuxt-community/axios-module#options
+  },
+
   /*
   ** Build configuration
   */
   build: {
     /*
-    ** Run ESLint on save
+    ** You can extend webpack config here
     */
-    extend(config, { isDev, isClient, isServer }) {
-      if (isServer) {
+    extend(config, ctx) {
+      if (ctx.isServer) {
         config.externals = [
           nodeExternals({
             // default value for `whitelist` is
@@ -58,8 +87,8 @@ module.exports = {
           }),
         ];
       }
-
-      if (isDev && isClient) {
+      // Run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,

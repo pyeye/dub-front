@@ -66,11 +66,9 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   padding: 32px;
   transition: box-shadow 0.25s ease;
-
   &:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
-
   .link-box {
     @include prefix(
       (
@@ -80,10 +78,8 @@ export default {
       webkit ms
     );
     height: 100%;
-
     text-decoration: none;
     color: $text_color;
-
     .image-box {
       @include prefix(
         (
@@ -93,11 +89,9 @@ export default {
         webkit ms
       );
     }
-
     .image {
       height: 270px;
     }
-
     .name {
       padding: 24px 0 4px 0;
       font-size: 20px;
@@ -107,7 +101,6 @@ export default {
     }
   }
 }
-
 .amount {
   @include prefix(
     (
@@ -119,13 +112,11 @@ export default {
   );
   padding-top: 8px;
   padding-bottom: 2px;
-
   .description {
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
   }
-
   .value {
     @include prefix(
       (
@@ -137,7 +128,6 @@ export default {
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
-
     .item {
       opacity: 0.7;
     }
@@ -149,7 +139,6 @@ export default {
     }
   }
 }
-
 .storage {
   @include prefix(
     (
@@ -159,15 +148,12 @@ export default {
     ),
     webkit ms
   );
-
   padding-bottom: 16px;
-
   .description {
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
   }
-
   .value {
     color: #43a047;
     font-size: 14px;
@@ -175,7 +161,6 @@ export default {
     line-height: 24px;
   }
 }
-
 .prices {
   @include prefix(
     (
@@ -186,9 +171,7 @@ export default {
     ),
     webkit ms
   );
-
   padding-bottom: 8px;
-
   .price {
     font-family: 'Roboto', sans-serif;
     font-size: 26px;
@@ -196,7 +179,6 @@ export default {
     letter-spacing: -0.012em;
     line-height: 32px;
   }
-
   .amount-selector {
     @include prefix(
       (
@@ -207,13 +189,11 @@ export default {
     );
     width: 45%;
   }
-
   .za {
     margin-top: 4px;
     margin-right: 4px;
   }
 }
-
 .actions {
   @include prefix(
     (
@@ -224,16 +204,13 @@ export default {
     webkit ms
   );
 }
-
 a {
   text-decoration: none;
   color: $text_color;
 }
-
 .button {
   width: 47%;
 }
-
 .ribbon {
   cursor: pointer;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -262,53 +239,42 @@ a {
   width: 0;
   top: -8.5px;
   left: 0.1px;
-
   border-left: 9px solid transparent;
 }
-
 .rating {
   font-size: 14px;
   letter-spacing: -0.012em;
   font-weight: 600;
   opacity: 0.8;
 }
-
 .no-rating {
   color: $text_color;
   background: $primary_color;
 }
-
 .no-rating:before {
   border-bottom: 9px solid darken($primary_color, 10);
 }
-
 .bad-rating {
   color: $upper_layer_color;
   background: $error_color;
 }
-
 .bad-rating:before {
   border-bottom: 9px solid darken($error_color, 10);
 }
-
 .meh-rating {
   color: $upper_layer_color;
   background: #f4511e;
 }
-
 .meh-rating:before {
   border-bottom: 9px solid darken(#f4511e, 10);
 }
-
 .good-rating {
   color: $upper_layer_color;
   background: #42a85f;
 }
-
 .good-rating:before {
   border-bottom: 9px solid darken(#42a85f, 10);
 }
-
 .rating-popover {
   @include prefix(
     (
@@ -319,7 +285,6 @@ a {
   );
   padding: 0 4px;
 }
-
 .popover-row {
   @include prefix(
     (
@@ -330,7 +295,6 @@ a {
   );
   margin: 4px 0;
 }
-
 .popover-title {
   color: $text_color;
   font-size: 18px;
@@ -339,7 +303,6 @@ a {
   opacity: 0.7;
   line-height: 22px;
 }
-
 .popover-value {
   color: $text_color;
   font-size: 16px;
@@ -349,7 +312,6 @@ a {
   line-height: 20px;
   margin-left: 16px;
 }
-
 .popover-flex {
   @include prefix(
     (
@@ -358,20 +320,16 @@ a {
     webkit ms
   );
 }
-
 .popover-button {
   margin-top: 4px;
   width: 100%;
 }
-
 .bad-rating-value {
   color: $error_color;
 }
-
 .meh-rating-value {
   color: #f4511e;
 }
-
 .good-rating-value {
   color: #42a85f;
 }

@@ -125,9 +125,7 @@ export default {
       const { data } = await app.$api.get(url);
       product = data;
     }
-
     const [selectedPrice] = product.prices;
-
     return {
       product,
       selectedPrice,
@@ -241,7 +239,6 @@ export default {
     width: 50%;
     border-right: 1px solid #e6e3da;
     padding: 24px;
-
     .title {
       padding: 4px;
       font-size: 18px;
@@ -382,7 +379,6 @@ export default {
     ),
     webkit ms
   );
-
   .quantity-action {
     margin-top: 16px;
     width: 47%;
@@ -458,7 +454,6 @@ export default {
   width: 0;
   top: -8.5px;
   left: 0.1px;
-
   border-left: 9px solid transparent;
 }
 .rating {
@@ -582,7 +577,6 @@ export default {
   background-color: $upper_layer_color;
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-
   transition: box-shadow 0.25s ease;
 }
 @media (max-width: 1450px) {

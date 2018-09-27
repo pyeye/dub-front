@@ -116,7 +116,6 @@ export default {
     products() {
       const { category } = this.$route.params;
       const products = this.$store.getters['products/products'](category);
-
       return products;
     },
     category() {
@@ -126,7 +125,6 @@ export default {
     tags() {
       const { category } = this.$route.params;
       const tags = this.$store.getters['products/tags'](category);
-
       return tags;
     },
     breadcrumbs() {
@@ -163,7 +161,6 @@ export default {
           this.filteredProducts = this.products;
           return;
         }
-
         const tagsSet = new Set(val);
         this.filteredProducts = this.products.filter(product => {
           const productTagsSet = new Set(product.tags);
@@ -186,14 +183,11 @@ export default {
   width: 80%;
   margin: 0 auto;
 }
-
 .filter-tag-menu {
   padding: 16px 0 32px 0;
 }
-
 .filter-menu {
   padding: 16px 0;
-
   @include prefix(
     (
       display: flex,
@@ -203,7 +197,6 @@ export default {
     ),
     webkit ms
   );
-
   .filter-item {
     @include prefix(
       (
@@ -212,12 +205,10 @@ export default {
       ),
       webkit ms
     );
-
     .filter-sort-active {
       border-bottom: 3px solid $primary_color;
     }
   }
-
   .filter-description {
     color: $text_color;
     font-size: 16px;
@@ -226,16 +217,13 @@ export default {
     letter-spacing: -0.012em;
     margin-right: 16px;
   }
-
   .pointer {
     cursor: pointer;
   }
-
   .pointer:hover {
     border-bottom: 3px solid $primary_color;
   }
 }
-
 .content {
   @include prefix(
     (
@@ -244,7 +232,6 @@ export default {
     ),
     webkit ms
   );
-
   .filter-panel {
     position: relative;
     height: 100%;
@@ -254,7 +241,6 @@ export default {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     margin-right: 32px;
     padding: 16px;
-
     .collapse-title {
       position: relative;
       color: $text_color;
@@ -265,7 +251,6 @@ export default {
       opacity: 0.7;
     }
   }
-
   .grid {
     @include prefix(
       (
@@ -276,7 +261,6 @@ export default {
       webkit ms
     );
     width: 100%;
-
     .grid-cell {
       @include prefix(
         (
@@ -285,7 +269,6 @@ export default {
         ),
         webkit ms
       );
-
       max-width: 24%;
       background-color: $upper_layer_color;
       border-radius: 2px;
@@ -293,14 +276,12 @@ export default {
       padding: 32px;
       margin: 0 8px 32px 8px;
       transition: box-shadow 0.25s ease;
-
       &:hover {
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
       }
     }
   }
 }
-
 .amount {
   @include prefix(
     (
@@ -310,13 +291,11 @@ export default {
     ),
     webkit ms
   );
-
   .description {
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
   }
-
   .value {
     @include prefix(
       (
@@ -328,7 +307,6 @@ export default {
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
-
     .item {
       opacity: 0.7;
     }
@@ -340,7 +318,6 @@ export default {
     }
   }
 }
-
 .slide {
   height: 550px;
   width: 100%;
@@ -349,11 +326,9 @@ export default {
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
-
 .catalog-swiper {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-
 .tag {
   cursor: pointer;
   text-align: center;
@@ -364,15 +339,12 @@ export default {
   font-weight: 600;
   opacity: 0.7;
 }
-
 .tag:hover {
   background-color: $primary_color;
 }
-
 .tag-active {
   background-color: $primary_color;
 }
-
 @media (max-width: 1450px) {
   .catalog-list {
     width: 85%;

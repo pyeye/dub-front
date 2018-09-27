@@ -3,15 +3,15 @@
     <div class="sales-news">
       <div v-swiper:mySwipe="swiperOption" class="sales">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="banner in banners" :key="banner.pk">
-            <div class="slide" :style="`background-image: url(${banner.image});`"></div> 
+          <div v-for="banner in banners" :key="banner.pk" class="swiper-slide">
+            <div :style="`background-image: url(${banner.image});`" class="slide"/> 
           </div>
         </div>
-        <div class="swiper-pagination swiper-pagination-bullets"></div>
+        <div class="swiper-pagination swiper-pagination-bullets"/>
       </div>
       <div class="news">
-        <div class="news-row" v-for="article in news" :key="article.pk">
-          <news-item class="news-item" :article="article"></news-item>
+        <div v-for="article in news" :key="article.pk" class="news-row">
+          <news-item :article="article" class="news-item"/>
         </div>
       </div>
     </div>
@@ -29,15 +29,15 @@
     -->
     <div class="title">Подборки от House of Dubbel</div>
     <div class="posters">
-      <poster-item class="poster-item" v-for="poster in posters" :key="poster.pk" :poster="poster"></poster-item>
+      <poster-item v-for="poster in posters" class="poster-item" :key="poster.pk" :poster="poster"/>
     </div>
     
     
     <div class="title">Популярное</div>
     <div v-swiper:best="swiperTagOption" class="best">
       <div class="swiper-wrapper">
-        <div class="swiper-slide best-slide" v-for="best in bestsellers" :key="best.pk">
-          <bestsellers-item class="grid-cell" :product="best" :category="best.category"></bestsellers-item>
+        <div v-for="best in bestsellers" class="swiper-slide best-slide" :key="best.pk">
+          <bestsellers-item :product="best" class="grid-cell" :category="best.category"/>
         </div>
       </div>
     </div>
@@ -111,7 +111,6 @@ export default {
   width: 80%;
   margin: 0 auto;
 }
-
 .sales-news {
   @include prefix(
     (
@@ -124,12 +123,10 @@ export default {
   height: 500px;
   font-size: 20px;
 }
-
 .sales {
   width: 70%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-
 .slide {
   position: relative;
   height: 100%;
@@ -139,7 +136,6 @@ export default {
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
-
 .posters {
   @include prefix(
     (
@@ -149,16 +145,13 @@ export default {
     webkit ms
   );
   margin-bottom: 24px;
-
   .poster-item {
     margin-right: 16px;
   }
-
   .poster-item:last-child {
     margin-right: 0;
   }
 }
-
 .news {
   @include prefix(
     (
@@ -168,21 +161,17 @@ export default {
     webkit ms
   );
   position: relative;
-
   width: 30%;
   margin-left: 8px;
-
   .news-row {
     position: relative;
     width: 100%;
     height: 100%;
     margin-bottom: 8px;
   }
-
   .news-row:last-of-type {
     margin-bottom: 0;
   }
-
   .column {
     @include prefix(
       (
@@ -191,23 +180,19 @@ export default {
       ),
       webkit ms
     );
-
     .column-item {
       margin-left: 8px;
     }
   }
 }
-
 .best {
   position: relative;
   height: 100%;
   margin-bottom: 32px;
 }
-
 .best-slide {
   width: 20%;
 }
-
 .grid-cell {
   position: relative;
   height: 100%;
@@ -215,10 +200,8 @@ export default {
   background-color: $upper_layer_color;
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-
   transition: box-shadow 0.25s ease;
 }
-
 .title {
   width: 100%;
   padding: 16px 0;
@@ -230,12 +213,10 @@ export default {
   opacity: 0.9;
   color: $text_color;
 }
-
 .bestseller-swiper-item {
   position: relative;
   height: 100%;
 }
-
 .about {
   margin-bottom: 24px;
   cursor: pointer;
@@ -250,7 +231,6 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
-
 .cover {
   position: absolute;
   top: 0;
@@ -261,7 +241,6 @@ export default {
   transition: opacity 0.25s ease;
   opacity: 0.6;
 }
-
 .cover-text {
   @include prefix(
     (
@@ -277,14 +256,12 @@ export default {
   z-index: 1;
   color: #fafafa;
   font-size: 24px;
-
   letter-spacing: 0.02em;
   line-height: 30px;
   font-family: 'Roboto', sans-serif;
   padding: 48px 24px;
   opacity: 1;
   transition: opacity 0.25s ease;
-
   .cover-title {
     font-weight: 600;
     font-size: 28px;
@@ -292,12 +269,10 @@ export default {
     margin-bottom: 16px;
   }
 }
-
 @media (max-width: 1450px) {
   .home {
     width: 85%;
   }
-
   .sales-news {
     height: 400px;
   }

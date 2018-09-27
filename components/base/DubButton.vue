@@ -62,21 +62,17 @@ export default {
   min-width: 5.14em;
   padding: 0.7em 0.57em;
   height: 40px;
-
   color: #252525;
-
   text-transform: uppercase;
   text-decoration: none !important;
   font-size: 12px;
   outline: none;
-
   vertical-align: baseline;
   font-weight: 700;
   line-height: 1.5;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   border-radius: 3px;
   letter-spacing: 0.025em;
-
   transition: box-shadow 0.25s ease, border 0.25s ease,
     background-color 0.25s ease;
   cursor: pointer;

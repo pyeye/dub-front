@@ -35,7 +35,6 @@ export default {
   data: () => ({
     selfActive: false,
   }),
-
   computed: {},
 };
 </script>
@@ -53,7 +52,6 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   padding: 24px 0;
 }
-
 .panel-content {
   @include prefix(
     (
@@ -62,7 +60,6 @@ export default {
     ),
     webkit ms
   );
-
   .content-categories {
     border-right: 2px solid #e6e3da;
     width: 15%;
@@ -73,10 +70,8 @@ export default {
     position: relative;
     min-height: 300px;
     text-align: right;
-
     .categories-list {
       padding: 4px 0;
-
       a {
         text-decoration: none;
         color: $text_color;
@@ -84,14 +79,12 @@ export default {
       .link {
         padding: 4px 24px;
       }
-
       .link:hover {
         border-right: 2px solid $primary_color;
         margin-right: -2px;
       }
     }
   }
-
   .content-meta {
     width: 85%;
   }

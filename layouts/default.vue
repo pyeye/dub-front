@@ -156,7 +156,6 @@ export default {
 }
 .agreement-info {
   padding: 16px;
-
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;

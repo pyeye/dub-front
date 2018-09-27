@@ -36,19 +36,15 @@ export default {
   transform: translateY(0);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
-
   &:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
-
     .cover {
       opacity: 0.9;
     }
-
     .cover-text {
       opacity: 0;
     }
-
     .cover-inspect {
       opacity: 1;
       -webkit-transform: translate3d(-50%, -50%, 1px);
@@ -56,7 +52,6 @@ export default {
     }
   }
 }
-
 .cover {
   position: absolute;
   top: 0;
@@ -67,7 +62,6 @@ export default {
   transition: opacity 0.25s ease;
   opacity: 0.65;
 }
-
 .cover-text {
   @include prefix(
     (
@@ -90,7 +84,6 @@ export default {
   opacity: 1;
   transition: opacity 0.25s ease;
 }
-
 .cover-inspect {
   color: $primary_color;
   font-size: 24px;
@@ -114,16 +107,13 @@ export default {
     webkit ms
   );
 }
-
 .icon-link {
   width: 22px;
   height: 22px;
 }
-
 a {
   text-decoration: none;
 }
-
 @media (max-width: 1450px) {
   .news-item {
     height: 300px;
