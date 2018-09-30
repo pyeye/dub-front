@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "nuxt",
+    "dev-debug": "nodemon --inspect-brk=0.0.0.0:9229  node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
@@ -24,6 +25,7 @@
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.2.0",
     "epic-spinners": "^1.0.3",
+    "js-cookie": "^2.2.0",
     "marked": "^0.5.1",
     "nuxt": "^2.0.0",
     "nuxt-sass-resources-loader": "^2.0.5",

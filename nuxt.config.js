@@ -1,4 +1,3 @@
-const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package');
 
 module.exports = {
@@ -28,7 +27,6 @@ module.exports = {
     host: '0.0.0.0',
     port: 3000,
   },
-
   /*
   ** Customize the progress-bar color
   */
@@ -36,7 +34,7 @@ module.exports = {
 
   plugins: [
     { src: '~/plugins/api' },
-    { src: '~/plugins/icons' },
+    { src: '~/plugins/auth' },
     { src: '~/plugins/global' },
     { src: '~/plugins/swiper', ssr: false },
     { src: '~/plugins/directives/response', ssr: false },
@@ -75,18 +73,6 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-      if (ctx.isServer) {
-        config.externals = [
-          nodeExternals({
-            // default value for `whitelist` is
-            // [/es6-promise|\.(?!(?:js|json)$).{1,5}$/i]
-            whitelist: [
-              /es6-promise|\.(?!(?:js|json)$).{1,5}$/i,
-              /^vue-awesome/,
-            ],
-          }),
-        ];
-      }
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({

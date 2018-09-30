@@ -5,7 +5,7 @@
         <nuxt-link :to="breadcrumb.link" >{{breadcrumb.label}}</nuxt-link>
       </div>
       <div class="breadcrumb-separator" v-if="index + 1 !== breadcrumbs.length">
-        <icon class="icon"  name="angle-right"></icon>
+        <dub-icon class="icon"><icon-right/></dub-icon>
       </div>
     </div>
   </div>

@@ -5,7 +5,10 @@
       <div class="cover-text">
           <div class="title">{{ poster.title }}</div>
       </div>
-      <div class="cover-inspect"><div>ПОДРОБНЕЕ</div><icon class="icon-link"  name="angle-right"></icon></div>
+      <div class="cover-inspect">
+        <div>ПОДРОБНЕЕ</div>
+        <dub-icon width=24 height=24 class="icon-link"><icon-right/></dub-icon>
+      </div>
     </nuxt-link>
   </div>
  

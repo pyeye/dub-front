@@ -51,7 +51,7 @@
         <div class="nav-icons">
           <div class="nav-item nav-icon nav-search" v-response.small>
               <div>
-                  <div class="link"><icon class="icon-link"  name="search"></icon></div>
+                  <div class="link"><dub-icon class="icon-link"><icon-search/></dub-icon></div>
               </div>
             
           </div>

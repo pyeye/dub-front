@@ -28,6 +28,7 @@ const modules = {
       },
       async addProduct({ commit, getters }, product) {
         commit('addWatchedProducts', product);
+
         await this.$api.post('/session/watched/', { data: getters.products });
       },
       async addProducts({ commit, getters }, products) {
@@ -43,7 +44,11 @@ const modules = {
         state.products = [];
       },
       addWatchedProducts(state, products) {
-        const arrayProducts = Array.isArray() ? products : [products];
+        const arrayProducts = Array.isArray(products) ? products : [products];
+        if (state.products.length === 0) {
+          state.products = arrayProducts;
+          return;
+        }
         arrayProducts.forEach(product => {
           const index = state.products.findIndex(
             row => row.pk.toString() === product.pk.toString()

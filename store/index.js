@@ -1,8 +1,8 @@
 const actions = {
-  async nuxtServerInit({ dispatch }, { req, res }) {
+  async nuxtServerInit({ dispatch }) {
     await Promise.all([
       dispatch('products/requestCategories'),
-      dispatch('user/init', { req, res }),
+      dispatch('session/watched/requestProducts'),
     ]);
   },
 };
