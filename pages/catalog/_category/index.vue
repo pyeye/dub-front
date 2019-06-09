@@ -20,10 +20,10 @@
     <div class="filter-tag-menu">
       <div v-swiper:tagSwiper="swiperTagOption">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="tag in tags" :key="tag.code">
+          <div class="swiper-slide" v-for="tag in tags" :key="tag.pk">
             <div
               class="tag"
-              :class="{ 'tag-active': filters.tags.some(t => t.code === tag.code) }"
+              :class="{ 'tag-active': filters.tags.some(t => t.pk === tag.pk) }"
               @click="tagHandler(tag)"
               v-response.small.masked
             >{{tag.name}}</div>
@@ -37,7 +37,7 @@
         <dub-collapse>
           <dub-collapse-item v-for="facet in facets.sfacets" :key="facet.slug">
             <div slot="header" class="collapse-title">{{facet.name}}</div>
-            <div v-for="item in facet.values" :key="item.code">
+            <div v-for="item in facet.values" :key="item.pk">
               <dub-check
                 v-model="filters.sfacets"
                 :val="item"
@@ -209,7 +209,7 @@ export default {
   },
   methods: {
     encodeTags(tags) {
-      const encodedTags = tags.map(tag => tag.code);
+      const encodedTags = tags.map(tag => tag.pk);
       return encodedTags.length === 0 ? [] : encodedTags.join();
     },
     encodeSFacet(facets) {
@@ -219,7 +219,7 @@ export default {
         if (facet.facetSlug in facetsQuery === false) {
           facetsQuery[facet.facetSlug] = [];
         }
-        facetsQuery[facet.facetSlug].push(facet.code);
+        facetsQuery[facet.facetSlug].push(facet.pk);
       });
       Object.keys(facetsQuery).forEach(key => {
         const codes = facetsQuery[key].join(',');
@@ -247,10 +247,10 @@ export default {
       const decodedTags = [];
       const tagsCodes = queryTags.split(',').map(Number);
       tagsCodes.forEach(tagCode => {
-        const tag = this.tags.find(t => t.code === tagCode);
+        const tag = this.tags.find(t => t.pk === tagCode);
         const decodedTag = {
           name: tag.name,
-          code: tag.code,
+          pk: tag.pk,
         };
         decodedTags.push(decodedTag);
       });
@@ -276,11 +276,11 @@ export default {
       const [slug, strCodes] = queryFacet.split(':');
       const codes = strCodes.split(',').map(Number);
       const facet = this.facets.sfacets.find(f => f.slug === slug);
-      const values = facet.values.filter(v => codes.includes(v.code));
+      const values = facet.values.filter(v => codes.includes(v.pk));
       return values.map(value => ({
         facetSlug: facet.slug,
         facetName: facet.name,
-        code: value.code,
+        pk: value.pk,
         name: value.name,
         count: value.count,
       }));
@@ -377,7 +377,7 @@ export default {
       await this.debounceUpdateQuery();
     },
     async tagHandler(tag) {
-      const index = this.filters.tags.findIndex(t => t.code === tag.code);
+      const index = this.filters.tags.findIndex(t => t.pk === tag.pk);
       if (index === -1) {
         this.filters.tags.push(tag);
       } else {
@@ -426,7 +426,7 @@ export default {
         const index = this.filters.sfacets.findIndex(sfacet => sfacet.slug === e.filter.slug);
         this.filters.sfacets.splice(index, 1);
       } else if (e.filter.type === 'tags') {
-        const index = this.filters.tags.findIndex(tag => tag.code === e.code);
+        const index = this.filters.tags.findIndex(tag => tag.pk === e.pk);
         this.filters.tags.splice(index, 1);
       }
       await this.updateQuery();

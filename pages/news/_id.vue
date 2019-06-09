@@ -12,7 +12,7 @@
               {{ article.date_created.month }}
               {{ article.date_created.year }}
             </div>
-            <nuxt-link :to="`/news?filter=${article.category.code}`">
+            <nuxt-link :to="`/news?filter=${article.category.pk}`">
                 <div class="category">{{ article.category.name }}</div>
             </nuxt-link>
           </div>

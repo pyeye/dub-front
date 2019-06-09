@@ -15,9 +15,9 @@
           <div
             class="filter-item pointer"
             v-for="category in categories"
-            :key="category.code"
-            :class="{ 'filter-active': filterBy == category.code }"
-            @click="setFilter(category.code)"
+            :key="category.pk"
+            :class="{ 'filter-active': filterBy == category.pk }"
+            @click="setFilter(category.pk)"
           >
             {{ category.name }}
           </div>
@@ -51,7 +51,7 @@ export default {
     filteredNews() {
       return this.filterBy === 'all'
         ? this.news
-        : this.news.filter(article => article.category.code === this.filterBy);
+        : this.news.filter(article => article.category.pk === this.filterBy);
     },
   },
   async fetch({ store }) {

@@ -29,7 +29,7 @@
           {{ strength }}%
         </div>
         -->
-        <div class="facet-info" v-for="param in params" :key="param.code">
+        <div class="facet-info" v-for="param in params" :key="param.pk">
           {{ param.values[0].name }}
         </div>
         <div class="storage">

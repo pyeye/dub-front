@@ -15,7 +15,7 @@
         <div class="content-meta">
             <div class="content-facets" v-for="facet in facets.sfacets" :key="facet.slug">
               <div class="collapse-title"> {{facet.name}} </div>
-              <div v-for="item in facet.values" :key="item.code">
+              <div v-for="item in facet.values" :key="item.pk">
                 <div class="facets-values">{{item.name}}</div>
               </div>
             </div>

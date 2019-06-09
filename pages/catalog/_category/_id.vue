@@ -37,7 +37,7 @@
               <div
                 class="info-list"
                 v-for="number_facet in displayNFacets"
-                :key="number_facet.code"
+                :key="number_facet.pk"
               >
                 <div class="info-description">{{number_facet.name}}:</div>
                 <div class="description-flex"></div>
@@ -56,7 +56,7 @@
               <div
                 class="info-list"
                 v-for="string_facet in product.string_facets"
-                :key="string_facet.code"
+                :key="string_facet.pk"
               >
                 <div class="info-description">{{string_facet.name}}:</div>
                 <div class="description-flex"></div>
@@ -64,10 +64,10 @@
                   <div
                     class="row-item"
                     v-for="value in string_facet.values"
-                    :key="value.code">
+                    :key="value.pk">
                     <nuxt-link 
                       class="list-link"
-                      :to="`/catalog/${product.category.slug}?sfacets=${string_facet.slug}:${value.code}`">
+                      :to="`/catalog/${product.category.slug}?sfacets=${string_facet.slug}:${value.pk}`">
                       {{ value.name }}
                     </nuxt-link>
                   </div>
@@ -126,7 +126,7 @@
             <div class="filter-tag-menu">
       <div v-swiper:tagSwiper="swiperTagOption">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="tag in product.tags" :key="tag.code">
+          <div class="swiper-slide" v-for="tag in product.tags" :key="tag.pk">
             <div class="tag" v-response.small.masked>{{tag.name}}</div>
           </div>
         </div>

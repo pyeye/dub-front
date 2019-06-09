@@ -35,7 +35,7 @@ export default {
     badges() {
       const tagsBadges = this.filters.tags.map(tag => ({
         name: tag.name,
-        code: tag.code,
+        pk: tag.pk,
         filter: {
           name: 'Тэг',
           type: 'tags',
@@ -43,7 +43,7 @@ export default {
       }));
       const sfacetsBadges = this.filters.sfacets.map(sfacet => ({
         name: sfacet.name,
-        code: sfacet.code,
+        pk: sfacet.pk,
         filter: {
           name: sfacet.facetName,
           type: 'sfacets',
