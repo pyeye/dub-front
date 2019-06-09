@@ -4,7 +4,7 @@
       <div v-swiper:mySwipe="swiperOption" class="sales">
         <div class="swiper-wrapper">
           <div v-for="banner in banners" :key="banner.pk" class="swiper-slide">
-            <div :style="`background-image: url(${banner.image});`" class="slide"/> 
+            <div :style="`background-image: url(${banner.image});`" class="slide"/>
           </div>
         </div>
         <div class="swiper-pagination swiper-pagination-bullets"/>
@@ -19,7 +19,7 @@
     <div class="about" :style="'background-image: url(http://houseofdubbel.tk/img/static/tom-sodoge-61701.jpg);'">
       <div class="cover"></div>
       <div class="cover-text">
-        <div class="cover-title">House of Dubbel это:</div> 
+        <div class="cover-title">House of Dubbel это:</div>
         <div>Более 70 000 напитков</div>
         <div>Лучшие цены</div>
         <div>Эксклюзивные коллекции</div>
@@ -31,8 +31,8 @@
     <div class="posters">
       <poster-item v-for="poster in posters" class="poster-item" :key="poster.pk" :poster="poster"/>
     </div>
-    
-    
+
+
     <div class="title">Популярное</div>
     <div v-swiper:best="swiperTagOption" class="best">
       <div class="swiper-wrapper">

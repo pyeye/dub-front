@@ -1,18 +1,22 @@
 <template>
   <div class="dub-header">
     <div class="header-info">
-      <nuxt-link to="/">
-        <img class="logo" src="~assets/images/house_logo.png">
-      </nuxt-link>
-      <div class="flex"></div>
+      <!--
+      <div class="tagline">
+        <div class="tagline-row">Родной дом</div>
+        <div class="tagline-row">лучших</div>
+        <div class="tagline-row">напитков</div>
+      </div>
+      -->
+      
       <div>
         <div class="help">
           <div class="help-link" v-response.small>Доставка</div>
           <div class="help-link" v-response.small>Оплата</div>
           <div class="help-link" v-response.small>Контакты</div>
-          <div 
-            class="help-link" 
-            v-response.small 
+          <div
+            class="help-link"
+            v-response.small
             :class="{'help-link-selected ': isSelected('/news')}"
           >
             <nuxt-link to="/news">Новости</nuxt-link>
@@ -20,15 +24,18 @@
           <div class="help-link" v-response.small>О Магазине</div>
         </div>
       </div>
+      <div class="flex"></div>
       <div class="contacts">
         <span class="phone">+7 (345) 54-54-444</span>
-        <span class="phone">+7 (345) 14-23-564</span>
-        <span class="time">Ежедневно c 9:00-22:00</span>
+      </div>
+      <div class="contacts">
+        <span class="phone">Ежедневно c 9:00-22:00</span>
       </div>
     </div>
-   
+
     <div :class="{'fixed-dummy': navFixed}"></div>
     <div id="nav" class="header-nav" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
+      <div class="nav">
         <img class="logo-text" src="~assets/images/dubbel_text.png">
         <!--
         <div class="nav-item">
@@ -37,29 +44,47 @@
             </div>
         </div>
         -->
-        <div 
-          class="nav-item" 
-          :class="{'nav-selected': isSelected(`/catalog/${category.code}`)}" 
-          v-response.small 
-          v-for="category in categories" 
+        <div class="nav-panel"  v-show="searchPanelActive === false">
+          <div class="nav-categories nav-categories-hide" ref="nav">
+          <div
+          class="nav-item"
+          :class="{'nav-selected': isSelected(`/catalog/${category.slug}`)}"
+          @mouseover="activatePanel(category)"
+          @mouseout="navActive = false"
+          v-response.small
+          v-for="category in categories"
           :key="category.pk">
-          <nuxt-link :to="'/catalog/' + category.code" class="nav-category">
+          <nuxt-link :to="'/catalog/' + category.slug + '?nfacets=price%3A566-776'" 
+          class="nav-category">
             <span class="link" >{{ category.name }}</span>
           </nuxt-link>
         </div>
+        </div>
+        
+        <div class="nav-more" @mouseover="activatePanel(moreCategories)"
+          @mouseout="navActive = false">
+            <span class="link">И ещё •••</span>
+        </div>
         <div class="flex"></div>
         <div class="nav-icons">
-          <div class="nav-item nav-icon nav-search" v-response.small>
+          <div class="nav-item nav-icon nav-search" v-response.small @click="searchPanelActive = true">
               <div>
-                  <div class="link"><dub-icon class="icon-link"><icon-search/></dub-icon></div>
+                  <div class="link"><dub-icon  width=24 height=24 class="icon-link"><icon-search/></dub-icon></div>
               </div>
-            
+
           </div>
         </div>
+        </div>
+        <div class="search-panel" v-show="searchPanelActive === true">
+          <div><input @keyup.enter="searchHandler"/></div>
+          <div class="flex"></div>
+          <span @click="searchPanelActive = false"> закрыть </span>
+        </div>
+        
+      </div>
+      <dub-header-panel :nav-active="navActive" :category="activeCategories"></dub-header-panel>
     </div>
-    <!--
-    <dub-header-panel :nav-active="navActive" :categories="activeCategories"></dub-header-panel>
-    -->
+    
   </div>
 </template>
 
@@ -80,23 +105,44 @@ export default {
     navFixed: false,
     navVisible: false,
     navBottomOffcet: 175,
-    navTopOffcet: 115,
+    navTopOffcet: 52,
     scrollPositionY: -1,
     scrollTicking: false,
     scrollDirection: 'none',
+    navWidth: 0,
+    hideCategoriesIndex: [],
+    moreCategories: [],
+    searchPanelActive: false,
   }),
-  computed: mapGetters({
-    categories: 'products/categories',
-  }),
+  computed: {
+    ...mapGetters({
+      categories: 'products/categories',
+    }),
+  },
   mounted() {
+    this.navWidth = this.$refs.nav.clientWidth;
     window.addEventListener('scroll', this.scrollHandler);
+    Array.from(this.$refs.nav.children).reduce((acc, value, index) => {
+      const newAcc = acc + value.clientWidth;
+      if (newAcc > this.navWidth) {
+        this.hideCategoriesIndex.push(index);
+        value.classList.add('nav-category-hide');
+        return newAcc;
+      }
+      return newAcc;
+    }, 0);
+    const allCategories = Object.assign([], this.categories);
+    const [hideFrom] = this.hideCategoriesIndex;
+    this.moreCategories = allCategories.splice(hideFrom);
+    this.$refs.nav.classList.remove('nav-categories-hide');
+    // reduce sum children width < panel width rest set display none and get last visible index
   },
   destroyed() {
     window.removeEventListener('scroll', this.scrollHandler);
   },
   methods: {
-    activatePanel(categoryCode) {
-      this.activeCategories = this.categories[categoryCode];
+    activatePanel(category) {
+      this.activeCategories = category;
       this.navActive = true;
     },
     isSelected(path) {
@@ -127,10 +173,12 @@ export default {
       }
     },
     scrollHandler() {
-      this.scrollDirection =
-        this.scrollPositionY > window.scrollY ? 'top' : 'down';
+      this.scrollDirection = this.scrollPositionY > window.scrollY ? 'top' : 'down';
       this.scrollPositionY = window.scrollY;
       this.scrollRequestTick();
+    },
+    searchHandler(e) {
+      this.$router.push({ path: '/search', query: { q: e.target.value } });
     },
   },
 };
@@ -141,6 +189,7 @@ export default {
 .dub-header {
   display: block;
   background-color: #fafafa;
+  position: relative;
 }
 .logo {
   display: block;
@@ -148,19 +197,17 @@ export default {
   width: 130px;
   margin-bottom: -27px;
   position: relative;
-  z-index: 3;
+  z-index: 4;
 }
 .logo-text {
   display: inline-block;
-  margin-left: 10%;
   margin-right: 28px;
-  margin-bottom: -12px;
+  margin-bottom: 12px;
   width: 130px;
 }
 .header-nav {
   position: relative;
-  z-index: 2;
-  height: 60px;
+  z-index: 3;
   background-color: $primary_color;
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
@@ -168,11 +215,34 @@ export default {
   font-weight: 700;
   box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.1);
   width: 100%;
+  .nav {
+    @include prefix(
+      (
+        display: flex,
+        flex-direction: row,
+        align-items: flex-end,
+      ),
+      webkit ms
+    );
+    width: 80%;
+    margin: 0 auto;
+    height: 60px;
+  }
+}
+.nav-panel {
   @include prefix(
     (
       display: flex,
       flex-direction: row,
-      align-items: center,
+    ),
+    webkit ms
+  );
+}
+.search-panel {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
     ),
     webkit ms
   );
@@ -191,6 +261,7 @@ export default {
 .contacts {
   -webkit-font-smoothing: antialiased;
   padding: 14px 0;
+  margin-left: 8px;
   color: $text_color;
   font-size: 16px;
   font-weight: 600;
@@ -254,14 +325,63 @@ export default {
     ),
     webkit ms
   );
+  padding-left: 4px;
   padding-bottom: 3px;
 }
+
+.nav-more {
+  position: relative;
+  cursor: pointer;
+  height: 100%;
+  min-width: 80px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
+  padding-left: 8px;
+  padding-bottom: 3px;
+}
+
+.nav-categories {
+  position: relative;
+  cursor: pointer;
+  height: 100%;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: stretch,
+      justify-content: space-around,
+    ),
+    webkit ms
+  );
+  padding-left: 4px;
+  padding-bottom: 3px;
+}
+
+.nav-categories-hide {
+  @include prefix(
+    (
+      flex-wrap: wrap,
+    ),
+    webkit ms
+  );
+  overflow: hidden;
+}
+
+.nav-category-hide {
+  display: none;
+}
+
 .nav-selected {
   padding-bottom: 0;
   border-bottom: 3px solid $text_color;
 }
 .nav-icons {
-  margin-right: 10%;
   height: 100%;
   @include prefix(
     (
@@ -355,8 +475,24 @@ export default {
   margin-right: 0;
 }
 .icon-link {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
+}
+
+.tagline {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  margin-top: 52px;
+  font-size: 14px;
+  font-weight: 600;
+
+  line-height: 20px;
+  opacity: 0.7;
 }
 a {
   text-decoration: none;
@@ -376,11 +512,10 @@ a {
   .header-info {
     width: 85%;
   }
-  .logo-text {
-    margin-left: 7.5%;
-  }
-  .nav-icons {
-    margin-right: 7.5%;
+  .header-nav {
+    .nav {
+      width: 85%;
+    }
   }
 }
 </style>

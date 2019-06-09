@@ -17,3 +17,7 @@ $success_color: #68cd86;
     #{$property}: $value;
   }
 }
+
+:export {
+  primaryColor: $primary_color;
+}

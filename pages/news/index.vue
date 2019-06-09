@@ -5,26 +5,26 @@
         <div class="title">Новости</div>
         <div class="filter-menu">
           <div class="filter-description">Категории:</div>
-          <div 
-            class="filter-item pointer" 
-            :class="{ 'filter-active': filterBy == 'all' }" 
+          <div
+            class="filter-item pointer"
+            :class="{ 'filter-active': filterBy == 'all' }"
             @click="setFilter('all')"
           >
             все
           </div>
-          <div 
-            class="filter-item pointer" 
-            v-for="category in categories" 
-            :key="category.code" 
-            :class="{ 'filter-active': filterBy == category.code }" 
+          <div
+            class="filter-item pointer"
+            v-for="category in categories"
+            :key="category.code"
+            :class="{ 'filter-active': filterBy == category.code }"
             @click="setFilter(category.code)"
           >
             {{ category.name }}
           </div>
         </div>
       </div>
-      
-      <div class="grid" > 
+
+      <div class="grid" >
         <news-item class="grid-cell" v-for="article in filteredNews" :key="article.pk" :article="article"></news-item>
       </div>
   </div>
@@ -41,10 +41,7 @@ export default {
   },
   data: () => ({
     filterBy: 'all',
-    breadcrumbs: [
-      { label: 'Главная', link: '/' },
-      { label: 'Новости', link: '' },
-    ],
+    breadcrumbs: [{ label: 'Главная', link: '/' }, { label: 'Новости', link: '' }],
   }),
   computed: {
     ...mapGetters({

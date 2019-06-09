@@ -44,11 +44,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [
-    '@/assets/directives/response.scss',
-    '@/assets/reset.css',
-    'swiper/dist/css/swiper.css',
-  ],
+  css: ['@/assets/directives/response.scss', '@/assets/reset.css', 'swiper/dist/css/swiper.css'],
 
   /*
   ** Nuxt.js modules

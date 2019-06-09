@@ -132,8 +132,7 @@ export default {
   opacity: 0;
   transform: translate3d(-50%, -30%, 1px);
   will-change: transfrom;
-  transition: opacity 0.4s ease, transform 0.45s ease,
-    -webkit-transform 0.45s ease;
+  transition: opacity 0.4s ease, transform 0.45s ease, -webkit-transform 0.45s ease;
   @include prefix(
     (
       display: flex,

@@ -73,8 +73,7 @@ export default {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   border-radius: 3px;
   letter-spacing: 0.025em;
-  transition: box-shadow 0.25s ease, border 0.25s ease,
-    background-color 0.25s ease;
+  transition: box-shadow 0.25s ease, border 0.25s ease, background-color 0.25s ease;
   cursor: pointer;
 }
 .my-button-primary {

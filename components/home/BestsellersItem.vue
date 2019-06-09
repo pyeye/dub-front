@@ -2,18 +2,18 @@
   <div class="catalog-item">
     <div class="link-box">
       <div class="image-box">
-        <nuxt-link class="" :to="'/catalog/'+ category.code + '/' + product.pk">
-          <img class="image" :src="product.main_image">
+        <nuxt-link class="" :to="'/catalog/'+ category.slug + '/' + product.pk">
+          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.image">
         </nuxt-link>
       </div>
-      <div class="name"> 
-        <nuxt-link class="" :to="'/catalog/'+ category.code + '/' + product.pk">
-          {{ product.name }}, {{selectedPrice.count}}{{selectedPrice.measure}}  
+      <div class="name">
+        <nuxt-link class="" :to="'/catalog/'+ category.slug + '/' + product.pk">
+          {{ product.name }}, {{selectedInstance.measure_count}}{{selectedInstance.measure_value}}
         </nuxt-link>
       </div>
       <div class="prices">
         <div class="price">
-          {{selectedPrice.value}} &#x20bd; 
+          {{selectedInstance.price}} &#x20bd;
         </div>
       </div>
     </div>
@@ -33,14 +33,14 @@ export default {
     },
   },
   data: () => ({
-    selectedPrice: {},
+    selectedInstance: {},
   }),
   watch: {
     product: {
       immediate: true,
       handler(val) {
-        const [firstPrice] = val.prices;
-        this.selectedPrice = firstPrice;
+        const [firstInstance] = val.products;
+        this.selectedInstance = firstInstance;
       },
     },
   },

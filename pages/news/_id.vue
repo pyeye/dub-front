@@ -8,7 +8,7 @@
           <div class="title">{{ article.title }}</div>
           <div class="text-secondary">
             <div class="date">
-              {{ article.date_created.day }} 
+              {{ article.date_created.day }}
               {{ article.date_created.month }}
               {{ article.date_created.year }}
             </div>
@@ -16,7 +16,7 @@
                 <div class="category">{{ article.category.name }}</div>
             </nuxt-link>
           </div>
-        </div>    
+        </div>
       </div>
       <div class="description" v-html="markdown(article.description)"></div>
   </div>

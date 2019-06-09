@@ -40,9 +40,7 @@ const response = {
       }, 850);
     }
 
-    el.addEventListener('mousedown', event =>
-      responser(event, el, binding.value)
-    );
+    el.addEventListener('mousedown', event => responser(event, el, binding.value));
   },
 };
 

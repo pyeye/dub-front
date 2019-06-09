@@ -2,30 +2,44 @@
   <div class="catalog-item ">
     <div class="link-box">
       <div class="image-box">
-        <nuxt-link class="" :to="'/catalog/'+ category.code + '/' + product.pk">
-          <img class="image" :src="product.main_image">
+        <nuxt-link class="" :to="productLink">
+          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.image">
         </nuxt-link>
       </div>
-      <div class="name"> 
-        <nuxt-link class="" :to="'/catalog/'+ category.code + '/' + product.pk">
-          {{ product.name }}  
+      <div class="description-box">
+        <div class="name">
+        <nuxt-link class="" :to="productLink">
+          {{ product.name }}
         </nuxt-link>
       </div>
         <div class="amount">
-          <div class="description">Объемы:</div>
           <div class="value">
-            <div class="item" v-for="price in product.prices" :key="price.amount">{{price.count}}{{price.measure}}</div>
+            <div 
+              class="item" 
+              :class="{'item-active': instance.sku === selectedInstance.sku}"
+              v-for="instance in product.products" 
+              :key="instance.sku" 
+              @click="setInstance(instance)">
+              {{instance.measure_count}}{{instance.measure_value}}
+            </div>
           </div>
+        </div>
+        <!--
+        <div class="facet-info">
+          {{ strength }}%
+        </div>
+        -->
+        <div class="facet-info" v-for="param in params" :key="param.code">
+          {{ param.values[0].name }}
         </div>
         <div class="storage">
-          <div class="description">В наличии:</div>
-          <div class="value">много</div>
+          <div class="value">В наличии</div>
         </div>
-        <div class="prices">
-          <div class="price">
-            {{selectedPrice.value}} &#x20bd; 
+        <div class="flex"></div>
+        <div class="price">
+            {{selectedInstance.price}} &#x20bd;
           </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -37,20 +51,36 @@ export default {
     product: {
       type: Object,
     },
-    category: {
-      type: Object,
-    },
   },
   data: () => ({
-    selectedPrice: {},
+    selectedInstance: {},
+    productLink: '',
+    display: {
+      common: ['country', 'type'],
+      beer: [],
+    },
   }),
-  watch: {
-    product: {
-      immediate: true,
-      handler(val) {
-        const [firstPrice] = val.prices;
-        this.selectedPrice = firstPrice;
-      },
+  computed: {
+    category() {
+      return this.$route.params.category;
+    },
+    params() {
+      return this.product.string_facets.filter(facet => this.display.common.includes(facet.slug));
+    },
+    strength() {
+      const strengthFacet = this.product.number_facets.filter(facet => facet.slug === 'strength');
+      return strengthFacet[0].value;
+    },
+  },
+  created() {
+    const [firstInstance] = this.product.products;
+    this.selectedInstance = firstInstance;
+    this.productLink = `/catalog/${this.category}/${this.product.pk}`;
+  },
+  methods: {
+    setInstance(instance) {
+      this.selectedInstance = instance;
+      this.productLink = `${this.productLink}?sku=${instance.sku}`;
     },
   },
 };
@@ -73,7 +103,7 @@ export default {
     @include prefix(
       (
         display: flex,
-        flex-direction: column,
+        flex-direction: row,
       ),
       webkit ms
     );
@@ -81,6 +111,7 @@ export default {
     text-decoration: none;
     color: $text_color;
     .image-box {
+      width: 45%;
       @include prefix(
         (
           align-self: center,
@@ -90,16 +121,34 @@ export default {
       );
     }
     .image {
-      height: 270px;
+      max-height: 270px;
+      max-width: 100%;
     }
     .name {
-      padding: 24px 0 4px 0;
+      padding: 16px 0 4px 0;
       font-size: 20px;
       font-weight: 500;
       letter-spacing: -0.012em;
       line-height: 24px;
     }
   }
+}
+
+.description-box {
+  width: 55%;
+  margin-left: 16px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+}
+.facet-info {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
 }
 .amount {
   @include prefix(
@@ -110,8 +159,10 @@ export default {
     ),
     webkit ms
   );
-  padding-top: 8px;
-  padding-bottom: 2px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
   .description {
     font-size: 14px;
     font-weight: 400;
@@ -125,17 +176,17 @@ export default {
       ),
       webkit ms
     );
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 600;
     line-height: 24px;
     .item {
       opacity: 0.7;
-    }
-    .item:not(:last-of-type):after {
-      content: '/';
-    }
-    .item:nth-last-of-type(2):before {
-      content: none;
+      margin-right: 6px;
+      cursor: pointer;
+
+      &-active {
+        border-bottom: 2px solid $primary_color;
+      }
     }
   }
 }
@@ -157,42 +208,30 @@ export default {
   .value {
     color: #43a047;
     font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
+    font-weight: 600;
   }
 }
-.prices {
+.flex {
   @include prefix(
     (
-      display: flex,
-      flex-direction: row,
-      justify-content: space-between,
-      align-items: center,
+      flex: 1,
     ),
     webkit ms
   );
-  padding-bottom: 8px;
-  .price {
-    font-family: 'Roboto', sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.012em;
-    line-height: 32px;
-  }
-  .amount-selector {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-      ),
-      webkit ms
-    );
-    width: 45%;
-  }
-  .za {
-    margin-top: 4px;
-    margin-right: 4px;
-  }
+}
+.price {
+  @include prefix(
+    (
+      align-self: flex-end,
+    ),
+    webkit ms
+  );
+  padding-top: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 32px;
 }
 .actions {
   @include prefix(
