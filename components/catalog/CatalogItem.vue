@@ -3,7 +3,7 @@
     <div class="link-box">
       <div class="image-box">
         <nuxt-link class="" :to="productLink">
-          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.image">
+          <img class="image" :src="`http://api.mydubbelsite.ru/${image}`">
         </nuxt-link>
       </div>
       <div class="description-box">
@@ -37,7 +37,7 @@
         </div>
         <div class="flex"></div>
         <div class="price">
-            {{selectedInstance.price}} &#x20bd;
+            {{Number(selectedInstance.price)}} &#x20bd;
           </div>
       </div>
     </div>
@@ -70,6 +70,13 @@ export default {
     strength() {
       const strengthFacet = this.product.number_facets.filter(facet => facet.slug === 'strength');
       return strengthFacet[0].value;
+    },
+    image() {
+      const mainImage = this.selectedInstance.images.find(i => i.is_main);
+      if (!mainImage) {
+        return this.selectedInstance.images[0].src;
+      }
+      return mainImage.src;
     },
   },
   created() {
