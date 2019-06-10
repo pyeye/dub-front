@@ -140,7 +140,7 @@ export default {
       page: {
         total: 1,
         current: 1,
-        size: 5,
+        size: 24,
       },
       sort: {
         by: {
