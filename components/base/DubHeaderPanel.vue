@@ -1,31 +1,44 @@
 <template>
-  <div class="header-panel"
-    v-if="navActive || selfActive"
-    @mouseover="selfActive = true"
-    @mouseout="selfActive = false"
-  >
+  <div class="header-panel">
     <div class="panel-content">
         <div class="content-categories">
-          {{activeCategory.name}}
-             <img class="image" src="~assets/images/beer.jpg">
+          <dir class="product-name">
+            <nuxt-link :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`" class="nav-category link">
+              {{activeCategory.category.name}} {{activeCategory.name}}
+            </nuxt-link>
+          </dir>
+            <nuxt-link :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`" class="nav-category link">
+              <img class="image" :src="`http://api.mydubbelsite.ru/${productImage}`">
+            </nuxt-link>
              <dub-button type="secondary" class="show-all">
-                показать все
+                <nuxt-link :to="`/catalog/${activeCategory.category.slug}`" class="nav-category">
+                  <span class="button" >показать все</span>
+                </nuxt-link>
             </dub-button>
         </div>
         <div class="content-meta">
             <div class="content-facets" v-for="facet in facets.sfacets" :key="facet.slug">
               <div class="collapse-title"> {{facet.name}} </div>
-              <div v-for="item in facet.values" :key="item.pk">
-                <div class="facets-values">{{item.name}}</div>
+              <div v-for="item in facet.values.slice(0,8)" :key="item.pk">
+                <nuxt-link 
+                  :to="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
+                  class="nav-category link"
+                >
+                  <div class="facets-values">{{item.name}}</div>
+                </nuxt-link>
               </div>
             </div>
         </div>
         <div class="more-categories" v-if="Array.isArray(category)">
-          <div 
-          v-for="moreCategory in category" 
-          :key="moreCategory.slug"
-          @mouseover="activeCategory = moreCategory">
-            {{ moreCategory.name }}
+          <div
+            class="more-category"
+            v-for="moreCategory in category" 
+            :key="moreCategory.slug"
+            @mouseover="activeCategory = moreCategory"
+          >
+           <nuxt-link :to="`/catalog/${moreCategory.category.slug}`" class="nav-category">
+                <span class="button" >{{ moreCategory.category.name }}</span>
+            </nuxt-link>
           </div>
         </div>
     </div>
@@ -46,15 +59,25 @@ export default {
   },
   data: () => ({
     selfActive: false,
-    activeCategory: {},
+    activeCategory: { category: {} },
   }),
   computed: {
     facets() {
-      const facets = this.$store.getters['products/facets'](this.category.slug);
+      const facets = this.$store.getters['products/facets'](this.activeCategory.category.slug);
       if (facets === null) {
-        return [];
+        return [{}];
       }
       return facets;
+    },
+    productImage() {
+      if (!this.activeCategory.products) {
+        return '';
+      }
+      const mainImage = this.activeCategory.products[0].images.find(i => i.is_main);
+      if (!mainImage) {
+        return this.activeCategory.products[0].images[0].src;
+      }
+      return mainImage.src;
     },
   },
   watch: {
@@ -82,6 +105,8 @@ export default {
   padding: 24px 0;
 }
 .more-categories {
+  min-width: 170px;
+  border-left: 1px solid #e6e3da;
   @include prefix(
     (
       display: flex,
@@ -89,6 +114,38 @@ export default {
     ),
     webkit ms
   );
+  .more-category {
+    padding: 8px 16px;
+    cursor: pointer;
+    &:hover {
+      background-color: #eee;
+    }
+  }
+}
+.link {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: $text_color;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.button {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: $text_color;
+}
+.product-name {
+  position: relative;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 4px 8px;
+  opacity: 0.7;
+  font-size: 14px;
+  font-weight: 400;
 }
 .panel-content {
   height: 350px;
@@ -110,7 +167,7 @@ export default {
       webkit ms
     );
     border-right: 1px solid #e6e3da;
-    width: 20%;
+    min-width: 15%;
     font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.012em;
@@ -118,16 +175,14 @@ export default {
     position: relative;
   }
   .content-meta {
-    width: 80%;
-    padding-left: 24px;
+    width: 85%;
+    overflow: hidden;
+    padding: 0 24px;
     @include prefix(
       (
-        display: flex,
-        flex-direction: column,
-        flex-wrap: wrap,
-        flex-flow: column wrap,
-        justify-content: flex-start,
-        align-items: flex-start,
+        display: grid,
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)),
+        grid-template-rows: 350px,
       ),
       webkit ms
     );
@@ -154,12 +209,12 @@ export default {
   }
 
   .image {
-    height: 270px;
+    height: 250px;
     margin: 0 auto;
   }
 
   .show-all {
-    margin-top: 24px;
+    margin-top: 20px;
     height: 35px;
   }
 }

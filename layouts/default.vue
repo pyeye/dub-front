@@ -24,7 +24,7 @@
       </div>
       <div v-show="agreement">
         <!-- Main content -->
-        <dub-header/>
+        <dub-header @overlay-change="overlayHandler"/>
         <nuxt/>
       </div>
 
@@ -33,6 +33,7 @@
 
 <script>
 import DubHeader from '~/components/base/DubHeader';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default {
   name: 'app',
@@ -46,6 +47,14 @@ export default {
     agree() {
       sessionStorage.setItem('agreement', true);
       this.agreement = true;
+    },
+    overlayHandler(e) {
+      const target = document.querySelector('#app');
+      if (e) {
+        disableBodyScroll(target);
+      } else {
+        enableBodyScroll(target);
+      }
     },
   },
   mounted() {

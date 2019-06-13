@@ -552,6 +552,7 @@ export default {
     ),
     webkit ms
   );
+  padding-top: 24px;
   .filter-panel {
     position: relative;
     height: 100%;

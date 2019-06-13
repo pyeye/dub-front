@@ -22,7 +22,10 @@ const getters = {
     return product;
   },
   categories: state => state.categories,
-  category: (state, getters) => slug => getters.categories.find(category => category.slug === slug),
+  category: (state, getters) => slug => {
+    const productCategory = getters.categories.find(category => category.category.slug === slug);
+    return productCategory.category;
+  },
   tags: state => category => state.tags[category] || null,
   facets: state => category => state.facets[category] || null,
   total: state => state.total,
