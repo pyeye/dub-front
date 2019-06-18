@@ -42,6 +42,7 @@ import DubPagination from '@/components/base/DubPagination';
 
 export default {
   name: 'SearchPage',
+  watchQuery: true,
   components: {
     CatalogItem,
     DubPagination,

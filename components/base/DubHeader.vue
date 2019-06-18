@@ -39,7 +39,7 @@
     <div :class="{'fixed-dummy': navFixed}"></div>
     <div id="nav" class="header-nav" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
       <div class="nav">
-        <img class="logo-text" src="~assets/images/dubbel_text.png">
+        <img class="logo-text" src="~assets/images/house_of_dubbel.png">
         <!--
         <div class="nav-item">
             <div class="nav-category">
@@ -81,7 +81,15 @@
         </div>
         <div class="search-panel" v-show="searchPanelActive">
           <div class="search-input">
-            <input ref="search" placeholder="Поиск по каталогу" @keyup.enter="searchHandler"/>
+            <input
+              ref="search"
+              placeholder="Поиск по каталогу"
+              v-model="searchQuery"
+              @focus="autocompletePanelActive = true"
+              @blur="autocompletePanelActive = false"
+              @keyup.enter="searchHandler"
+              @keyup.up="prevAutocompleteItem"
+              @keyup.down="nextAutocompleteItem"/>
           </div>
           <dub-icon
             width=24
@@ -91,6 +99,21 @@
           >
             <icon-close/>
           </dub-icon>
+          <div 
+            @mouseout="autocompleteIndex = -1"
+            v-show="autocompletePanelActive && searchAutocomplete.length > 0"
+            class="search-autocomplete"
+          >
+            <div
+              class="search-autocomplete-item"
+              :class="{'search-autocomplete-item-selected': searchAutocomplete[autocompleteIndex] === autocompleteItem}"
+              @mouseover="autocompleteIndex = index"
+              @click="searchQuery = autocompleteItem"
+              v-for="(autocompleteItem, index) in searchAutocomplete"
+              :key="index">
+              {{ autocompleteItem }}
+            </div>
+          </div>
         </div>
         
       </div>
@@ -107,6 +130,7 @@
 
 <script>
 import DubHeaderPanel from '@/components/base/DubHeaderPanel';
+import _ from 'lodash';
 
 export default {
   name: 'DubHeader',
@@ -128,12 +152,25 @@ export default {
     navWidth: 0,
     moreCategories: [],
     searchPanelActive: false,
+    searchQuery: '',
+    searchAutocomplete: [],
+    autocompleteIndex: -1,
+    autocompletePanelActive: false,
   }),
   computed: {
     categories() {
       const categories = this.$store.getters['products/categories'];
       const reverseCategories = Object.assign([], categories);
       return reverseCategories.reverse();
+    },
+  },
+  watch: {
+    searchQuery: {
+      handler(val) {
+        if (val.length > 2) {
+          this.debounceAutocomplete();
+        }
+      },
     },
   },
   mounted() {
@@ -158,6 +195,7 @@ export default {
     }
     this.$refs.nav.classList.remove('nav-categories-hide');
     // reduce sum children width < panel width rest set display none and get last visible index
+    this.debounceAutocomplete = _.debounce(this.requestAutocomplete, 500);
   },
   destroyed() {
     window.removeEventListener('scroll', this.scrollHandler);
@@ -213,8 +251,34 @@ export default {
       this.scrollPositionY = window.scrollY;
       this.scrollRequestTick();
     },
-    searchHandler(e) {
-      this.$router.push({ path: '/search', query: { q: e.target.value } });
+    searchHandler() {
+      if (this.autocompleteIndex !== -1) {
+        this.searchQuery = this.searchAutocomplete[this.autocompleteIndex];
+        this.autocompleteIndex = -1;
+      }
+      this.closeSearchPanel();
+      this.$router.push({ path: '/search', query: { q: this.searchQuery } });
+    },
+    async requestAutocomplete() {
+      const response = await this.$api.get('completions/', {
+        params: { prefix: this.searchQuery },
+      });
+      this.searchAutocomplete = response.data;
+      this.autocompleteIndex = -1;
+    },
+    nextAutocompleteItem() {
+      if (this.autocompleteIndex === this.searchAutocomplete.length) {
+        this.autocompleteIndex = -1;
+      } else {
+        this.autocompleteIndex += 1;
+      }
+    },
+    prevAutocompleteItem() {
+      if (this.autocompleteIndex < 0) {
+        this.autocompleteIndex = -1;
+      } else {
+        this.autocompleteIndex -= 1;
+      }
     },
   },
 };
@@ -238,9 +302,9 @@ export default {
 }
 .logo-text {
   display: inline-block;
-  margin-right: 28px;
-  margin-bottom: 12px;
-  width: 130px;
+  margin: 0 16px;
+  margin-bottom: 6px;
+  width: 150px;
 }
 .header-nav {
   position: relative;
@@ -563,6 +627,23 @@ export default {
     ),
     webkit ms
   );
+}
+.search-autocomplete {
+  font-size: 16px;
+  font-weight: 400;
+  background-color: #eee;
+  color: $text_color;
+  position: absolute;
+  z-index: 4;
+  top: 60px;
+  width: 100%;
+}
+.search-autocomplete-item {
+  padding: 8px;
+  cursor: pointer;
+}
+.search-autocomplete-item-selected {
+  background-color: #e6e3da;
 }
 .overlay {
   background: rgba(0, 0, 0, 0.4);
