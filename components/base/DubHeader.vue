@@ -51,6 +51,15 @@
           <div class="nav-categories nav-categories-hide" ref="nav">
             <div
               class="nav-item"
+              :class="{'nav-selected': isSelected('/sales')}"
+              v-response.small
+            >
+              <nuxt-link :to="'/sales'" class="nav-category">
+                <span class="link" >Акции</span>
+              </nuxt-link>
+            </div>
+            <div
+              class="nav-item"
               :class="{'nav-selected': isSelected(`/catalog/${category.slug}`)}"
               @mouseover="openProductPanel(category)"
               @mouseout="closeProductPanel()"
