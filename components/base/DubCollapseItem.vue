@@ -31,6 +31,9 @@ export default {
       default: false,
       type: Boolean,
     },
+    resizeCollapse: {
+      type: Boolean,
+    },
   },
   data: () => ({
     maxHeight: '0px',
@@ -51,6 +54,9 @@ export default {
   watch: {
     maxHeight() {
       this.$parent.emitChange();
+    },
+    resizeCollapse() {
+      this.changeHeight();
     },
   },
   mounted() {

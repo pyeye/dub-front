@@ -39,7 +39,7 @@ export default {
     // eslint-disable-next-line consistent-return
     index() {
       if (this.modelIsArray) {
-        return this.value.findIndex(val => val.code === this.fullVal.code);
+        return this.value.findIndex(val => val.pk === this.fullVal.pk);
       }
     },
 

@@ -35,8 +35,9 @@
     <div class="content">
       <div class="filter-panel">
         <dub-collapse>
-          <dub-collapse-item v-for="facet in facets.sfacets" :key="facet.slug">
+          <dub-collapse-item :ref="`${facet.slug}Collapse`" v-for="facet in facets.sfacets" :key="facet.slug">
             <div slot="header" class="collapse-title">{{facet.name}}</div>
+             
             <div v-for="item in facet.values" :key="item.pk">
               <dub-check
                 v-model="filters.sfacets"
@@ -46,6 +47,7 @@
                 @input="updateQuery"
               />
             </div>
+            <div class="show-all" :ref="`${facet.slug}Show`" @click="getAllFacetValues(facet)">Показать все</div>
           </dub-collapse-item>
           <dub-collapse-item v-for="nfacet in filters.nfacets" :key="nfacet.slug">
             <div slot="header" class="collapse-title">{{nfacet.name}} ({{nfacet.suffix}})</div>
@@ -415,7 +417,7 @@ export default {
     },
     getInterval(min, max) {
       const delta = max - min;
-      return delta > 10 ? 10 : 0.1;
+      return delta > 10 ? 1 : 0.1;
     },
     async deleteBadge(e) {
       if (e.filter.type === 'nfacets') {
@@ -430,6 +432,18 @@ export default {
         this.filters.tags.splice(index, 1);
       }
       await this.updateQuery();
+    },
+    getAllFacetValues(facet) {
+      const { category } = this.$route.params;
+      const { query } = this.$route;
+      this.$store
+        .dispatch('products/requestFacetAllValues', { category, query, facet: facet.slug })
+        .then(() => {
+          const refKey = `${facet.slug}Collapse`;
+          const showBtnRef = `${facet.slug}Show`;
+          this.$refs[refKey][0].changeHeight();
+          this.$refs[showBtnRef][0].style.display = 'none';
+        });
     },
   },
 };
@@ -636,6 +650,17 @@ export default {
     .item:nth-last-of-type(2):before {
       content: none;
     }
+  }
+}
+.show-all {
+  cursor: pointer;
+  color: $text_color;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-left: 34px;
+  &:hover {
+    text-decoration: underline;
   }
 }
 .slide {

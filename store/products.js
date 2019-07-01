@@ -98,6 +98,28 @@ const actions = {
       category,
     });
   },
+  requestFacetAllValues(store, payload) {
+    return new Promise(resolve => {
+      const { commit } = store;
+      const { category, facet, query = {} } = payload;
+      let { sfacets } = query;
+      if (sfacets !== undefined && !Array.isArray(sfacets)) {
+        sfacets = [sfacets];
+      }
+      this.$api
+        .get('facet/full/', {
+          params: {
+            facet,
+            category,
+            sfacets,
+          },
+        })
+        .then(response => {
+          commit('setFullFacetValues', { facet, category, values: response.data });
+          resolve();
+        });
+    });
+  },
 };
 const mutations = {
   setProducts(state, { products, category }) {
@@ -115,6 +137,11 @@ const mutations = {
   },
   setCategories(state, categories) {
     state.categories = categories;
+  },
+  setFullFacetValues(state, payload) {
+    const { facet, category, values } = payload;
+    const facetIndex = state.facets[category].sfacets.findIndex(sfacet => sfacet.slug === facet);
+    state.facets[category].sfacets[facetIndex].values = values;
   },
 };
 
