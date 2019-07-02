@@ -7,7 +7,6 @@ export default {
       required: true,
     },
     val: {},
-    extendVal: {},
 
     trueValue: { default: true },
     falseValue: { default: false },
@@ -39,13 +38,8 @@ export default {
     // eslint-disable-next-line consistent-return
     index() {
       if (this.modelIsArray) {
-        return this.value.findIndex(val => val.pk === this.fullVal.pk);
+        return this.value.findIndex(value => value.pk === this.val.pk);
       }
-    },
-
-    fullVal() {
-      const tmpVal = Object.assign({}, this.val);
-      return Object.assign(tmpVal, this.extendVal);
     },
 
     modelIsArray() {
@@ -103,12 +97,7 @@ export default {
       let val;
 
       if (this.modelIsArray) {
-        if (this.isTrue) {
-          val = this.value.slice();
-          val.splice(this.index, 1);
-        } else {
-          val = this.value.concat(this.fullVal);
-        }
+        this.$emit('update', val);
       } else if (this.isTrue) {
         val = this.toggleIndeterminate ? this.indeterminateValue : this.falseValue;
       } else if (this.isFalse) {

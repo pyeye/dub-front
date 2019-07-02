@@ -17,71 +17,20 @@
         ></dub-select>
       </div>
     </div>
-    <div class="filter-tag-menu">
-      <div v-swiper:tagSwiper="swiperTagOption">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="tag in tags" :key="tag.pk">
-            <div
-              class="tag"
-              :class="{ 'tag-active': filters.tags.some(t => t.pk === tag.pk) }"
-              @click="tagHandler(tag)"
-              v-response.small.masked
-            >{{tag.name}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+    <catalog-tags :tags="tags" :selected-tags="filters.tags" @tag-selected="tagHandler"></catalog-tags>
 
     <div class="content">
       <div class="filter-panel">
-        <dub-collapse>
-          <dub-collapse-item :ref="`${facet.slug}Collapse`" v-for="facet in facets.sfacets" :key="facet.slug">
-            <div slot="header" class="collapse-title">{{facet.name}}</div>
-             
-            <div v-for="item in facet.values" :key="item.pk">
-              <dub-check
-                v-model="filters.sfacets"
-                :val="item"
-                :extend-val="{facetName: facet.name, facetSlug: facet.slug}"
-                :label="`${item.name} (${item.count})`"
-                @input="updateQuery"
-              />
-            </div>
-            <div class="show-all" :ref="`${facet.slug}Show`" @click="getAllFacetValues(facet)">Показать все</div>
-          </dub-collapse-item>
-          <dub-collapse-item v-for="nfacet in filters.nfacets" :key="nfacet.slug">
-            <div slot="header" class="collapse-title">{{nfacet.name}} ({{nfacet.suffix}})</div>
-            <div class="nfacet-item">
-              <div class="nfacet-num-row">
-                <dub-number-input
-                  :value="nfacet.value[0]"
-                  :min="nfacet.stats.min"
-                  :max="nfacet.stats.max"
-                  :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                  @input="numberHandler($event, nfacet, 'min')"
-                />
-                <dub-number-input
-                  :value="nfacet.value[1]"
-                  :min="nfacet.stats.min"
-                  :max="nfacet.stats.max"
-                  :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                  @input="numberHandler($event, nfacet, 'max')"
-                />
-              </div>
-
-              <vue-slider
-                class="nfacet-slider"
-                :value="nfacet.value"
-                :min="nfacet.stats.min"
-                :max="nfacet.stats.max"
-                :tooltip-placement="'bottom'"
-                :lazy="true"
-                :interval="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                @change="sliderHandler($event, nfacet)"
-              ></vue-slider>
-            </div>
-          </dub-collapse-item>
-        </dub-collapse>
+        <catalog-facets 
+          :sfacets="facets.sfacets"
+          :selected-sfacets="filters.sfacets"
+          :nfacets="filters.nfacets"
+          @update-facet-values="updateFacetValues"
+          @slider-selected="sliderHandler"
+          @number-selected="numberHandler"
+          @checkbox-selected="checkboxHandler"
+        ></catalog-facets>
       </div>
 
       <div class="product-content">
@@ -107,17 +56,10 @@
 <script>
 import CatalogItem from '@/components/catalog/CatalogItem';
 import FilterItems from '@/components/catalog/FilterItems';
-import DubCollapse from '@/components/base/DubCollapse';
-import DubCollapseItem from '@/components/base/DubCollapseItem';
-import DubCheck from '@/components/base/DubCheck';
+import CatalogTags from '@/components/catalog/CatalogTags';
+import CatalogFacets from '@/components/catalog/CatalogFacets';
 import DubPagination from '@/components/base/DubPagination';
 import DubSelect from '@/components/base/DubSelect';
-import DubNumberInput from '@/components/base/DubNumberInput';
-import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min';
-import 'vue-slider-component/dist-css/vue-slider-component.css';
-
-// import theme
-import '~/assets/slider/theme.scss';
 
 import debounce from '@/plugins/utils/debounce';
 
@@ -126,12 +68,9 @@ export default {
   components: {
     CatalogItem,
     FilterItems,
-    DubCollapse,
-    DubCollapseItem,
-    DubCheck,
-    VueSlider,
-    DubNumberInput,
     DubPagination,
+    CatalogTags,
+    CatalogFacets,
     DubSelect,
   },
   data: () => ({
@@ -152,52 +91,28 @@ export default {
         options: [],
       },
     },
-    swiperTagOption: {
-      slidesPerView: 6,
-      spaceBetween: 40,
-      freeMode: true,
-      speed: 2000,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
-    },
   }),
-  async fetch(ctx) {
-    const { store, params, query } = ctx;
+  async asyncData(context) {
+    const { params, query, app } = context;
     const { category } = params;
-    await Promise.all([
-      store.dispatch('products/requestProducts', { category, query }),
-      store.dispatch('products/requestFacets', { category, query }),
-      store.dispatch('products/requestTags', { category }),
-    ]);
+    const products = await app.$api.getProducts({ category, query });
+    const facets = await app.$api.getFacets({ category, query });
+    const tags = await app.$api.getTags({ category });
+    return {
+      products: products.items,
+      totalProducts: products.total,
+      facets,
+      tags,
+    };
   },
   created() {
     const { query } = this.$route;
     this.filters = this.getFilters(query);
   },
   computed: {
-    products() {
-      const { category } = this.$route.params;
-      const products = this.$store.getters['products/products'](category);
-      return products;
-    },
-    totalProducts() {
-      return this.$store.getters['products/total'];
-    },
     category() {
       const { category } = this.$route.params;
       return this.$store.getters['products/category'](category) || {};
-    },
-    facets() {
-      const { category } = this.$route.params;
-      const facets = this.$store.getters['products/facets'](category);
-      return facets;
-    },
-    tags() {
-      const { category } = this.$route.params;
-      const tags = this.$store.getters['products/tags'](category);
-      return tags;
     },
     breadcrumbs() {
       return [{ label: 'Главная', link: '/' }, { label: this.category.name, link: '' }];
@@ -234,7 +149,6 @@ export default {
       const encodedFacets = [];
       facets.forEach(facet => {
         const [minVal, maxVal] = facet.value;
-        console.log(typeof facet.stats.min);
         if (minVal !== facet.stats.min || maxVal !== facet.stats.max) {
           const str = `${facet.slug}:${minVal}-${maxVal}`;
           encodedFacets.push(str);
@@ -357,24 +271,26 @@ export default {
       query.nfacets = this.encodeNFacet(this.filters.nfacets);
       query.tags = this.encodeTags(this.filters.tags);
       this.$router.push({ query });
-      await Promise.all([
-        this.$store.dispatch('products/requestProducts', { category, query }),
-        this.$store.dispatch('products/requestFacets', { category, query }),
-      ]);
+      const products = await this.$api.getProducts({ category, query });
+      const facets = await this.$api.getFacets({ category, query });
+      this.products = products.items;
+      this.totalProducts = products.total;
+      this.facets = facets;
     },
-    async sliderHandler(e, nfacet) {
-      // eslint-disable-next-line no-param-reassign
-      nfacet.value = e;
+    async sliderHandler(payload) {
+      const { value, nfacet } = payload;
+      const nfacetIndex = this.filters.nfacets.findIndex(n => n.slug === nfacet.slug);
+      this.filters.nfacets[nfacetIndex].value = value;
       await this.updateQuery();
     },
-    async numberHandler(e, nfacet, type) {
+    async numberHandler(payload) {
+      const { value, nfacet, type } = payload;
       const [minVal, maxVal] = nfacet.value;
+      const nfacetIndex = this.filters.nfacets.findIndex(n => n.slug === nfacet.slug);
       if (type === 'min') {
-        // eslint-disable-next-line no-param-reassign
-        nfacet.value = [Number(e), maxVal];
+        this.filters.nfacets[nfacetIndex].value = [Number(value), maxVal];
       } else {
-        // eslint-disable-next-line no-param-reassign
-        nfacet.value = [minVal, Number(e)];
+        this.filters.nfacets[nfacetIndex].value = [minVal, Number(value)];
       }
       await this.debounceUpdateQuery();
     },
@@ -396,10 +312,9 @@ export default {
       query.tags = this.encodeTags(this.filters.tags);
       query.page = this.filters.page.current;
       this.$router.push({ query });
-      await this.$store.dispatch('products/requestProducts', {
-        category,
-        query,
-      });
+      const products = await this.$api.getProducts({ category, query });
+      this.products = products.items;
+      this.totalProducts = products.total;
     },
     async selectHandler(e) {
       this.filters.sort.by = e;
@@ -410,14 +325,18 @@ export default {
       query.tags = this.encodeTags(this.filters.tags);
       query.sort = this.filters.sort.by.value;
       this.$router.push({ query });
-      await this.$store.dispatch('products/requestProducts', {
-        category,
-        query,
-      });
+      const products = await this.$api.getProducts({ category, query });
+      this.products = products.items;
+      this.totalProducts = products.total;
     },
-    getInterval(min, max) {
-      const delta = max - min;
-      return delta > 10 ? 1 : 0.1;
+    async checkboxHandler(payload) {
+      const sfacetIndex = this.filters.sfacets.findIndex(s => s.pk === payload.pk);
+      if (sfacetIndex === -1) {
+        this.filters.sfacets.push(payload);
+      } else {
+        this.filters.sfacets.splice(sfacetIndex, 1);
+      }
+      await this.updateQuery();
     },
     async deleteBadge(e) {
       if (e.filter.type === 'nfacets') {
@@ -433,17 +352,10 @@ export default {
       }
       await this.updateQuery();
     },
-    getAllFacetValues(facet) {
-      const { category } = this.$route.params;
-      const { query } = this.$route;
-      this.$store
-        .dispatch('products/requestFacetAllValues', { category, query, facet: facet.slug })
-        .then(() => {
-          const refKey = `${facet.slug}Collapse`;
-          const showBtnRef = `${facet.slug}Show`;
-          this.$refs[refKey][0].changeHeight();
-          this.$refs[showBtnRef][0].style.display = 'none';
-        });
+    updateFacetValues(payload) {
+      const { facet, values } = payload;
+      const facetIndex = this.facets.sfacets.findIndex(sfacet => sfacet.slug === facet.slug);
+      this.facets.sfacets[facetIndex].values = values;
     },
   },
 };
@@ -542,22 +454,6 @@ export default {
     margin-right: 8px;
   }
 }
-.nfacet-item {
-  padding: 6px;
-}
-.nfacet-slider {
-  margin: 0 8px 16px 8px;
-}
-.nfacet-num-row {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-    ),
-    webkit ms
-  );
-  padding-bottom: 8px;
-}
 .content {
   @include prefix(
     (
@@ -575,15 +471,6 @@ export default {
     border-radius: 2px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     margin-right: 16px;
-    .collapse-title {
-      position: relative;
-      color: $text_color;
-      font-size: 16px;
-      font-weight: 500;
-      letter-spacing: -0.012em;
-      font-weight: 600;
-      opacity: 0.7;
-    }
   }
   .grid {
     @include prefix(
@@ -652,17 +539,7 @@ export default {
     }
   }
 }
-.show-all {
-  cursor: pointer;
-  color: $text_color;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
-  margin-left: 34px;
-  &:hover {
-    text-decoration: underline;
-  }
-}
+
 .slide {
   height: 550px;
   width: 100%;
@@ -681,23 +558,6 @@ export default {
   font-size: 14px;
   font-weight: 600;
   opacity: 0.7;
-}
-.tag {
-  cursor: pointer;
-  text-align: center;
-  padding: 4px 0;
-  border: 2px solid $primary_color;
-  border-radius: 4px;
-  transition: background-color 0.25s ease;
-  font-weight: 600;
-  opacity: 0.7;
-  font-size: 14px;
-}
-.tag:hover {
-  background-color: $primary_color;
-}
-.tag-active {
-  background-color: $primary_color;
 }
 .pagination {
   margin-bottom: 24px;
