@@ -2,6 +2,20 @@ import axios from 'axios';
 
 export default (ctx, inject) => {
   const formatFacet = facet => (facet !== undefined && !Array.isArray(facet) ? [facet] : facet);
+  const getFilterParams = payload => {
+    const { category, sales, query = {} } = payload;
+    let { sfacets, nfacets } = query;
+    const { tags } = query;
+    sfacets = formatFacet(sfacets);
+    nfacets = formatFacet(nfacets);
+    return {
+      category,
+      tags,
+      sfacets,
+      nfacets,
+      sales,
+    };
+  };
 
   const axiosExtra = {
     setHeader(name, value, scope = 'common') {
@@ -14,57 +28,29 @@ export default (ctx, inject) => {
 
     // Product API
     async getProducts(payload) {
-      const { category, query = {} } = payload;
-      let { sfacets, nfacets } = query;
-      const { tags, page, sort } = query;
-      sfacets = formatFacet(sfacets);
-      nfacets = formatFacet(nfacets);
-      const response = await this.get('products/', {
-        params: {
-          category,
-          tags,
-          sfacets,
-          nfacets,
-          page,
-          sort,
-        },
-      });
+      const { query = {} } = payload;
+      const { page, sort } = query;
+      const params = getFilterParams(payload);
+      params.page = page;
+      params.sort = sort;
+      const response = await this.get('products/', { params });
       return response.data;
     },
     async getFacets(payload) {
-      const { category, query = {} } = payload;
-      let { sfacets, nfacets } = query;
-      sfacets = formatFacet(sfacets);
-      nfacets = formatFacet(nfacets);
-      const response = await this.get('facets/', {
-        params: {
-          category,
-          sfacets,
-          nfacets,
-        },
-      });
+      const params = getFilterParams(payload);
+      const response = await this.get('facets/', { params });
       return response.data;
     },
     async getAllFacetValues(payload) {
-      const { category, facet, query = {} } = payload;
-      let { sfacets } = query;
-      sfacets = formatFacet(sfacets);
-      const response = await this.get('facet/full/', {
-        params: {
-          facet,
-          category,
-          sfacets,
-        },
-      });
+      const { facet } = payload;
+      const params = getFilterParams(payload);
+      params.facet = facet;
+      const response = await this.get('facet/full/', { params });
       return response.data;
     },
     async getTags(payload) {
-      const { category } = payload;
-      const response = await this.get('tags/', {
-        params: {
-          category,
-        },
-      });
+      const params = getFilterParams(payload);
+      const response = await this.get('tags/', { params });
       return response.data;
     },
   };

@@ -54,7 +54,7 @@
               :class="{'nav-selected': isSelected('/sales')}"
               v-response.small
             >
-              <nuxt-link :to="'/sales'" class="nav-category">
+              <nuxt-link :to="'/sales/catalog'" class="nav-category">
                 <span class="link" >Акции</span>
               </nuxt-link>
             </div>

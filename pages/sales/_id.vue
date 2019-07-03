@@ -35,71 +35,19 @@
         ></dub-select>
       </div>
     </div>
-    <div class="filter-tag-menu">
-      <div v-swiper:tagSwiper="swiperTagOption">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="tag in tags" :key="tag.pk">
-            <div
-              class="tag"
-              :class="{ 'tag-active': filters.tags.some(t => t.pk === tag.pk) }"
-              @click="tagHandler(tag)"
-              v-response.small.masked
-            >{{tag.name}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <catalog-tags :tags="tags" :selected-tags="filters.tags" @tag-selected="tagHandler"></catalog-tags>
 
     <div class="content">
       <div class="filter-panel">
-        <dub-collapse>
-          <dub-collapse-item :ref="`${facet.slug}Collapse`" v-for="facet in facets.sfacets" :key="facet.slug">
-            <div slot="header" class="collapse-title">{{facet.name}}</div>
-             
-            <div v-for="item in facet.values" :key="item.pk">
-              <dub-check
-                v-model="filters.sfacets"
-                :val="item"
-                :extend-val="{facetName: facet.name, facetSlug: facet.slug}"
-                :label="`${item.name} (${item.count})`"
-                @input="updateQuery"
-              />
-            </div>
-            <div class="show-all" :ref="`${facet.slug}Show`" @click="getAllFacetValues(facet)">Показать все</div>
-          </dub-collapse-item>
-          <dub-collapse-item v-for="nfacet in filters.nfacets" :key="nfacet.slug">
-            <div slot="header" class="collapse-title">{{nfacet.name}} ({{nfacet.suffix}})</div>
-            <div class="nfacet-item">
-              <div class="nfacet-num-row">
-                <dub-number-input
-                  :value="nfacet.value[0]"
-                  :min="nfacet.stats.min"
-                  :max="nfacet.stats.max"
-                  :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                  @input="numberHandler($event, nfacet, 'min')"
-                />
-                <dub-number-input
-                  :value="nfacet.value[1]"
-                  :min="nfacet.stats.min"
-                  :max="nfacet.stats.max"
-                  :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                  @input="numberHandler($event, nfacet, 'max')"
-                />
-              </div>
-
-              <vue-slider
-                class="nfacet-slider"
-                :value="nfacet.value"
-                :min="nfacet.stats.min"
-                :max="nfacet.stats.max"
-                :tooltip-placement="'bottom'"
-                :lazy="true"
-                :interval="getInterval(nfacet.stats.min, nfacet.stats.max)"
-                @change="sliderHandler($event, nfacet)"
-              ></vue-slider>
-            </div>
-          </dub-collapse-item>
-        </dub-collapse>
+        <catalog-facets 
+          :sfacets="facets.sfacets"
+          :selected-sfacets="filters.sfacets"
+          :nfacets="filters.nfacets"
+          @update-facet-values="updateFacetValues"
+          @slider-selected="sliderHandler"
+          @number-selected="numberHandler"
+          @checkbox-selected="checkboxHandler"
+        ></catalog-facets>
       </div>
 
       <div class="product-content">
@@ -125,36 +73,39 @@
 <script>
 import CatalogItem from '@/components/catalog/CatalogItem';
 import FilterItems from '@/components/catalog/FilterItems';
-import DubCollapse from '@/components/base/DubCollapse';
-import DubCollapseItem from '@/components/base/DubCollapseItem';
-import DubCheck from '@/components/base/DubCheck';
+import CatalogTags from '@/components/catalog/CatalogTags';
+import CatalogFacets from '@/components/catalog/CatalogFacets';
 import DubPagination from '@/components/base/DubPagination';
 import DubSelect from '@/components/base/DubSelect';
-import DubNumberInput from '@/components/base/DubNumberInput';
-import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min';
-import 'vue-slider-component/dist-css/vue-slider-component.css';
-
-// import theme
-import '~/assets/slider/theme.scss';
+import CatalogMixin from '@/mixins/catalog';
 
 export default {
   name: 'DubSaleDetail',
   components: {
     CatalogItem,
     FilterItems,
-    DubCollapse,
-    DubCollapseItem,
-    DubCheck,
-    VueSlider,
-    DubNumberInput,
     DubPagination,
+    CatalogTags,
+    CatalogFacets,
     DubSelect,
   },
+  mixins: [CatalogMixin],
   async asyncData(context) {
-    const { store, params, app } = context;
-    const sale = await this.getSale(store, params, app);
+    const { query, params, app } = context;
+    const { id } = params;
+    const url = `sales/${id}/`;
+    const [products, facets, tags, sale] = await Promise.all([
+      app.$api.getProducts({ sales: id, query }),
+      app.$api.getFacets({ sales: id, query }),
+      app.$api.getTags({ sales: id, query }),
+      app.$api.get(url),
+    ]);
     return {
-      sale,
+      sale: sale.data,
+      products: products.items,
+      totalProducts: products.total,
+      facets,
+      tags,
     };
   },
   computed: {
@@ -167,14 +118,48 @@ export default {
     },
   },
   methods: {
-    async getSale(store, params, app) {
-      const { id } = params;
-      let sale = store.getters['sales/sale'](id);
-      if (!sale) {
-        const url = `sales/${id}/`;
-        const { data } = await app.$api.get(url);
-        sale = data;
-      }
+    async paginationHandler(e) {
+      this.filters.page.current = e;
+      const query = Object.assign({}, this.$route.query);
+      const { id } = this.$route.params;
+      query.sfacets = this.encodeSFacet(this.filters.sfacets);
+      query.nfacets = this.encodeNFacet(this.filters.nfacets);
+      query.tags = this.encodeTags(this.filters.tags);
+      query.page = this.filters.page.current;
+      this.$router.push({ query });
+      const products = await this.$api.getProducts({ sales: id, query });
+      this.products = products.items;
+      this.totalProducts = products.total;
+    },
+    async selectHandler(e) {
+      this.filters.sort.by = e;
+      const query = Object.assign({}, this.$route.query);
+      const { id } = this.$route.params;
+      query.sfacets = this.encodeSFacet(this.filters.sfacets);
+      query.nfacets = this.encodeNFacet(this.filters.nfacets);
+      query.tags = this.encodeTags(this.filters.tags);
+      query.sort = this.filters.sort.by.value;
+      this.$router.push({ query });
+      const products = await this.$api.getProducts({ sales: id, query });
+      this.products = products.items;
+      this.totalProducts = products.total;
+    },
+    async updateQuery() {
+      const query = Object.assign({}, this.$route.query);
+      const { id } = this.$route.params;
+      query.sfacets = this.encodeSFacet(this.filters.sfacets);
+      query.nfacets = this.encodeNFacet(this.filters.nfacets);
+      query.tags = this.encodeTags(this.filters.tags);
+      this.$router.push({ query });
+      const [products, facets, tags] = await Promise.all([
+        this.$api.getProducts({ sales: id, query }),
+        this.$api.getFacets({ sales: id, query }),
+        this.$api.getTags({ sales: id, query }),
+      ]);
+      this.tags = tags;
+      this.products = products.items;
+      this.totalProducts = products.total;
+      this.facets = facets;
     },
   },
 };
@@ -280,6 +265,220 @@ a {
 }
 @media (max-width: 1450px) {
   .news-detail {
+    width: 85%;
+  }
+}
+.title {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  letter-spacing: 0.025em;
+  line-height: 42px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.catalog-list {
+  position: relative;
+  flex: 1;
+  width: 80%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+.filter-tag-menu {
+  padding: 8px 0;
+}
+.header {
+  margin-top: 24px;
+  padding-bottom: 16px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: flex-end,
+    ),
+    webkit ms
+  );
+  .filter-description {
+    color: $text_color;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.7;
+    letter-spacing: -0.012em;
+    margin-right: 8px;
+  }
+  .pointer {
+    cursor: pointer;
+  }
+  .pointer:hover {
+    border-bottom: 3px solid $primary_color;
+  }
+}
+.filters {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      flex: 1,
+    ),
+    webkit ms
+  );
+  .count {
+    color: $text_color;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.5;
+    margin-left: 8px;
+    margin-bottom: 3px;
+  }
+  .badges {
+    color: $text_color;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.7;
+    letter-spacing: -0.012em;
+    margin-right: 8px;
+  }
+  .filter-sort-active {
+    border-bottom: 3px solid $primary_color;
+  }
+}
+.sort {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  .sort-description {
+    color: $text_color;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.7;
+    letter-spacing: -0.012em;
+    margin-right: 8px;
+  }
+}
+.content {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  padding-top: 24px;
+  .filter-panel {
+    position: relative;
+    height: 100%;
+    width: 25%;
+    background-color: $upper-layer-color;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    margin-right: 16px;
+  }
+  .grid {
+    @include prefix(
+      (
+        display: flex,
+        flex-direction: row,
+        flex-wrap: wrap,
+      ),
+      webkit ms
+    );
+    width: 100%;
+    .grid-cell {
+      @include prefix(
+        (
+          flex: 1 1,
+          flex-basis: 26%,
+        ),
+        webkit ms
+      );
+      max-width: 25.6%;
+      background-color: $upper_layer_color;
+      border-radius: 2px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      padding: 24px;
+      margin: 0 8px 32px 8px;
+      transition: box-shadow 0.25s ease;
+      &:hover {
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+.amount {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      justify-content: space-between,
+    ),
+    webkit ms
+  );
+  .description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  .value {
+    @include prefix(
+      (
+        display: flex,
+        flex-direction: row,
+      ),
+      webkit ms
+    );
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    .item {
+      opacity: 0.7;
+    }
+    .item:not(:last-of-type):after {
+      content: '/';
+    }
+    .item:nth-last-of-type(2):before {
+      content: none;
+    }
+  }
+}
+
+.slide {
+  height: 550px;
+  width: 100%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+.catalog-swiper {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.facets-checkbox {
+  justify-content: left;
+  margin: 8px 0;
+  color: $text_color;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.pagination {
+  margin-bottom: 24px;
+}
+.product-content {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  width: 85%;
+}
+@media (max-width: 1450px) {
+  .catalog-list {
     width: 85%;
   }
 }
