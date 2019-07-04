@@ -22,6 +22,7 @@ export default {
 <style lang="scss" scoped>
 .breadcrumbs {
   margin: 16px 0;
+  color: $text_color;
   @include prefix(
     (
       display: flex,
@@ -40,7 +41,6 @@ export default {
   );
 }
 .breadcrumb-label {
-  color: $text_color;
   padding-bottom: 2px;
   font-size: 14px;
   font-weight: 600;
@@ -55,7 +55,6 @@ export default {
   width: 20px;
   height: 22px;
   opacity: 0.8;
-  color: $text_color;
   @include prefix(
     (
       display: flex,

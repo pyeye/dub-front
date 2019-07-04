@@ -2,8 +2,6 @@
   <div>
     <div class="header">
       <div class="title">Акции</div>
-      <div class="flex"></div>
-      <div class="secondary-title"><nuxt-link to="/sales">Все акции</nuxt-link></div>
     </div>
     <div class="slider">
       <hooper
@@ -19,7 +17,6 @@
         <slide v-for="sale in sales" :key="sale.pk">
           <div class="slide" :style="'background-image: url('+ sale.image.src +');'">
             <nuxt-link :to="`/sales/${sale.pk}`">
-              <div class="cover"></div>
               <div class="cover-text">
                 <div class="text-secondary">
                   <div class="date">
@@ -28,10 +25,6 @@
                   </div>
                 </div>
                 <div class="title">{{ sale.name }}</div>
-              </div>
-              <div class="cover-inspect">
-                <div>ПОДРОБНЕЕ</div>
-                <dub-icon width=24 height=24><icon-right class="icon-link" /></dub-icon>
               </div>
             </nuxt-link>
           </div>
@@ -46,12 +39,15 @@
 import { Hooper, Slide, Pagination as HooperPagination } from 'hooper';
 import '@/assets/slider/hooper.css';
 
+import SalesBanner from '@/components/sales/SalesSlider';
+
 export default {
   name: 'SalesSlider',
   components: {
     Hooper,
     Slide,
     HooperPagination,
+    SalesBanner,
   },
   props: {
     sales: {
@@ -135,29 +131,10 @@ a {
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   &:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
-    .cover {
-      opacity: 0.9;
-    }
     .cover-text {
-      opacity: 0;
-    }
-    .cover-inspect {
-      opacity: 1;
-      -webkit-transform: translate3d(-50%, -50%, 1px);
-      transform: translate3d(-50%, -50%, 1px);
+      text-decoration: underline;
     }
   }
-}
-.cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #000;
-  transition: opacity 0.25s ease;
-  opacity: 0.7;
 }
 .cover-text {
   @include prefix(
@@ -177,48 +154,30 @@ a {
   letter-spacing: 0.25px;
   line-height: 22px;
   font-family: 'Roboto', sans-serif;
+  height: 60%;
   padding: 12px;
   opacity: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
   transition: opacity 0.25s ease;
+  opacity: 1;
   .text-secondary {
     @include prefix(
       (
         display: flex,
         flex-direction: row,
-        align-items: center,
+        align-items: flex-end,
       ),
       webkit ms
     );
     font-size: 14px;
     letter-spacing: 0.15px;
     line-height: 14px;
-    opacity: 0.85;
+    opacity: 1;
+    flex: 1;
     .date {
       margin-right: 16px;
       padding-bottom: 4px;
     }
   }
-}
-.cover-inspect {
-  color: $primary_color;
-  font-size: 20px;
-  letter-spacing: 0.25px;
-  line-height: 20px;
-  font-weight: 600;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  opacity: 0;
-  transform: translate3d(-50%, -30%, 1px);
-  will-change: transfrom;
-  transition: opacity 0.4s ease, transform 0.45s ease, -webkit-transform 0.45s ease;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: center,
-    ),
-    webkit ms
-  );
 }
 </style>
