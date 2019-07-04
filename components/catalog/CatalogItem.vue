@@ -15,12 +15,17 @@
         <div class="amount">
           <div class="value">
             <div 
-              class="item" 
-              :class="{'item-active': instance.sku === selectedInstance.sku}"
+              class="product-item" 
+              :class="{'product-item-active': instance.sku === selectedInstance.sku}"
               v-for="instance in product.products" 
               :key="instance.sku" 
               @click="setInstance(instance)">
               {{instance.measure_count}}{{instance.measure_value}}
+              <sales-badge
+                class="floating-product" 
+                v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
+                type="dot">
+              </sales-badge>
             </div>
           </div>
         </div>
@@ -36,17 +41,27 @@
           <div class="value">В наличии</div>
         </div>
         <div class="flex"></div>
-        <div class="price">
-            {{Number(selectedInstance.price)}} &#x20bd;
-          </div>
+        <dub-price :regular-price="selectedInstance.price" :special-price="selectedInstance.new_price"></dub-price>
       </div>
+    </div>
+    <div class="floating" v-if="selectedInstance.sales.length !== 0">
+      <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="label">
+        {{ label }}
+      </sales-badge>
     </div>
   </div>
 </template>
 
 <script>
+import DubPrice from '@/components/base/DubPrice';
+import SalesBadge from '@/components/sales/SalesBadge';
+
 export default {
   name: 'CatalogItem',
+  components: {
+    DubPrice,
+    SalesBadge,
+  },
   props: {
     product: {
       type: Object,
@@ -88,6 +103,26 @@ export default {
     setInstance(instance) {
       this.selectedInstance = instance;
       this.productLink = `${this.productLink}?sku=${instance.sku}`;
+    },
+    getSaleLabels(sales) {
+      let [hasFixed, hasCondition, hasPercent] = [false, false, false];
+      const labels = [];
+      sales.forEach(sale => {
+        if (sale.type === 'fixed' && !hasFixed) {
+          labels.push('Новая цена');
+          hasFixed = true;
+        }
+        if (sale.type === 'condition' && !hasCondition) {
+          labels.push('Акция');
+          hasCondition = true;
+        }
+        if (sale.type === 'percent' && !hasPercent) {
+          const percentLabel = `-${sale.percent}%`;
+          labels.push(percentLabel);
+          hasPercent = true;
+        }
+      });
+      return labels;
     },
   },
 };
@@ -186,10 +221,11 @@ export default {
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
-    .item {
+    .product-item {
       opacity: 0.7;
       margin-right: 6px;
       cursor: pointer;
+      position: relative;
 
       &-active {
         border-bottom: 2px solid $primary_color;
@@ -378,5 +414,16 @@ a {
 }
 .good-rating-value {
   color: #42a85f;
+}
+.floating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 4px;
+}
+.floating-product {
+  position: absolute;
+  top: 2px;
+  right: -2px;
 }
 </style>
