@@ -29,6 +29,7 @@ export default {
   font-weight: 600;
   box-sizing: border-box;
   line-height: 14px;
+  border-radius: 2px;
 }
 .dot {
   border-radius: 50%;
