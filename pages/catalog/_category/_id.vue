@@ -4,7 +4,12 @@
     <div class="content">
       <div class="product-image">
         <div class="image-box">
-          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.image">
+          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.images[0].src">
+        </div>
+        <div class="floating" v-if="selectedInstance.sales.length !== 0">
+          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="label">
+            {{ label }}
+          </sales-badge>
         </div>
       </div>
       <div class="product-info">
@@ -13,6 +18,11 @@
           {{ product.name }},
           {{selectedInstance.measure_count}}
           {{selectedInstance.measure_value}}
+        </div>
+        <div class="sales-conditions" v-if="salesWithCondition">
+          <div v-for="sale in salesWithCondition" :key="sale.pk">
+            {{ sale.condition }}
+          </div>
         </div>
         <div class="info-box">
           <div class="info-main">
@@ -61,6 +71,7 @@
                 <div class="info-description">{{string_facet.name}}:</div>
                 <div class="description-flex"></div>
                 <div class="info-value row">
+                  <div class="description-flex"></div>
                   <div
                     class="row-item"
                     v-for="value in string_facet.values"
@@ -89,33 +100,70 @@
 
           </div>
           <div class="info-price">
-            <div class="amount">
-              <div class="description">Объемы:</div>
-              <div class="value">
+            <div class="price-row">
+              <dub-price :special-price="selectedInstance.new_price">
+                <span slot="oldPrice" class="price-old" v-if="selectedInstance.new_price">
+                  {{ selectedInstance.price }} &#x20bd;
+                </span>
+                <span slot="specialPrice" class="price-special" v-if="selectedInstance.new_price">
+                  {{ selectedInstance.new_price }} &#x20bd;
+                </span>
+                <span slot="regularPrice" class="price-regular" v-if="!selectedInstance.new_price">
+                  {{ selectedInstance.price }} &#x20bd;
+                </span>
+              </dub-price>
+            </div>
+            <div class="info-list">
+              <div class="info-description">Объемы:</div>
+              <div class="description-flex"></div>
+              <div class="info-value row">
+                <div class="description-flex"></div>
                 <div
-                  class="item"
+                  class="row-item item"
                   v-response.small.fast
                   v-for="productInstance in product.products"
                   :key="productInstance.sku"
                   :class="{ 'price-active': selectedInstance.sku == productInstance.sku }"
                   @click="selectInstance(productInstance)"
-                >{{productInstance.measure_count}}{{productInstance.measure_value}}</div>
+                >
+                  {{productInstance.measure_count}}{{productInstance.measure_value}}
+                  <sales-badge
+                    class="floating-measure" 
+                    v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
+                    type="dot">
+                  </sales-badge>
+                </div>
               </div>
             </div>
-            <div class="amount">
-              <div class="description">Артикул:</div>
-              <div class="value">#{{selectedInstance.sku}}</div>
+            <div class="info-list">
+              <div class="info-description">Артикул:</div>
+              <div class="description-flex"></div>
+              <div class="info-value row">
+                <div class="description-flex"></div>
+                <div class="row-item">
+                  #{{selectedInstance.sku}}
+                </div>
+              </div>
             </div>
-            <div class="amount">
-              <div class="description">Кол-во в упаковке:</div>
-              <div class="value">{{selectedInstance.package_amount}}</div>
+            <div class="info-list">
+              <div class="info-description">Кол-во в упаковке:</div>
+              <div class="description-flex"></div>
+              <div class="info-value row">
+                <div class="description-flex"></div>
+                <div class="row-item">
+                  {{selectedInstance.package_amount}}
+                </div>
+              </div>
             </div>
-            <div class="storage">
-              <div class="description">В наличии:</div>
-              <div class="value">{{selectedInstance.stock_balance}} шт.</div>
-            </div>
-            <div class="price-row">
-              <div class="price-value">{{selectedInstance.price}}&#x20bd;</div>
+            <div class="info-list">
+              <div class="info-description">В наличии:</div>
+              <div class="description-flex"></div>
+              <div class="info-value row storage">
+                <div class="description-flex"></div>
+                <div class="row-item value">
+                  {{selectedInstance.stock_balance}} шт.
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -124,35 +172,21 @@
           <div class="tag-row">
             <div class="tag-title">Метки:</div>
             <div class="filter-tag-menu">
-      <div v-swiper:tagSwiper="swiperTagOption">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="tag in product.tags" :key="tag.pk">
-            <div class="tag" v-response.small.masked>{{tag.name}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-
-    <div class="watched-products" v-if="watchedProducts.length > 0">
-      <div class="watched-title">Вы смотрели:</div>
-      <div v-swiper:watchedSwiper="swiperBestOption" class="watched-slider">
-        <div class="swiper-wrapper">
-          <div
-            class="swiper-slide watched-slide"
-            v-for="watchedProduct in watchedProducts"
-            :key="watchedProduct.pk"
-          >
-            <bestsellers-item
-              class="grid-cell"
-              :product="watchedProduct"
-              :category="watchedProduct.category"
-            ></bestsellers-item>
+              <hooper
+                :itemsToShow="hooper.itemsToShow"
+                :infiniteScroll="hooper.infiniteScroll"
+                :autoPlay="hooper.autoPlay"
+                :playSpeed="hooper.playSpeed"
+                :mouseDrag="hooper.mouseDrag"
+                :touchDrag="hooper.touchDrag"
+                :wheelControl="hooper.wheelControl"
+                :transition="hooper.transition"
+              >
+                <slide v-for="tag in product.tags" :key="tag.pk">
+                  <div class="tag" v-response.small.masked>{{tag.name}}</div>
+                </slide>
+              </hooper>
+            </div>
           </div>
         </div>
       </div>
@@ -161,29 +195,30 @@
 </template>
 
 <script>
-import BestsellersItem from '@/components/home/BestsellersItem';
+import { Hooper, Slide } from 'hooper';
+import '@/assets/slider/hooper.css';
+
+import DubPrice from '@/components/base/DubPrice';
+import SalesBadge from '@/components/sales/SalesBadge';
 
 export default {
   name: 'ProductDetail',
   components: {
-    BestsellersItem,
+    Hooper,
+    Slide,
+    DubPrice,
+    SalesBadge,
   },
   data: () => ({
-    swiperBestOption: {
-      slidesPerView: 'auto',
-      spaceBetween: 15,
-      freeMode: true,
-      speed: 2000,
-    },
-    swiperTagOption: {
-      slidesPerView: 6,
-      spaceBetween: 40,
-      freeMode: true,
-      speed: 2000,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
+    hooper: {
+      itemsToShow: 6,
+      infiniteScroll: true,
+      autoPlay: true,
+      playSpeed: 5000,
+      mouseDrag: true,
+      touchDrag: false,
+      wheelControl: false,
+      transition: 2000,
     },
     exclude: {
       nfacets: ['price'],
@@ -220,19 +255,17 @@ export default {
         { label: this.product.name, link: '' },
       ];
     },
-    watchedProducts() {
-      const watchedFromStore = this.$store.getters['session/watched/products'];
-      const watched = watchedFromStore.filter(product => product.pk !== this.product.pk);
-      return watched;
-    },
     displayNFacets() {
       return this.product.number_facets.filter(
         nfacet => !this.exclude.nfacets.includes(nfacet.slug)
       );
     },
-  },
-  async mounted() {
-    await this.$store.dispatch('session/watched/addProduct', this.product);
+    salesWithCondition() {
+      if (!this.selectedInstance.sales) {
+        return [];
+      }
+      return this.selectedInstance.sales.filter(sale => sale.type === 'condition');
+    },
   },
   methods: {
     selectInstance(instance) {
@@ -240,6 +273,26 @@ export default {
       const query = Object.assign({}, this.$route.query);
       query.sku = instance.sku;
       this.$router.push({ query });
+    },
+    getSaleLabels(sales) {
+      let [hasFixed, hasCondition, hasPercent] = [false, false, false];
+      const labels = [];
+      sales.forEach(sale => {
+        if (sale.type === 'fixed' && !hasFixed) {
+          labels.push('Новая цена');
+          hasFixed = true;
+        }
+        if (sale.type === 'condition' && !hasCondition) {
+          labels.push('Акция');
+          hasCondition = true;
+        }
+        if (sale.type === 'percent' && !hasPercent) {
+          const percentLabel = `-${sale.percent}%`;
+          labels.push(percentLabel);
+          hasPercent = true;
+        }
+      });
+      return labels;
     },
   },
 };
@@ -283,7 +336,6 @@ a {
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   width: 100%;
-  margin: 24px 0;
 }
 .product-image {
   width: 25%;
@@ -327,6 +379,7 @@ a {
   max-height: 450px;
   max-width: 100%;
 }
+
 .info-box {
   @include prefix(
     (
@@ -362,13 +415,20 @@ a {
       letter-spacing: -0.012em;
       line-height: 24px;
       text-transform: capitalize;
+      .info-description {
+        margin-right: 4px;
+      }
       .description-flex {
         flex: 1;
+        border-bottom: 1px dotted $text_color;
+        margin-bottom: 4px;
+        margin-right: 4px;
+        opacity: 0.7;
       }
     }
   }
   .info-price {
-    padding: 66px 24px 24px 24px;
+    margin: 8px 24px;
     width: 35%;
     .price-row {
       @include prefix(
@@ -379,7 +439,7 @@ a {
         ),
         webkit ms
       );
-      padding-bottom: 24px;
+      margin-bottom: 16px;
     }
     .price-value {
       font-family: 'Roboto', sans-serif;
@@ -397,6 +457,32 @@ a {
     .price-selector {
       width: 90px;
     }
+  }
+}
+.info-list {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  padding: 2px;
+  font-size: 16px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.012em;
+  line-height: 24px;
+  text-transform: capitalize;
+  .info-description {
+    margin-right: 4px;
+  }
+  .description-flex {
+    flex: 1;
+    border-bottom: 1px dotted $text_color;
+    margin-bottom: 4px;
+    margin-right: 4px;
+    opacity: 0.7;
   }
 }
 .flex {
@@ -444,28 +530,15 @@ a {
     }
   }
 }
+.price-active {
+  border-bottom: 3px solid $primary_color;
+  opacity: 1;
+}
 .storage {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      justify-content: space-between,
-    ),
-    webkit ms
-  );
-  padding: 2px 0 16px 0;
-  .description {
-    font-size: 16px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    line-height: 24px;
-  }
   .value {
     color: #43a047;
     font-size: 16px;
     font-weight: 600;
-    opacity: 0.7;
     letter-spacing: -0.012em;
     line-height: 24px;
   }
@@ -511,6 +584,8 @@ a {
     (
       display: flex,
       flex-direction: row,
+      flex-wrap: wrap,
+      justify-content: flex-end,
     ),
     webkit ms
   );
@@ -659,23 +734,6 @@ a {
   opacity: 0.9;
   color: $text_color;
 }
-.watched-slider {
-  position: relative;
-  height: 100%;
-  margin-bottom: 32px;
-}
-.watched-slide {
-  width: 20%;
-}
-.grid-cell {
-  position: relative;
-  height: 100%;
-  margin-bottom: 32px;
-  background-color: $upper_layer_color;
-  border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.25s ease;
-}
 
 .filter-tag-menu {
   position: relative;
@@ -711,7 +769,8 @@ a {
   font-weight: 600;
   opacity: 0.7;
   font-size: 14px;
-  width: 100px;
+  overflow: hidden;
+  margin-right: 4px;
 }
 .tag:hover {
   background-color: $primary_color;
@@ -722,7 +781,7 @@ a {
 
 .tab-panel {
   z-index: 1;
-  margin: 4px 0 16px 0;
+  margin-bottom: 16px;
   @include prefix(
     (
       display: flex,
@@ -758,5 +817,41 @@ a {
   .product-detail {
     width: 85%;
   }
+}
+.hooper {
+  height: 70px;
+}
+.price-special {
+  color: #e83841;
+  font-size: 28px;
+}
+.price-regular {
+  font-size: 28px;
+}
+.price-old {
+  align-self: flex-end;
+  text-decoration: line-through;
+  font-size: 16px;
+  line-height: 16px;
+  opacity: 0.6;
+  margin-right: 6px;
+}
+.floating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 4px;
+}
+.floating-measure {
+  position: absolute;
+  top: 2px;
+  right: -2px;
+}
+.sales-conditions {
+  margin: -8px 24px 0 24px;
+  color: #e83841;
+  font-size: 16px;
+  line-height: 8px;
+  font-weight: 600;
 }
 </style>

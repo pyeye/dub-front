@@ -1,19 +1,22 @@
 <template>
   <div class="price">
-    <div v-if="specialPrice">
-      <span class="price-old">
+    <slot name="oldPrice">
+      <span class="price-old" v-if="specialPrice">
         {{ regularPrice }} &#x20bd;
       </span>
-      <span class="price-special">
+    </slot>
+
+    <slot name="specialPrice">
+      <span class="price-special" v-if="specialPrice">
         {{ specialPrice }} &#x20bd;
       </span>
-    </div>
+    </slot>
 
-    <div v-if="!specialPrice">
-      <span class="price-regular">
+    <slot name="regularPrice">
+      <span class="price-regular"  v-if="!specialPrice">
         {{ regularPrice }} &#x20bd;
       </span>
-    </div>
+    </slot>
   </div>
 </template>
 

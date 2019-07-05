@@ -3,7 +3,7 @@
     <div class="link-box">
       <div class="image-box">
         <nuxt-link class="" :to="'/catalog/'+ category.slug + '/' + product.pk">
-          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.image">
+          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.images[0].src">
         </nuxt-link>
       </div>
       <div class="name">
