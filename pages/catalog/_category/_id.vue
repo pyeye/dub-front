@@ -3,9 +3,7 @@
     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="content">
       <div class="product-image">
-        <div class="image-box">
-          <img class="image" :src="'http://api.mydubbelsite.ru/' + selectedInstance.images[0].src">
-        </div>
+        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
         <div class="floating" v-if="selectedInstance.sales.length !== 0">
           <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="label">
             {{ label }}
@@ -200,6 +198,7 @@ import '@/assets/slider/hooper.css';
 
 import DubPrice from '@/components/base/DubPrice';
 import SalesBadge from '@/components/sales/SalesBadge';
+import CatalogGallery from '@/components/catalog/CatalogGallery';
 
 export default {
   name: 'ProductDetail',
@@ -208,6 +207,7 @@ export default {
     Slide,
     DubPrice,
     SalesBadge,
+    CatalogGallery,
   },
   data: () => ({
     hooper: {
@@ -342,15 +342,6 @@ a {
   padding: 16px;
   margin: 32px 0;
   border-right: 1px solid #e6e3da;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: bottom,
-      justify-content: center,
-    ),
-    webkit ms
-  );
 }
 .product-info {
   @include prefix(
