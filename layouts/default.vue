@@ -1,7 +1,9 @@
 <template>
   <div id="app">
 
-      <div v-show="!agreement" class="loader">
+      
+      <div :class="{'overflow': !agreement}">
+        <div v-show="!agreement" class="loader">
         <!-- Agreement block -->
         <div class="cover"></div>
         <div class="agreement">
@@ -22,8 +24,7 @@
           </div>
         </div>
       </div>
-      <div v-show="agreement">
-        <!-- Main content -->
+
         <dub-header @overlay-change="overlayHandler"/>
         <nuxt/>
       </div>
@@ -75,6 +76,10 @@ export default {
   display: flex;
   flex-direction: column;
 }
+.overflow {
+  height: 100vh;
+  overflow: hidden;
+}
 .link {
   text-decoration: none;
 }
@@ -125,6 +130,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 99999;
   background-image: url(http://mydubbelsite.ru/img/static/rhett-wesley-479644.jpg);
   background-size: cover;
   background-repeat: no-repeat;

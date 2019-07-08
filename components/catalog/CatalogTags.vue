@@ -1,15 +1,21 @@
 <template>
   <div class="filter-tag-menu">
-    <div v-swiper:tagSwiper="swiperTagOption">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="tag in tags" :key="tag.pk">
-          <div class="tag"
-            :class="{ 'tag-active': selectedTags.some(t => t.pk === tag.pk) }"
-            @click="tagHandler(tag)"
-            v-response.small.masked
-          >{{tag.name}}</div>
+    <no-ssr>
+    <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="loaded" :options="slider">
+      <vue-glide-slide v-for="tag in tags" :key="tag.pk">
+        <div class="tag"
+          :class="{ 'tag-active': selectedTags.some(t => t.pk === tag.pk) }"
+          @click="tagHandler(tag)"
+          v-response.small.masked
+        >
+          {{tag.name}}
         </div>
-      </div>
+      </vue-glide-slide>
+    </vue-glide>
+    
+    </no-ssr>
+    <div class="masked-box" v-show="!loaded">
+      <div class="masked-item" v-for="i in 6" :key="i"></div>
     </div>
   </div>
 </template>
@@ -28,16 +34,14 @@ export default {
     },
   },
   data: () => ({
-    swiperTagOption: {
-      slidesPerView: 6,
-      spaceBetween: 40,
-      freeMode: true,
-      speed: 2000,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
+    slider: {
+      type: 'carousel',
+      perView: 6,
+      autoplay: 5000,
+      perTouch: 3,
+      animationDuration: 4000,
     },
+    loaded: false,
   }),
   methods: {
     tagHandler(tag) {
@@ -69,5 +73,26 @@ export default {
 }
 .tag-active {
   background-color: $primary_color;
+}
+.slide {
+  border: 3px solid $body_color;
+}
+.masked-box {
+  height: 33px;
+  overflow: hidden;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
+.masked-item {
+  height: 33px;
+  width: 450px;
+  margin: 0 4px;
+  border-radius: 2px;
+  background-color: #ddd;
 }
 </style>

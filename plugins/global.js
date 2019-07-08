@@ -15,7 +15,6 @@ import IconClose from '~/components/icons/IconClose';
 
 Vue.component('dub-button', DubButton);
 Vue.component('dub-breadcrumbs', DubBreadcrumbs);
-
 Vue.component('dub-icon', DubIcon);
 Vue.component('icon-right', IconRight);
 Vue.component('icon-left', IconLeft);

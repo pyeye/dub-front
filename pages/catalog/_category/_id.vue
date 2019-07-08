@@ -170,20 +170,14 @@
           <div class="tag-row">
             <div class="tag-title">Метки:</div>
             <div class="filter-tag-menu">
-              <hooper
-                :itemsToShow="hooper.itemsToShow"
-                :infiniteScroll="hooper.infiniteScroll"
-                :autoPlay="hooper.autoPlay"
-                :playSpeed="hooper.playSpeed"
-                :mouseDrag="hooper.mouseDrag"
-                :touchDrag="hooper.touchDrag"
-                :wheelControl="hooper.wheelControl"
-                :transition="hooper.transition"
-              >
-                <slide v-for="tag in product.tags" :key="tag.pk">
+              <vue-glide :options="slider" @glide:mount-after="loaded = true" v-show="loaded" :key="loaded">
+                <vue-glide-slide v-for="tag in product.tags" :key="tag.pk">
                   <div class="tag" v-response.small.masked>{{tag.name}}</div>
-                </slide>
-              </hooper>
+                </vue-glide-slide>
+                <div class="masked-box" v-show="!loaded">
+                  <div class="masked-item" v-for="i in slider.perView" :key="i"></div>
+                </div>
+              </vue-glide>
             </div>
           </div>
         </div>
@@ -193,9 +187,6 @@
 </template>
 
 <script>
-import { Hooper, Slide } from 'hooper';
-import '@/assets/slider/hooper.css';
-
 import DubPrice from '@/components/base/DubPrice';
 import SalesBadge from '@/components/sales/SalesBadge';
 import CatalogGallery from '@/components/catalog/CatalogGallery';
@@ -203,23 +194,19 @@ import CatalogGallery from '@/components/catalog/CatalogGallery';
 export default {
   name: 'ProductDetail',
   components: {
-    Hooper,
-    Slide,
     DubPrice,
     SalesBadge,
     CatalogGallery,
   },
   data: () => ({
-    hooper: {
-      itemsToShow: 6,
-      infiniteScroll: true,
-      autoPlay: true,
-      playSpeed: 5000,
-      mouseDrag: true,
-      touchDrag: false,
-      wheelControl: false,
-      transition: 2000,
+    slider: {
+      type: 'carousel',
+      perView: 5,
+      autoplay: 5000,
+      perTouch: 3,
+      animationDuration: 4000,
     },
+    loaded: false,
     exclude: {
       nfacets: ['price'],
     },
@@ -336,6 +323,7 @@ a {
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   width: 100%;
+  margin-bottom: 36px;
 }
 .product-image {
   width: 25%;
@@ -553,7 +541,7 @@ a {
   }
 }
 .secondary-info {
-  margin-top: 24px;
+  margin: 24px 0;
   .title {
     padding: 16px 24px;
     font-size: 24px;
@@ -809,9 +797,7 @@ a {
     width: 85%;
   }
 }
-.hooper {
-  height: 70px;
-}
+
 .price-special {
   color: #e83841;
   font-size: 28px;
@@ -844,5 +830,23 @@ a {
   font-size: 16px;
   line-height: 8px;
   font-weight: 600;
+}
+.masked-box {
+  height: 33px;
+  overflow: hidden;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
+.masked-item {
+  height: 33px;
+  width: 450px;
+  margin: 0 4px;
+  border-radius: 2px;
+  background-color: #ddd;
 }
 </style>

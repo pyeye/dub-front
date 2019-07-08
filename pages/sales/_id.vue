@@ -484,9 +484,6 @@ a {
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
-.catalog-swiper {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
 .facets-checkbox {
   justify-content: left;
   margin: 8px 0;

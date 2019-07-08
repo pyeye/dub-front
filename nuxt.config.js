@@ -36,7 +36,7 @@ module.exports = {
     { src: '~/plugins/api' },
     { src: '~/plugins/auth' },
     { src: '~/plugins/global' },
-    { src: '~/plugins/swiper', ssr: false },
+    { src: '~/plugins/swiper' },
     { src: '~/plugins/directives/response', ssr: false },
     { src: '~/plugins/spinner', ssr: false },
   ],

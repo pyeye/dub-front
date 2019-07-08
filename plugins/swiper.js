@@ -1,4 +1,5 @@
 import Vue from 'vue';
-import VueAwesomeSwiper from 'vue-awesome-swiper/dist/ssr';
+import VueGlide from 'vue-glide-js';
+import 'vue-glide-js/dist/vue-glide.css';
 
-Vue.use(VueAwesomeSwiper);
+Vue.use(VueGlide);

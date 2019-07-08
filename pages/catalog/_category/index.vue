@@ -272,6 +272,8 @@ export default {
       query.sfacets = this.encodeSFacet(this.filters.sfacets);
       query.nfacets = this.encodeNFacet(this.filters.nfacets);
       query.tags = this.encodeTags(this.filters.tags);
+      this.$set(this.filters.page, 'current', 1);
+      query.page = 1;
       this.$router.push({ query });
       const [products, facets, tags] = await Promise.all([
         this.$api.getProducts({ category, query }),
@@ -330,6 +332,8 @@ export default {
       query.nfacets = this.encodeNFacet(this.filters.nfacets);
       query.tags = this.encodeTags(this.filters.tags);
       query.sort = this.filters.sort.by.value;
+      this.$set(this.filters.page, 'current', 1);
+      query.page = 1;
       this.$router.push({ query });
       const products = await this.$api.getProducts({ category, query });
       this.products = products.items;

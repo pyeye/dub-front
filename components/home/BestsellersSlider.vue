@@ -1,40 +1,28 @@
 <template>
   <div>
     <div class="watched-slider">
-      <hooper
-        :itemsToShow="hooper.itemsToShow"
-        :infiniteScroll="hooper.infiniteScroll"
-        :autoPlay="hooper.autoPlay"
-        :playSpeed="hooper.playSpeed"
-        :mouseDrag="hooper.mouseDrag"
-        :touchDrag="hooper.touchDrag"
-        :wheelControl="hooper.wheelControl"
-        :transition="hooper.transition"
-      >
-        <slide v-for="watchedProduct in products" :key="`watched${watchedProduct.pk}`" class="watched-slide">
+      <vue-glide :options="slider" @glide:mount-after="loaded = true" v-show="loaded" :key="loaded">
+        <vue-glide-slide v-for="watchedProduct in products" :key="watchedProduct.pk" class="watched-slide">
           <bestsellers-item
             class="grid-cell"
             :product="watchedProduct"
             :category="watchedProduct.category"
           ></bestsellers-item>
-        </slide>
-      </hooper>
+          <div class="masked-box" v-show="!loaded">
+            <div class="masked-item" v-for="i in slider.perView" :key="i"></div>
+          </div>
+        </vue-glide-slide>
+      </vue-glide>
     </div>
   </div>
 </template>
 
 <script>
-import { Hooper, Slide, Pagination as HooperPagination } from 'hooper';
-import '@/assets/slider/hooper.css';
-
 import BestsellersItem from '@/components/home/BestsellersItem';
 
 export default {
   name: 'BestsellersSlider',
   components: {
-    Hooper,
-    Slide,
-    HooperPagination,
     BestsellersItem,
   },
   props: {
@@ -43,16 +31,12 @@ export default {
     },
   },
   data: () => ({
-    hooper: {
-      itemsToShow: 4,
-      infiniteScroll: false,
-      autoPlay: false,
-      playSpeed: 5000,
-      mouseDrag: true,
-      touchDrag: false,
-      wheelControl: false,
-      transition: 2000,
+    slider: {
+      type: 'carousel',
+      perView: 4,
+      animationDuration: 4000,
     },
+    loaded: false,
   }),
 };
 </script>
@@ -101,13 +85,11 @@ a {
     letter-spacing: -0.012em;
   }
 }
-.hooper {
-  height: 350px;
-}
 .watched-slider {
   position: relative;
   height: 100%;
   margin-bottom: 32px;
+  height: 350px;
 }
 .watched-slide {
   width: 20%;
@@ -120,5 +102,23 @@ a {
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.25s ease;
+}
+.masked-box {
+  height: 350px;
+  overflow: hidden;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
+.masked-item {
+  height: 350px;
+  width: 1450px;
+  margin: 0 8px;
+  border-radius: 2px;
+  background-color: #ddd;
 }
 </style>
