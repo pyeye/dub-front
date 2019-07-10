@@ -1,7 +1,7 @@
 <template>
   <div class="filter-tag-menu">
     <no-ssr>
-    <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="loaded" :options="slider">
+    <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="tagKey" :options="slider">
       <vue-glide-slide v-for="tag in tags" :key="tag.pk">
         <div class="tag"
           :class="{ 'tag-active': selectedTags.some(t => t.pk === tag.pk) }"
@@ -43,6 +43,12 @@ export default {
     },
     loaded: false,
   }),
+  computed: {
+    tagKey() {
+      const random = Math.random();
+      return `${this.loaded}_${random * this.tags.length}`;
+    },
+  },
   methods: {
     tagHandler(tag) {
       this.$emit('tag-selected', tag);

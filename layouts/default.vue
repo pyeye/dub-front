@@ -52,9 +52,13 @@ export default {
     overlayHandler(e) {
       const target = document.querySelector('#app');
       if (e) {
-        disableBodyScroll(target);
+        disableBodyScroll(target, {
+          reserveScrollBarGap: true,
+        });
       } else {
-        enableBodyScroll(target);
+        enableBodyScroll(target, {
+          reserveScrollBarGap: true,
+        });
       }
     },
   },

@@ -2,29 +2,29 @@
   <div class="header-panel">
     <div class="panel-content">
         <div class="content-categories">
-          <dir class="product-name">
+          <dir class="product-name" @click="closePanel">
             <nuxt-link :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`" class="nav-category link">
               {{activeCategory.category.name}} {{activeCategory.name}}
             </nuxt-link>
           </dir>
             <nuxt-link :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`" class="nav-category link">
-              <img class="image" :src="`http://api.mydubbelsite.ru/${productImage}`">
+              <img class="image" :src="`http://api.mydubbelsite.ru/${productImage}`" @click="closePanel">
             </nuxt-link>
              <dub-button type="secondary" class="show-all">
                 <nuxt-link :to="`/catalog/${activeCategory.category.slug}`" class="nav-category">
-                  <span class="button" >показать все</span>
+                  <span class="button" @click="closePanel">показать все</span>
                 </nuxt-link>
             </dub-button>
         </div>
         <div class="content-meta">
-            <div class="content-facets" v-for="facet in facets.sfacets" :key="facet.slug">
+            <div class="content-facets" v-for="facet in facets" :key="facet.slug">
               <div class="collapse-title"> {{facet.name}} </div>
               <div v-for="item in facet.values.slice(0,8)" :key="item.pk">
                 <nuxt-link 
                   :to="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
                   class="nav-category link"
                 >
-                  <div class="facets-values">{{item.name}}</div>
+                  <div class="facets-values" @click="closePanel">{{item.name}}</div>
                 </nuxt-link>
               </div>
             </div>
@@ -37,7 +37,7 @@
             @mouseover="activeCategory = moreCategory"
           >
            <nuxt-link :to="`/catalog/${moreCategory.category.slug}`" class="nav-category">
-                <span class="button" >{{ moreCategory.category.name }}</span>
+                <span class="button" @click="closePanel">{{ moreCategory.category.name }}</span>
             </nuxt-link>
           </div>
         </div>
@@ -63,11 +63,7 @@ export default {
   }),
   computed: {
     facets() {
-      const facets = this.$store.getters['products/facets'](this.activeCategory.category.slug);
-      if (facets === null) {
-        return [{}];
-      }
-      return facets;
+      return this.activeCategory.facets;
     },
     productImage() {
       if (!this.activeCategory.products) {
@@ -78,6 +74,11 @@ export default {
         return this.activeCategory.products[0].images[0].src;
       }
       return mainImage.src;
+    },
+  },
+  methods: {
+    closePanel() {
+      this.$emit('close-panel');
     },
   },
   watch: {
@@ -100,7 +101,7 @@ export default {
   margin-left: -42.5%;
   background-color: $upper_layer_color;
   border-radius: 0 0 3px 3px;
-  z-index: 2;
+  z-index: -1;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   padding: 24px 0;
 }

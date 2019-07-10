@@ -2,14 +2,6 @@
   <div class="dub-header">
     <div class="header-info-box">
       <div class="header-info">
-        <!--
-        <div class="tagline">
-          <div class="tagline-row">Родной дом</div>
-          <div class="tagline-row">лучших</div>
-          <div class="tagline-row">напитков</div>
-        </div>
-        -->
-        
         <div>
           <div class="help">
             <div class="help-link" v-response.small>Доставка</div>
@@ -38,37 +30,46 @@
 
     <div :class="{'fixed-dummy': navFixed}"></div>
     <div id="nav" class="header-nav" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
-      <div class="nav">
-        <img class="logo-text" src="~assets/images/house_of_dubbel.png">
-        <!--
-        <div class="nav-item">
-            <div class="nav-category">
-                 <span class="link">Акции</span>
-            </div>
-        </div>
-        -->
+      <div class="nav" :class="{'nav-active': navActive }">
+        <nuxt-link :to="'/'" class="nav-category">
+          <img class="logo-text" src="~assets/images/house_of_dubbel.png">
+        </nuxt-link>
+
         <div class="nav-panel"  v-show="searchPanelActive === false">
           <div class="nav-categories nav-categories-hide" ref="nav">
             <div
               class="nav-item"
-              :class="{'nav-selected': isSelected('/sales')}"
+              
               v-response.small
             >
               <nuxt-link :to="'/sales/catalog'" class="nav-category">
-                <span class="link" >Акции</span>
+                <span
+                  class="link"
+                  :class="{'nav-selected': isSelected('/sales/catalog')}"
+                >
+                  Акции
+                </span>
               </nuxt-link>
             </div>
             <div
               class="nav-item"
-              :class="{'nav-selected': isSelected(`/catalog/${category.slug}`)}"
+              :class="{
+                'nav-hover': isHover(category, activeCategories)
+              }"
               @mouseover="openProductPanel(category)"
               @mouseout="closeProductPanel()"
+              @click="closePernamentPanel()"
               v-response.small
               v-for="category in categories"
               :key="category.pk">
 
               <nuxt-link :to="`/catalog/${category.category.slug}`" class="nav-category">
-                <span class="link" >{{ category.category.name }}</span>
+                <span
+                  class="link"
+                  :class="{'nav-selected': isSelected(`/catalog/${category.category.slug}`)}"
+                >
+                  {{ category.category.name }}
+                </span>
               </nuxt-link>
             </div>
           </div>
@@ -77,7 +78,12 @@
             @mouseover="openProductPanel(moreCategories)"
             @mouseout="closeProductPanel()"
           >
-              <span class="link">И ещё •••</span>
+              <span
+                class="link"
+                :class="{'nav-selected': isMoreSelected()}"
+              >
+                И ещё •••
+              </span>
           </div>
           <div class="flex"></div>
           <div class="nav-icons">
@@ -129,6 +135,7 @@
       <dub-header-panel
         @mouseover.native="openProductPanel(activeCategories)"
         @mouseout.native="closeProductPanel()"
+        @close-panel="navActive = false"
         v-show="navActive"
         :category="activeCategories"
       ></dub-header-panel>
@@ -139,6 +146,7 @@
 
 <script>
 import DubHeaderPanel from '@/components/base/DubHeaderPanel';
+import PreventScrollMixin from '@/mixins/prevent-scroll';
 import _ from 'lodash';
 
 export default {
@@ -146,11 +154,13 @@ export default {
   components: {
     DubHeaderPanel,
   },
+  mixins: [PreventScrollMixin],
   data: () => ({
     navActive: false,
     guestPanelActive: false,
     selfGuestPanelActive: false,
     activeCategories: [],
+    closePermanent: false,
     navFixed: false,
     navVisible: false,
     navBottomOffcet: 175,
@@ -211,22 +221,26 @@ export default {
   },
   methods: {
     openProductPanel(category) {
+      if (this.closePermanent) {
+        return;
+      }
       this.activeCategories = category;
       this.navActive = true;
-      this.$emit('overlay-change', true);
+      this.preventScroll(true);
     },
     closeProductPanel() {
+      this.closePermanent = false;
       this.navActive = false;
-      this.$emit('overlay-change', false);
+      this.preventScroll(false);
     },
     openSearchPanel() {
       this.searchPanelActive = true;
       this.$nextTick(() => this.$refs.search.focus());
-      this.$emit('overlay-change', true);
+      this.preventScroll(true);
     },
     closeSearchPanel() {
       this.searchPanelActive = false;
-      this.$emit('overlay-change', false);
+      this.preventScroll(false);
     },
     isSelected(path) {
       return this.$route.path.includes(path);
@@ -289,6 +303,22 @@ export default {
         this.autocompleteIndex -= 1;
       }
     },
+    closePernamentPanel() {
+      this.closeProductPanel();
+      this.closePermanent = true;
+    },
+    isHover(category, activeCategory) {
+      return this.navActive && category.slug === activeCategory.slug;
+    },
+    isMoreSelected() {
+      // eslint-disable-next-line consistent-return
+      this.moreCategories.forEach(category => {
+        if (this.$route.path.includes(`/catalog/${category.category.slug}`)) {
+          return true;
+        }
+      });
+      return false;
+    },
   },
 };
 </script>
@@ -311,18 +341,20 @@ export default {
 }
 .logo-text {
   display: inline-block;
-  margin: 0 16px;
+  margin-right: 16px;
   margin-bottom: 6px;
   width: 150px;
+  cursor: pointer;
 }
 .header-nav {
   position: relative;
   z-index: 3;
-  background-color: $primary_color;
+  background-color: #fafafa;
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
   line-height: 24px;
   font-weight: 700;
+  border-top: 1px solid #e6e3da;
   box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.1);
   width: 100%;
   .nav {
@@ -337,6 +369,9 @@ export default {
     width: 80%;
     margin: 0 auto;
     height: 60px;
+  }
+  .nav-active {
+    box-shadow: 0 6px 4px -4px rgba(0, 0, 0, 0.1);
   }
 }
 .nav-panel {
@@ -452,8 +487,6 @@ export default {
     ),
     webkit ms
   );
-  padding-left: 4px;
-  padding-bottom: 3px;
 }
 
 .nav-more {
@@ -470,7 +503,6 @@ export default {
     webkit ms
   );
   padding-left: 8px;
-  padding-bottom: 3px;
 }
 
 .nav-categories {
@@ -486,8 +518,6 @@ export default {
     ),
     webkit ms
   );
-  padding-left: 4px;
-  padding-bottom: 3px;
 }
 
 .nav-categories-hide {
@@ -505,8 +535,11 @@ export default {
 }
 
 .nav-selected {
+  color: $primary_color !important;
+}
+.nav-hover {
   padding-bottom: 0;
-  border-bottom: 3px solid $text_color;
+  border-bottom: 3px solid $primary_color;
 }
 .nav-icons {
   height: 100%;
@@ -539,7 +572,6 @@ export default {
     ),
     webkit ms
   );
-  padding: 0 8px;
 }
 .active {
   padding-bottom: 0;
@@ -593,6 +625,16 @@ export default {
   position: relative;
   text-decoration: none;
   color: $text_color;
+  height: 100%;
+  padding: 0 8px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
 }
 .nav-link {
   position: relative;
