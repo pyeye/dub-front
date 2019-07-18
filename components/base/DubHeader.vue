@@ -4,17 +4,27 @@
       <div class="header-info">
         <div>
           <div class="help">
-            <div class="help-link" v-response.small>Доставка</div>
-            <div class="help-link" v-response.small>Оплата</div>
-            <div class="help-link" v-response.small>Контакты</div>
+            <div class="help-link" v-response.small>
+              <span class="link-item">Доставка</span>
+            </div>
+            <div class="help-link" v-response.small>
+              <span class="link-item">Оплата</span>
+            </div>
+            <div class="help-link" v-response.small>
+              <span class="link-item">Контакты</span>
+            </div>
             <div
               class="help-link"
               v-response.small
               :class="{'help-link-selected ': isSelected('/news')}"
             >
-              <nuxt-link to="/news">Новости</nuxt-link>
+              <nuxt-link to="/news">
+                <span class="link-item">Новости</span>
+              </nuxt-link>
             </div>
-            <div class="help-link" v-response.small>О Магазине</div>
+            <div class="help-link" v-response.small>
+              <span class="link-item">О Магазине</span>
+            </div>
           </div>
         </div>
         <div class="flex"></div>
@@ -44,15 +54,12 @@
                   class="link"
                   :class="{'nav-selected': isSelected('/sales/catalog')}"
                 >
-                  Акции
+                  <span class="link-item">Акции</span>
                 </span>
               </nuxt-link>
             </div>
             <div
               class="nav-item"
-              :class="{
-                'nav-hover': isHover(category, activeCategories)
-              }"
               @mouseover="openProductPanel(category)"
               @mouseout="closeProductPanel()"
               @click="closePernamentPanel()"
@@ -65,7 +72,12 @@
                   class="link"
                   :class="{'nav-selected': isSelected(`/catalog/${category.category.slug}`)}"
                 >
-                  {{ category.category.name }}
+                  <span
+                    class="link-title"
+                    :class="{ 'link-title-hover': isHover(category, activeCategories) }"
+                  >
+                    {{ category.category.name }}
+                  </span>
                 </span>
               </nuxt-link>
             </div>
@@ -91,7 +103,7 @@
             </div>
           </div>
         </div>
-        <div class="search-panel" v-show="searchPanelActive">
+        <div class="search-panel" :class="{'search-panel-active': searchPanelActive}">
           <div class="search-input">
             <input
               ref="search"
@@ -129,15 +141,20 @@
         </div>
         
       </div>
+
       <dub-header-panel
+        class="panel-default"
+        :class="{'panel-active': navActive}"
         @mouseover.native="openProductPanel(activeCategories)"
         @mouseout.native="closeProductPanel()"
         @close-panel="navActive = false"
-        v-show="navActive"
         :category="activeCategories"
       ></dub-header-panel>
+
     </div>
-    <div v-show="searchPanelActive || navActive" @click="closeSearchPanel()" class="overlay"></div>
+    <transition name="fade">
+      <div v-show="searchPanelActive || navActive" @click="closeSearchPanel()" class="overlay"></div>
+    </transition>
   </div>
 </template>
 
@@ -386,6 +403,11 @@ export default {
   width: 100%;
   position: relative;
   height: 100%;
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s ease;
+}
+.search-panel-active {
   @include prefix(
     (
       display: flex,
@@ -393,6 +415,7 @@ export default {
     ),
     webkit ms
   );
+  opacity: 1;
 }
 .header-info-box {
   width: 100%;
@@ -456,6 +479,7 @@ export default {
   height: 100%;
   cursor: pointer;
   margin: 0 8px;
+  text-decoration: none;
   a {
     text-decoration: none;
     color: $text_color;
@@ -534,10 +558,7 @@ export default {
 .nav-selected {
   color: $primary_color !important;
 }
-.nav-hover {
-  padding-bottom: 0;
-  border-bottom: 3px solid $primary_color;
-}
+
 .nav-icons {
   height: 100%;
   @include prefix(
@@ -589,27 +610,6 @@ export default {
     webkit ms
   );
 }
-.guest-panel::before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: -9px;
-  left: 23px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 10px 10px;
-  border-color: transparent transparent #fff transparent;
-}
-.guest-panel-item {
-  font-size: 14px;
-  font-weight: 400;
-  transition: background-color 0.2s ease;
-  border-bottom: 1px solid #e6e3da;
-}
-.guest-panel-item:hover {
-  background-color: #e6e3da;
-}
 .panel-link {
   padding: 16px 24px;
   display: inline-block;
@@ -623,6 +623,7 @@ export default {
   text-decoration: none;
   color: $text_color;
   height: 100%;
+  opacity: 0.8;
   padding: 0 8px;
   @include prefix(
     (
@@ -632,6 +633,44 @@ export default {
     ),
     webkit ms
   );
+}
+.link-title {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.3s ease;
+  height: 100%;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
+}
+.link-item {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.3s ease;
+  height: 100%;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
+  &:hover {
+    background-size: 100% 100%;
+  }
+}
+.link-title-hover {
+  background-size: 100% 100%;
 }
 .nav-link {
   position: relative;
@@ -643,20 +682,24 @@ export default {
 .search-input {
   position: relative;
   width: 100%;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
 }
 .search-input input {
   border: 0;
   width: 100%;
   font-size: 20px;
-  position: absolute;
-  height: auto;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 12px 0;
+  padding: 8px 0 8px 8px;
   background: transparent;
   color: #252525;
+  background-color: #eee;
+  border-radius: 4px;
 }
 .search-input input:focus {
   outline: 0;
@@ -669,6 +712,7 @@ export default {
 .search-close {
   position: relative;
   cursor: pointer;
+  padding: 0 8px;
   @include prefix(
     (
       align-self: center,
@@ -703,6 +747,24 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 2;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
+}
+.panel-default {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+.panel-active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
 }
 .icon-link {
   width: 28px;
