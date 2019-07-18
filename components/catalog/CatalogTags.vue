@@ -1,6 +1,5 @@
 <template>
   <div class="filter-tag-menu">
-    <no-ssr>
     <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="tagKey" :options="slider">
       <vue-glide-slide v-for="tag in tags" :key="tag.pk">
         <div class="tag"
@@ -13,7 +12,6 @@
       </vue-glide-slide>
     </vue-glide>
     
-    </no-ssr>
     <div class="masked-box" v-show="!loaded">
       <div class="masked-item" v-for="i in 6" :key="i"></div>
     </div>

@@ -1,56 +1,131 @@
 <template>
   <div class="home">
     <div class="sales-news">
-      <div v-swiper:mySwipe="swiperOption" class="sales">
-        <div class="swiper-wrapper">
-          <div v-for="banner in banners" :key="banner.pk" class="swiper-slide">
-            <div :style="`background-image: url(${banner.image});`" class="slide"/>
-          </div>
+      <div class="sales">
+        <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="loaded" :options="slider">
+          <vue-glide-slide v-for="sale in sales" :key="sale.pk">
+            <div :style="getBgImage(sale.image.src)" class="slide"/>
+          </vue-glide-slide>
+        </vue-glide>
+        
+        <div class="masked-box" v-show="!loaded">
+          <div :style="getBgImage(sales[0].image.src)" class="slide masked-item"/>
         </div>
-        <div class="swiper-pagination swiper-pagination-bullets"/>
       </div>
+      
+
+
       <div class="news">
-        <div v-for="article in news" :key="article.pk" class="news-row">
-          <news-item :article="article" class="news-item"/>
+        <div
+          v-for="(article, index) in news"
+          :key="article.pk" class="news-row"
+          :style="`background-image: url(${article.image.src});`"
+          :class="{'news-row-first': index === 0}"
+        >
+          <nuxt-link :to="`news/${article.pk}`">
+            <div class="news-cover"></div>
+            <div class="news-hover-content">
+              <div class="news-cover-text">
+                 <span class="article-link"><span class="article-title">{{ article.title }}</span></span>
+              </div>
+              <div class="news-cover-info">
+                <div class="info-category">{{article.category.name}}</div>
+                <div class="info-date">{{article.date_updated.day}} {{article.date_updated.month}}</div>
+              </div>
+            </div>
+            <div class="news-relative-text">{{article.title}}</div>
+          </nuxt-link>
+        </div>
+        <div class="news-row" :style="`background-image: url(${allNewsImg});`">
+          <nuxt-link to="news">
+            <div class="news-cover"></div>
+             <div class="news-hover-content">
+              <div class="news-cover-text">
+                <span class="article-link"><span class="article-title">Все новости</span></span>
+              </div>
+             </div>
+            <div class="news-relative-text">Все новости</div>
+          </nuxt-link>
         </div>
       </div>
     </div>
-    <!--
-    <div class="about" :style="'background-image: url(http://houseofdubbel.tk/img/static/tom-sodoge-61701.jpg);'">
-      <div class="cover"></div>
-      <div class="cover-text">
+
+    <div class="about-row">
+      <div
+        class="about-text lax"
+        data-lax-translate-y="(vh-300) 220, vh 0"
+      >
         <div class="cover-title">House of Dubbel это:</div>
         <div>Более 70 000 напитков</div>
         <div>Лучшие цены</div>
         <div>Эксклюзивные коллекции</div>
         <div>Внимание и забота о клиентах</div>
       </div>
-    </div>
-    -->
-    <div class="title">Подборки от House of Dubbel</div>
-    <div class="posters">
-      <poster-item v-for="poster in posters" class="poster-item" :key="poster.pk" :poster="poster"/>
-    </div>
-
-
-    <div class="title">Популярное</div>
-    <div v-swiper:best="swiperTagOption" class="best">
-      <div class="swiper-wrapper">
-        <div v-for="best in bestsellers" class="swiper-slide best-slide" :key="best.pk">
-          <bestsellers-item :product="best" class="grid-cell" :category="best.category"/>
-        </div>
+      <div
+        class="about lax"
+        :style="`background-image: url(${allNewsImg});`"
+        data-lax-translate-y="(vh-300) 150, vh 0 | speed=1"
+        
+      >
+      <div class="cover"></div>
       </div>
+    </div>
+
+
+    
+    <div class="title-row lax" data-lax-translate-y= "vh 200, (vh+600) 0 | speed=1">
+      <div class="title">Коллекции </div>
+      <div class="sub-title">от House of Dubbel</div>
+    </div>
+
+
+    <div class="posters">
+        <poster-item
+          class="poster-item first lax"
+          data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
+          data-lax-translate-x="vh 0, (vh+600) 40 | speed=1"
+          :poster="collections[0]"
+        ></poster-item>
+      
+      <poster-item
+        class="poster-item second lax"
+        data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
+        data-lax-translate-x="vh 0, (vh+600) 10 | speed=1"
+        :poster="collections[1]"
+      ></poster-item>
+
+      <poster-item
+        class="poster-item third lax"
+        data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
+        data-lax-translate-x="vh 40, (vh+600) -10 | speed=1"
+        :poster="collections[2]"
+      ></poster-item>
+    </div>
+
+    <div class="title-row lax" data-lax-translate-y= "(vh*2) 200, (vh*2+600) 0 | speed=1">
+      <div class="title">Новинки</div>
+    </div>
+
+    <div class="grid lax" data-lax-translate-y= "(vh*2) 200, (vh*2+600) 0 | speed=1">
+      <catalog-item
+        class="grid-cell"
+        v-for="product in products"
+        :key="product.pk"
+        :product="product"
+      ></catalog-item>
     </div>
   </div>
 
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import lax from 'lax.js';
+
 import CatalogItem from '~/components/catalog/CatalogItem';
 import NewsItem from '~/components/news/NewsItem';
 import BestsellersItem from '~/components/home/BestsellersItem';
 import PosterItem from '~/components/home/PosterItem';
+import allNewsImg from '~/assets/images/all_news.jpg';
 
 export default {
   name: 'DubHome',
@@ -61,45 +136,47 @@ export default {
     PosterItem,
   },
   data: () => ({
-    swiperOption: {
-      loop: true,
-      speed: 1000,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
+    slider: {
+      type: 'carousel',
+      perView: 1,
+      autoplay: 5000,
+      animationDuration: 2000,
     },
-    swiperTagOption: {
-      slidesPerView: 'auto',
-      spaceBetween: 15,
-      freeMode: true,
-      speed: 2000,
-    },
-    swiperNewOption: {
-      loop: true,
-      slidesPerView: 4,
-      spaceBetween: 30,
-      speed: 2000,
-    },
+    loaded: false,
+    baseUrl: 'http://api.mydubbelsite.ru/',
+    allNewsImg,
   }),
-  async fetch({ store }) {
-    await Promise.all([
-      store.dispatch('home/requestNews'),
-      store.dispatch('home/requestBanners'),
-      store.dispatch('home/requestPosters'),
-      store.dispatch('home/requestBestsellers'),
+  async asyncData(context) {
+    const { app } = context;
+    const [news, sales, collections, newProducts] = await Promise.all([
+      app.$api.get('/home/news/'),
+      app.$api.get('/home/sales/'),
+      app.$api.get('/home/collections/'),
+      app.$api.get('/home/new/', { params: { sort: 'created_at-desc' } }),
     ]);
+    return {
+      news: news.data,
+      sales: sales.data,
+      collections: collections.data,
+      products: newProducts.data,
+    };
   },
-  computed: mapGetters({
-    news: 'home/news',
-    banners: 'home/banners',
-    posters: 'home/posters',
-    bestsellers: 'home/bestsellers',
-  }),
+  mounted() {
+    lax.setup();
+
+    document.addEventListener(
+      'scroll',
+      () => {
+        lax.update(window.scrollY);
+      },
+      false
+    );
+  },
+  methods: {
+    getBgImage(imageUrl) {
+      return `background-image: url(${this.baseUrl}${imageUrl});`;
+    },
+  },
 };
 </script>
 
@@ -119,8 +196,8 @@ export default {
     ),
     webkit ms
   );
-  margin: 24px 0;
-  height: 500px;
+  margin: 48px 0;
+  height: 420px;
   font-size: 20px;
 }
 .sales {
@@ -129,7 +206,7 @@ export default {
 }
 .slide {
   position: relative;
-  height: 100%;
+  height: 420px;
   width: 100%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   background-size: cover;
@@ -141,15 +218,26 @@ export default {
     (
       display: flex,
       flex-direction: row,
+      justify-content: space-between,
+      align-items: center,
     ),
     webkit ms
   );
-  margin-bottom: 24px;
+  margin-bottom: 164px;
   .poster-item {
-    margin-right: 16px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
-  .poster-item:last-child {
-    margin-right: 0;
+  .first {
+    width: 27%;
+    height: 400px;
+  }
+  .second {
+    width: 35%;
+    height: 550px;
+  }
+  .third {
+    width: 30%;
+    height: 450px;
   }
 }
 .news {
@@ -164,72 +252,112 @@ export default {
   width: 30%;
   margin-left: 8px;
   .news-row {
+    cursor: pointer;
     position: relative;
     width: 100%;
-    height: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    transition: flex 0.7s ease;
+    flex: 1;
+    &:hover {
+      flex: 10;
+      .article-title {
+        background-size: 100% 100%;
+      }
+    }
+    &:hover .news-relative-text {
+      opacity: 0;
+    }
+    &:hover .news-hover-content {
+      opacity: 1;
+    }
+  }
+  .news-row-first {
+    flex: 3;
   }
   .news-row:last-of-type {
     margin-bottom: 0;
   }
-  .column {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-      ),
-      webkit ms
-    );
-    .column-item {
-      margin-left: 8px;
-    }
-  }
 }
-.best {
+.article-link {
+  text-decoration: none;
+}
+.article-title {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease;
+}
+.title-row {
+  margin: 48px 0;
   position: relative;
-  height: 100%;
-  margin-bottom: 32px;
-}
-.best-slide {
-  width: 20%;
-}
-.grid-cell {
-  position: relative;
-  height: 100%;
-  margin-bottom: 32px;
-  background-color: $upper_layer_color;
-  border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.25s ease;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+    ),
+    webkit ms
+  );
 }
 .title {
-  width: 100%;
-  padding: 16px 0;
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  line-height: 40px;
+  padding-bottom: 16px;
+  font-size: 36px;
+  letter-spacing: 20px;
+  line-height: 24px;
   font-family: 'Roboto', sans-serif;
-  opacity: 0.9;
+  opacity: 0.7;
   color: $text_color;
+  text-transform: uppercase;
 }
-.bestseller-swiper-item {
-  position: relative;
-  height: 100%;
+.sub-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 20px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
 }
 .about {
-  margin-bottom: 24px;
-  cursor: pointer;
+  margin: 64px 0 64px 35%;
   border-radius: 2px;
   position: relative;
-  width: 100%;
-  height: 500px;
+  width: 75%;
+  height: 600px;
+  z-index: 1;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  transform: translateY(0);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.about-row {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+    ),
+    webkit ms
+  );
+  position: relative;
+}
+.about-text {
+  position: absolute;
+  padding: 48px;
+  left: 15%;
+  width: 30%;
+  z-index: 10;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  background-color: #fafafa;
+}
+.icon-link {
+  width: 18px;
+  height: 18px;
 }
 .cover {
   position: absolute;
@@ -239,7 +367,43 @@ export default {
   width: 100%;
   background-color: #000;
   transition: opacity 0.25s ease;
-  opacity: 0.6;
+  opacity: 0.5;
+}
+.news-hover-content {
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  transition: opacity 0.6s ease;
+}
+.news-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+  transition: opacity 0.25s ease;
+  opacity: 0.7;
+}
+.news-cover-text {
+  position: relative;
+  padding: 8px;
+  z-index: 1;
+  color: $primary_color;
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+}
+.news-relative-text {
+  transition: opacity 0.6s ease;
+  opacity: 1;
+  position: relative;
+  padding: 8px;
+  z-index: 1;
+  color: #fafafa;
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
 }
 .cover-text {
   @include prefix(
@@ -262,22 +426,82 @@ export default {
   padding: 48px 24px;
   opacity: 1;
   transition: opacity 0.25s ease;
-  .cover-title {
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 34px;
-    margin-bottom: 16px;
+}
+.cover-title {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 34px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+.cover-content {
+  position: absolute;
+}
+.news-cover-info {
+  padding: 8px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
+.info-category {
+  border-bottom: 2px solid $primary_color;
+  color: #fafafa;
+  z-index: 1;
+  padding-bottom: 4px;
+  font-size: 14px;
+}
+.info-date {
+  color: #fafafa;
+  z-index: 1;
+  padding: 0 0 4px 12px;
+  font-size: 14px;
+}
+a {
+  text-decoration: none;
+}
+.grid {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      flex-wrap: wrap,
+    ),
+    webkit ms
+  );
+  width: 100%;
+  .grid-cell {
+    @include prefix(
+      (
+        flex: 1 1,
+        flex-basis: 19.2%,
+      ),
+      webkit ms
+    );
+    max-width: 19.2%;
+    background-color: $upper_layer_color;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+    margin: 0 8px 32px 8px;
+    transition: box-shadow 0.25s ease;
+    &:hover {
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
   }
 }
 @media (max-width: 1450px) {
   .home {
-    width: 85%;
+    width: 90%;
   }
   .sales-news {
-    height: 400px;
+    height: 420px;
   }
   .about {
-    height: 350px;
+    height: 450px;
   }
 }
 </style>

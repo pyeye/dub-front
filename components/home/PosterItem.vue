@@ -1,13 +1,10 @@
 <template>
-  <div v-if="poster" class="news-item" :style="'background-image: url('+ poster.image +');'">
-    <nuxt-link :to="poster.url">
+  <div v-if="poster" class="news-item" :style="`background-image: url(${getAbsoluteUrl(poster.image.src)});`">
+    <nuxt-link :to="`collections/${poster.pk}`">
       <div class="cover"></div>
       <div class="cover-text">
-          <div class="title">{{ poster.title }}</div>
-      </div>
-      <div class="cover-inspect">
-        <div>ПОДРОБНЕЕ</div>
-        <dub-icon width=24 height=24 class="icon-link"><icon-right/></dub-icon>
+          <span class="link"><span class="title">{{ poster.name }}</span></span>
+          
       </div>
     </nuxt-link>
   </div>
@@ -20,6 +17,14 @@ export default {
   props: {
     poster: {
       type: Object,
+    },
+  },
+  data: () => ({
+    baseUrl: 'http://api.mydubbelsite.ru/',
+  }),
+  methods: {
+    getAbsoluteUrl(imageUrl) {
+      return this.baseUrl + imageUrl;
     },
   },
 };
@@ -40,20 +45,26 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   &:hover {
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
-    .cover {
-      opacity: 0.9;
-    }
     .cover-text {
-      opacity: 0;
+      color: $primary_color;
     }
-    .cover-inspect {
+    .title {
+      background-size: 100% 100%;
+    }
+    .icon-link {
       opacity: 1;
-      -webkit-transform: translate3d(-50%, -50%, 1px);
-      transform: translate3d(-50%, -50%, 1px);
     }
   }
+}
+.link {
+  text-decoration: none;
+}
+.title {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease;
 }
 .cover {
   position: absolute;
@@ -69,49 +80,29 @@ export default {
   @include prefix(
     (
       display: flex,
-      flex-direction: column,
+      flex-direction: row,
     ),
     webkit ms
   );
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 1;
   color: #fafafa;
-  font-size: 26px;
+  font-size: 28px;
   letter-spacing: -0.012em;
-  line-height: 32px;
+  line-height: 28px;
   font-family: 'Roboto', sans-serif;
-  padding: 32px 24px;
+  padding: 24px;
   opacity: 1;
-  transition: opacity 0.25s ease;
-}
-.cover-inspect {
-  color: $primary_color;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 30px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  opacity: 0;
-  transform: translate3d(-50%, -30%, 1px);
-  will-change: transfrom;
-  transition: opacity 0.4s ease, transform 0.45s ease, -webkit-transform 0.45s ease;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: center,
-    ),
-    webkit ms
-  );
+  transition: color 0.25s ease;
 }
 .icon-link {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 a {
   text-decoration: none;

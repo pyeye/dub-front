@@ -3,7 +3,7 @@ import axios from 'axios';
 export default (ctx, inject) => {
   const formatFacet = facet => (facet !== undefined && !Array.isArray(facet) ? [facet] : facet);
   const getFilterParams = payload => {
-    const { category, sales, query = {} } = payload;
+    const { category, sales, collections, query = {} } = payload;
     let { sfacets, nfacets } = query;
     const { tags } = query;
     sfacets = formatFacet(sfacets);
@@ -14,6 +14,7 @@ export default (ctx, inject) => {
       sfacets,
       nfacets,
       sales,
+      collections,
     };
   };
 

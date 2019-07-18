@@ -21,9 +21,6 @@
         <div class="contacts">
           <span class="phone">+7 (345) 54-54-444</span>
         </div>
-        <div class="contacts">
-          <span class="phone">Ежедневно c 9:00-22:00</span>
-        </div>
       </div>
     </div>
     
@@ -743,11 +740,11 @@ a {
 }
 @media (max-width: 1450px) {
   .header-info {
-    width: 85%;
+    width: 90%;
   }
   .header-nav {
     .nav {
-      width: 85%;
+      width: 90%;
     }
   }
 }

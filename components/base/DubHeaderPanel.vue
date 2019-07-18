@@ -94,7 +94,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .header-panel {
-  width: 85%;
+  width: 90%;
   position: absolute;
   left: 50%;
   top: 100%;
@@ -176,7 +176,7 @@ export default {
     position: relative;
   }
   .content-meta {
-    width: 85%;
+    width: 90%;
     overflow: hidden;
     padding: 0 24px;
     @include prefix(
