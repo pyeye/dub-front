@@ -1,13 +1,13 @@
 <template>
   <div class="catalog-list">
-    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+    
     <div class="header">
-      <div class="title">{{ category.name }}</div>
-      <div class="filters">
-        <div class="count">Найдено {{ totalProducts }}</div>
-        <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
+      <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
+      <div class="title-row">
+        <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+        <div class="title">{{ category.name }}</div>
+        <div class="sub-title">Найдено {{ totalProducts }}</div>
       </div>
-
       <div class="sort">
         <div class="sort-description">Сортировать по:</div>
         <dub-select
@@ -267,6 +267,9 @@ export default {
       };
     },
     async updateQuery() {
+      this.$nextTick(() => {
+        this.$root.$loading.start();
+      });
       const query = Object.assign({}, this.$route.query);
       const { category } = this.$route.params;
       query.sfacets = this.encodeSFacet(this.filters.sfacets);
@@ -284,6 +287,7 @@ export default {
       this.products = products.items;
       this.totalProducts = products.total;
       this.facets = facets;
+      this.$root.$loading.finish();
     },
     async sliderHandler(payload) {
       const { value, nfacet } = payload;
@@ -373,15 +377,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.title {
-  font-size: 48px;
-  font-weight: 600;
-  margin-bottom: 2px;
-  letter-spacing: 0.025em;
-  line-height: 42px;
-  font-family: 'Roboto', sans-serif;
-}
-
 .catalog-list {
   position: relative;
   flex: 1;
@@ -393,7 +388,6 @@ export default {
   padding: 8px 0;
 }
 .header {
-  margin-top: 24px;
   padding-bottom: 16px;
   @include prefix(
     (
@@ -418,6 +412,15 @@ export default {
     border-bottom: 3px solid $primary_color;
   }
 }
+.badges {
+  width: 33.3%;
+  color: $text_color;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.012em;
+  margin: 16px 8px 0 0;
+}
 .filters {
   @include prefix(
     (
@@ -435,23 +438,17 @@ export default {
     margin-left: 8px;
     margin-bottom: 3px;
   }
-  .badges {
-    color: $text_color;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    margin-right: 8px;
-  }
   .filter-sort-active {
     border-bottom: 3px solid $primary_color;
   }
 }
 .sort {
+  width: 33.3%;
   @include prefix(
     (
       display: flex,
       flex-direction: row,
+      justify-content: flex-end,
     ),
     webkit ms
   );
@@ -580,11 +577,44 @@ export default {
     ),
     webkit ms
   );
-  width: 85%;
+  width: 90%;
+}
+.title-row {
+  margin: 24px 0;
+  width: 33.3%;
+  position: relative;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+    ),
+    webkit ms
+  );
+}
+.title {
+  margin: 14px 0;
+  font-size: 36px;
+  letter-spacing: 20px;
+  margin-right: -20px;
+  line-height: 24px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+}
+.sub-title {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  line-height: 16px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
 }
 @media (max-width: 1450px) {
   .catalog-list {
-    width: 85%;
+    width: 90%;
   }
 }
 </style>

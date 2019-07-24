@@ -1,20 +1,8 @@
 <template>
   <div class="home">
-    <div class="sales-news">
-      <div class="sales">
-        <vue-glide @glide:mount-after="loaded = true" v-show="loaded" :key="loaded" :options="slider">
-          <vue-glide-slide v-for="sale in sales" :key="sale.pk">
-            <div :style="getBgImage(sale.image.src)" class="slide"/>
-          </vue-glide-slide>
-        </vue-glide>
-        
-        <div class="masked-box" v-show="!loaded">
-          <div :style="getBgImage(sales[0].image.src)" class="slide masked-item"/>
-        </div>
-      </div>
+      <sales-carousel :sales="sales"></sales-carousel>
       
-
-
+      <!--
       <div class="news">
         <div
           v-for="(article, index) in news"
@@ -36,7 +24,7 @@
             <div class="news-relative-text">{{article.title}}</div>
           </nuxt-link>
         </div>
-        <div class="news-row" :style="`background-image: url(${allNewsImg});`">
+        <div class="news-row base-news">
           <nuxt-link to="news">
             <div class="news-cover"></div>
              <div class="news-hover-content">
@@ -48,8 +36,7 @@
           </nuxt-link>
         </div>
       </div>
-    </div>
-
+      -->
     <div class="about-row">
       <div
         class="about-text lax"
@@ -62,8 +49,7 @@
         <div>Внимание и забота о клиентах</div>
       </div>
       <div
-        class="about lax"
-        :style="`background-image: url(${allNewsImg});`"
+        class="about base-news lax"
         data-lax-translate-y="(vh-300) 150, vh 0 | speed=1"
         
       >
@@ -125,7 +111,7 @@ import CatalogItem from '~/components/catalog/CatalogItem';
 import NewsItem from '~/components/news/NewsItem';
 import BestsellersItem from '~/components/home/BestsellersItem';
 import PosterItem from '~/components/home/PosterItem';
-import allNewsImg from '~/assets/images/all_news.jpg';
+import SalesCarousel from '~/components/sales/SalesCarousel';
 
 export default {
   name: 'DubHome',
@@ -134,6 +120,7 @@ export default {
     NewsItem,
     BestsellersItem,
     PosterItem,
+    SalesCarousel,
   },
   data: () => ({
     slider: {
@@ -144,7 +131,6 @@ export default {
     },
     loaded: false,
     baseUrl: 'http://api.mydubbelsite.ru/',
-    allNewsImg,
   }),
   async asyncData(context) {
     const { app } = context;
@@ -492,6 +478,9 @@ a {
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
   }
+}
+.base-news {
+  background-image: url('~/assets/images/all_news.jpg');
 }
 @media (max-width: 1450px) {
   .home {

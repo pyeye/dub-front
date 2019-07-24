@@ -25,8 +25,9 @@
         </div>
       </div>
 
-        <dub-header @overlay-change="overlayHandler"/>
+        <dub-header/>
         <nuxt/>
+        <dub-footer/>
       </div>
 
   </div>
@@ -34,12 +35,13 @@
 
 <script>
 import DubHeader from '~/components/base/DubHeader';
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import DubFooter from '~/components/base/DubFooter';
 
 export default {
   name: 'app',
   components: {
     DubHeader,
+    DubFooter,
   },
   data: () => ({
     agreement: true,
@@ -48,18 +50,6 @@ export default {
     agree() {
       sessionStorage.setItem('agreement', true);
       this.agreement = true;
-    },
-    overlayHandler(e) {
-      const target = document.querySelector('#app');
-      if (e) {
-        disableBodyScroll(target, {
-          reserveScrollBarGap: true,
-        });
-      } else {
-        enableBodyScroll(target, {
-          reserveScrollBarGap: true,
-        });
-      }
     },
   },
   mounted() {

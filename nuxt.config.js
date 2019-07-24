@@ -30,7 +30,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: { color: '#fc0', height: '5px' },
 
   plugins: [
     { src: '~/plugins/api' },
@@ -44,7 +44,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['@/assets/directives/response.scss', '@/assets/reset.css', 'swiper/dist/css/swiper.css'],
+  css: ['@/assets/directives/response.scss', '@/assets/reset.css', '@/assets/transitions.css'],
 
   /*
   ** Nuxt.js modules
