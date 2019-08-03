@@ -45,9 +45,6 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   &:hover {
-    .cover-text {
-      color: $primary_color;
-    }
     .title {
       background-size: 100% 100%;
     }

@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="header">
-      <div class="title">Акции</div>
-    </div>
     <div class="slider">
       <vue-glide :options="slider" @glide:mount-after="loaded = true" v-show="loaded" :key="loaded">
         <vue-glide-slide v-for="sale in sales" :key="sale.pk">
@@ -15,7 +12,7 @@
                     по {{ sale.fdate_end.day }} {{ sale.fdate_end.month }}
                   </div>
                 </div>
-                <div class="title">{{ sale.name }}</div>
+                <span class="title"><span class="link">{{ sale.name }}</span></span>
               </div>
             </nuxt-link>
           </div>
@@ -69,39 +66,9 @@ export default {
 a {
   text-decoration: none;
   color: $text_color;
-  &:hover {
-    text-decoration: underline;
-  }
-}
-.header {
-  margin-top: 24px;
-  padding-bottom: 8px;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: flex-end,
-    ),
-    webkit ms
-  );
-  .title {
-    font-size: 48px;
-    font-weight: 600;
-    margin-bottom: 2px;
-    letter-spacing: 0.025em;
-    line-height: 42px;
-    font-family: 'Roboto', sans-serif;
-  }
-  .secondary-title {
-    color: $text_color;
-    font-size: 18px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-  }
 }
 .slider {
-  height: 200px;
+  height: 250px;
 }
 .slide {
   cursor: pointer;
@@ -109,7 +76,7 @@ a {
   position: relative;
   border: 2px solid #fff;
   width: 100%;
-  height: 200px;
+  height: 250px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
@@ -118,8 +85,8 @@ a {
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   &:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    .cover-text {
-      text-decoration: underline;
+    .link {
+      background-size: 100% 100%;
     }
   }
 }
@@ -219,6 +186,7 @@ a {
   padding: 10px;
   border-radius: 2px;
   background-color: #252525;
+  transition: background-color 0.25s ease;
   opacity: 0.6;
   cursor: pointer;
   @include prefix(
@@ -244,6 +212,7 @@ a {
   padding: 10px;
   border-radius: 2px;
   background-color: #252525;
+  transition: background-color 0.25s ease;
   opacity: 0.6;
   cursor: pointer;
   @include prefix(
@@ -262,9 +231,23 @@ a {
     }
   }
 }
+.title {
+  text-decoration: none;
+}
+.link {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease;
+  &:hover {
+    background-size: 100% 100%;
+  }
+}
 .prev-icon {
   position: relative;
   z-index: 2;
   color: #fff;
+  transition: color 0.25s ease;
 }
 </style>

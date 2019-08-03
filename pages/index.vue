@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-      <sales-carousel :sales="sales"></sales-carousel>
+      <sales-carousel class="lax" data-lax-translate-y="(vh-200) 0, (vh+300) -50" :sales="sales"></sales-carousel>
+
+      <news-carousel class="lax" data-lax-translate-y="(vh-200) 0, (vh+200) -100" :news="news"></news-carousel>
       
       <!--
       <div class="news">
@@ -40,13 +42,15 @@
     <div class="about-row">
       <div
         class="about-text lax"
-        data-lax-translate-y="(vh-300) 220, vh 0"
+        data-lax-translate-y="(vh-300) 250, vh 0"
       >
-        <div class="cover-title">House of Dubbel это:</div>
-        <div>Более 70 000 напитков</div>
-        <div>Лучшие цены</div>
-        <div>Эксклюзивные коллекции</div>
-        <div>Внимание и забота о клиентах</div>
+        <div class="about-text-logo">
+          <img src="~/assets/images/dubbel_text.png" class="img-logo">
+        </div>
+        <div class="about-text-row">Тысячи алкогольных напитков</div>
+        <div class="about-text-row">Лучшие цены</div>
+        <div class="about-text-row">Эксклюзивные коллекции</div>
+        <div class="about-text-row">Внимание и забота о клиентах</div>
       </div>
       <div
         class="about base-news lax"
@@ -112,6 +116,7 @@ import NewsItem from '~/components/news/NewsItem';
 import BestsellersItem from '~/components/home/BestsellersItem';
 import PosterItem from '~/components/home/PosterItem';
 import SalesCarousel from '~/components/sales/SalesCarousel';
+import NewsCarousel from '~/components/news/NewsCarousel';
 
 export default {
   name: 'DubHome',
@@ -121,6 +126,7 @@ export default {
     BestsellersItem,
     PosterItem,
     SalesCarousel,
+    NewsCarousel,
   },
   data: () => ({
     slider: {
@@ -310,16 +316,17 @@ export default {
   text-transform: uppercase;
 }
 .about {
-  margin: 64px 0 64px 35%;
+  margin: 64px 0 64px 20%;
   border-radius: 2px;
   position: relative;
-  width: 75%;
+  width: 80%;
   height: 600px;
   z-index: 1;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  background-image: url('http://mydubbelsite.ru/img/static/all_news.jpg');
 }
 .about-row {
   @include prefix(
@@ -331,15 +338,37 @@ export default {
     webkit ms
   );
   position: relative;
+  margin-top: 36px;
 }
 .about-text {
   position: absolute;
-  padding: 48px;
-  left: 15%;
-  width: 30%;
+  padding: 36px;
+  top: -10%;
+  left: 10%;
+  width: 20%;
+  height: 300px;
   z-index: 10;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   background-color: #fafafa;
+}
+.about-text-logo {
+  position: relative;
+  margin: 0 auto 24px auto;
+  width: 60%;
+  opacity: 0.8;
+}
+.img-logo {
+  position: relative;
+  width: 100%;
+}
+.about-text-row {
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 400;
+  margin: 16px 8px;
+  opacity: 0.7;
+  font-family: 'Roboto', sans-serif;
+  color: $text_color;
 }
 .icon-link {
   width: 18px;
@@ -478,9 +507,6 @@ a {
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
   }
-}
-.base-news {
-  background-image: url('~/assets/images/all_news.jpg');
 }
 @media (max-width: 1450px) {
   .home {

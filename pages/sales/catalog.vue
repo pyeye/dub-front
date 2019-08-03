@@ -1,17 +1,13 @@
 <template>
   <div class="news-detail">
 
-    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
-
-    <sales-slider :sales="sales"></sales-slider>
-
     <div class="header">
-      <div class="title">Товары</div>
-      <div class="filters">
-        <div class="count">Найдено {{ totalProducts }}</div>
-        <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
+      <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
+      <div class="title-row">
+        <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+        <div class="title">Акции</div>
+        <div class="sub-title">Товаров {{ totalProducts }}</div>
       </div>
-
       <div class="sort">
         <div class="sort-description">Сортировать по:</div>
         <dub-select
@@ -21,6 +17,8 @@
         ></dub-select>
       </div>
     </div>
+
+    <sales-slider class="sales-slider" :sales="sales"></sales-slider>
 
     <catalog-tags :tags="tags" :selected-tags="filters.tags" @tag-selected="tagHandler"></catalog-tags>
 
@@ -248,16 +246,29 @@ a {
 }
 @media (max-width: 1450px) {
   .news-detail {
-    width: 85%;
+    width: 90%;
   }
 }
 .title {
-  font-size: 48px;
-  font-weight: 600;
-  margin-bottom: 2px;
-  letter-spacing: 0.025em;
-  line-height: 42px;
+  margin: 14px 0;
+  font-size: 36px;
+  letter-spacing: 20px;
+  margin-right: -20px;
+  line-height: 24px;
   font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+}
+.sub-title {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  line-height: 16px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
 }
 
 .catalog-list {
@@ -271,7 +282,6 @@ a {
   padding: 8px 0;
 }
 .header {
-  margin-top: 24px;
   padding-bottom: 16px;
   @include prefix(
     (
@@ -296,6 +306,15 @@ a {
     border-bottom: 3px solid $primary_color;
   }
 }
+.badges {
+  width: 33.3%;
+  color: $text_color;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.012em;
+  margin: 16px 8px 0 0;
+}
 .filters {
   @include prefix(
     (
@@ -313,23 +332,30 @@ a {
     margin-left: 8px;
     margin-bottom: 3px;
   }
-  .badges {
-    color: $text_color;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    margin-right: 8px;
-  }
   .filter-sort-active {
     border-bottom: 3px solid $primary_color;
   }
 }
+.title-row {
+  margin: 24px 0;
+  width: 33.3%;
+  position: relative;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+    ),
+    webkit ms
+  );
+}
 .sort {
+  width: 33.3%;
   @include prefix(
     (
       display: flex,
       flex-direction: row,
+      justify-content: flex-end,
     ),
     webkit ms
   );
@@ -341,6 +367,9 @@ a {
     letter-spacing: -0.012em;
     margin-right: 8px;
   }
+}
+.sales-slider {
+  margin-bottom: 24px;
 }
 .content {
   @include prefix(
@@ -458,11 +487,11 @@ a {
     ),
     webkit ms
   );
-  width: 85%;
+  width: 90%;
 }
 @media (max-width: 1450px) {
   .catalog-list {
-    width: 85%;
+    width: 90%;
   }
 }
 </style>

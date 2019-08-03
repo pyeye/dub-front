@@ -3,19 +3,19 @@
     <div class="separator"><img src="~/assets/images/house_logo.png" class="img-logo"></div>
     <div class="footer-info">
       <div class="info-links">
-        <div>Контакты</div>
-        <div>Новости</div>
-        <div>О магазине</div>
+        <span class="text-row"><span class="link">Контакты</span></span>
+        <span class="text-row"><span class="link">Новости</span></span>
+        <span class="text-row"><span class="link">О магазине</span></span>
       </div>
       <div class="info-social">
         <dub-icon  width=24 height=24 class="icon-link"><icon-instagram/></dub-icon>
         <dub-icon  width=24 height=24 class="icon-link"><icon-facebook/></dub-icon>
       </div>
       <div class="info-contacts">
-        <div>г. Челябинск, ул. Свободы, 2</div>
-        <div>По будням с 9:00 до 18:00 </div> 
-        <div>support@houseofdubbel.ru</div>
-        <div>8 (919) 400-27-37</div>
+        <span class="text-row">г. Челябинск, ул. Свободы, 2</span>
+        <span class="text-row">По будням с 9:00 до 18:00 </span> 
+        <span class="text-row">support@houseofdubbel.ru</span>
+        <span class="text-row">8 (919) 400-27-37</span>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .footer {
-  margin: 16px 0 36px 0;
+  margin: 100px 0 50px 0;
   width: 100%;
 }
 .img-logo {
@@ -66,7 +66,6 @@ export default {
 .footer-info {
   width: 90%;
   margin: 0 auto;
-  margin-top: 16px;
   @include prefix(
     (
       display: flex,
@@ -116,10 +115,32 @@ export default {
     webkit ms
   );
 }
+.text-row {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 400;
+  margin: 4px;
+  opacity: 0.7;
+  font-family: 'Roboto', sans-serif;
+  color: $text_color;
+  text-decoration: none;
+}
 .icon-link {
   opacity: 0.7;
   padding: 16px;
   width: 38px;
   height: 38px;
+  cursor: pointer;
+}
+.link {
+  cursor: pointer;
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease, color 1.6s ease-in-out;
+  &:hover {
+    background-size: 100% 100%;
+  }
 }
 </style>

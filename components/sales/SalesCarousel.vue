@@ -3,35 +3,31 @@
     
     <div class="slider-title">
       <nuxt-link class="link-title" :to="`/sales/${activeSale.pk}`">
-      <div class="slider-title-box">
-        <transition-group
-        name="slide-title"
-        tag="div" 
-        class="transition-box"
-        @before-leave="beforeLeaveHandler"
-        @after-enter="afterEnterHandler"
-      >
-        <div
-          class="transition-item"
-          v-for="number in [activeSaleIndex]"
-          :key="number"
-        >
-          {{ activeSale.name }}
-        </div>
-      </transition-group>
-      
-      
-      <div class="revealer-title-box">
-        <div :class="{'revealer-animated': isAnimated}" class="revealer"></div>  
-      </div>
-      </div>
-        </nuxt-link>
+        <div class="slider-title-box">
+          <transition-group
+            name="slide-title"
+            tag="div" 
+            class="transition-box"
+            @before-leave="beforeLeaveHandler"
+            @after-enter="afterEnterHandler"
+          >
+            <div
+              class="transition-item"
+              v-for="number in [activeSaleIndex]"
+              :key="number"
+            >
+              {{ activeSale.name }}
+            </div>
+          </transition-group>
         
+          <div class="revealer-title-box">
+            <div :class="{'revealer-animated': isAnimated}" class="revealer"></div>  
+          </div>
+        </div>
+      </nuxt-link>
     </div>
     
-
     <div class="slider-box">
-      
       <transition-group
         name="slide"
         tag="div" 
@@ -44,39 +40,31 @@
           v-for="number in [activeSaleIndex]"
           :key="number"
           :style="getBgImage(activeSale.image.src)"
-          
         >
-        <nuxt-link class="nuxt-link" :to="`/sales/${activeSale.pk}`"></nuxt-link>
+          <nuxt-link class="nuxt-link" :to="`/sales/${activeSale.pk}`"></nuxt-link>
         </div>
-        
       </transition-group>
-
 
       <div class="revealer-box">
         <div :class="{'revealer-animated': isAnimated}" class="revealer"></div>  
       </div>
 
-
       <div class="slider-bullets-reveal">
         <div class="slider-bullets">
-          <span class="link" v-for="(sale, index) in sales"
-              :key="sale.pk">
+          <span class="link" v-for="(sale, index) in sales" :key="sale.pk">
             <span 
               class="bullet"
               :class="{'actiive-bullet': activeSale.pk === sale.pk}"
-              
               @click="setSlide(index)"
             >
               {{ sale.name }}
             </span>
           </span>
-          
         </div>
-        
       </div>
 
       <div class="slider-name">
-        <nuxt-link to="/sales/catalog"> акции </nuxt-link>
+        <nuxt-link to="/sales/catalog">акции</nuxt-link>
       </div>
     </div>
   </div>
@@ -92,7 +80,7 @@ export default {
   },
   data: () => ({
     activeSaleIndex: 0,
-    duration: 15000,
+    duration: 10000,
     sliderInterval: null,
     isAnimated: false,
     baseUrl: 'http://api.mydubbelsite.ru/',
@@ -135,9 +123,6 @@ export default {
     },
     afterEnterHandler() {
       this.isAnimated = false;
-    },
-    goToSale(pk) {
-      this.$router.push({ path: `/sales/${pk}` });
     },
   },
 };
@@ -185,6 +170,7 @@ export default {
   bottom: 0;
   width: 300px;
   background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+  border-radius: 4px;
 }
 .slider-bullets {
   z-index: 3;
@@ -257,6 +243,7 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  border-radius: 4px;
 }
 .nuxt-link {
   cursor: pointer;
@@ -280,8 +267,8 @@ export default {
 }
 .slider-box {
   position: relative;
-  width: 75%;
-  height: 400px;
+  width: 85%;
+  height: 450px;
   margin-left: -6%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
@@ -304,9 +291,10 @@ export default {
 .revealer-box {
   position: relative;
   overflow: hidden;
-  top: -400px;
-  height: 400px;
+  top: -450px;
+  height: 450px;
   width: 100%;
+  border-radius: 4px;
 }
 .revealer-title-box {
   position: relative;

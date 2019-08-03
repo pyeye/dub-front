@@ -1,33 +1,28 @@
 <template>
   <div class="news-detail">
-    <div class="hero" :style="getBgImage(collection.image.src)">
-      <div class="cover"></div>
-      <div class="hero-content">
-        <div class="breadcrumbs">
-          <div class="breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="breadcrumb.label">
-            <div class="breadcrumb-label" :class="{'breadcrumb-disabled': index + 1 === breadcrumbs.length}">
-              <nuxt-link :to="breadcrumb.link" >{{breadcrumb.label}}</nuxt-link>
-            </div>
-            <div class="breadcrumb-separator" v-if="index + 1 !== breadcrumbs.length">
-              <dub-icon class="icon"><icon-right/></dub-icon>
-            </div>
-          </div>
-        </div>
-      
-        <div class="cover-text">
-          <div class="title">{{ collection.name }}</div>
-        </div>
-        <div class="description">
-          {{ collection.description }}
-        </div>
+    <div class="header">
+      <div class="title-row">
+        <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+        <div class="title">{{ collection.name }}</div>
       </div>
-      
     </div>
+    <div class="hero-row">
+      <div class="description-box">
+        <div class="description-text">{{ collection.description }}</div>
+      </div>
+      <div class="hero" :style="getBgImage(collection.image.src)"></div>
+    </div>
+
+    <div class="header">
+      <div class="title-row">
+        <div class="title">Товары в коллекции</div>
+        <div class="sub-title"> Найдено {{ totalProducts }}</div>
+      </div>
+    </div>
+
     <div class="sales-products">
       <div class="header">
-        <div class="title">Товары</div>
         <div class="filters">
-          <div class="count">Найдено {{ totalProducts }}</div>
           <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
         </div>
 
@@ -122,7 +117,7 @@ export default {
     breadcrumbs() {
       return [
         { label: 'Главная', link: '/' },
-        { label: 'Коллекции', link: '/collections/catalog' },
+        { label: 'Коллекции', link: '' },
         { label: this.collection.name, link: '' },
       ];
     },
@@ -205,11 +200,13 @@ export default {
 }
 .hero {
   position: relative;
-  width: 100%;
-  height: 300px;
+  width: 80%;
+  margin: 0 0 0 auto;
+  min-height: 400px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .cover {
   position: absolute;
@@ -262,11 +259,26 @@ export default {
     }
   }
 }
-.description {
-  padding: 12px 0 24px 0;
-  font-size: 14px;
+.hero-row {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  margin-bottom: 48px;
+}
+.description-box {
+  width: 30%;
+  transform: translate(25%, 48px);
+  background-color: $upper_layer_color;
   z-index: 1;
-  color: #fafafa;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.description-text {
+  padding: 24px;
+  opacity: 0.7;
 }
 .icon-link {
   position: absolute;
@@ -283,19 +295,34 @@ a {
 }
 @media (max-width: 1450px) {
   .sales-products {
-    width: 85%;
+    width: 90%;
   }
   .hero-content {
-    width: 85%;
+    width: 90%;
   }
 }
 .title {
-  font-size: 48px;
-  font-weight: 600;
-  margin-bottom: 2px;
-  letter-spacing: 0.025em;
-  line-height: 42px;
+  margin: 14px 0;
+  font-size: 36px;
+  letter-spacing: 5px;
+  margin-right: -5px;
+  line-height: 40px;
   font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+  text-align: center;
+}
+.sub-title {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  line-height: 16px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .catalog-list {
@@ -309,13 +336,12 @@ a {
   padding: 8px 0;
 }
 .header {
-  margin-top: 24px;
-  padding-bottom: 16px;
   @include prefix(
     (
       display: flex,
       flex-direction: row,
-      align-items: flex-end,
+      align-items: center,
+      justify-content: center,
     ),
     webkit ms
   );
@@ -333,6 +359,20 @@ a {
   .pointer:hover {
     border-bottom: 3px solid $primary_color;
   }
+}
+.title-row {
+  margin: 24px 0;
+  width: 60%;
+  position: relative;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+      justify-content: center,
+    ),
+    webkit ms
+  );
 }
 .filters {
   @include prefix(
@@ -466,16 +506,6 @@ a {
   }
 }
 
-.breadcrumbs {
-  margin: 0;
-  color: #fafafa !important;
-  z-index: 1;
-  a {
-    text-decoration: none;
-    color: #fafafa;
-  }
-}
-
 .slide {
   height: 550px;
   width: 100%;
@@ -495,59 +525,6 @@ a {
 .pagination {
   margin-bottom: 24px;
 }
-.breadcrumbs {
-  margin: 0;
-  color: #fafafa !important;
-  z-index: 1;
-  padding-top: 16px;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-    ),
-    webkit ms
-  );
-}
-.breadcrumb {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-    ),
-    webkit ms
-  );
-}
-.breadcrumb-label {
-  padding-bottom: 2px;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.8;
-  letter-spacing: 0.01em;
-  &:hover {
-    border-bottom: 2px solid $primary_color;
-    padding-bottom: 0;
-  }
-}
-.breadcrumb-separator {
-  width: 20px;
-  height: 22px;
-  opacity: 0.8;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: center,
-      justify-content: center,
-    ),
-    webkit ms
-  );
-}
-.breadcrumb-disabled {
-  pointer-events: none;
-  cursor: default;
-  text-decoration: none;
-  opacity: 0.7;
-}
 a {
   text-decoration: none;
   color: #fafafa;
@@ -560,11 +537,11 @@ a {
     ),
     webkit ms
   );
-  width: 85%;
+  width: 90%;
 }
 @media (max-width: 1450px) {
   .catalog-list {
-    width: 85%;
+    width: 90%;
   }
 }
 </style>

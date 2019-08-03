@@ -178,7 +178,7 @@ export default {
     navFixed: false,
     navVisible: false,
     navBottomOffcet: 175,
-    navTopOffcet: 52,
+    navTopOffcet: 37,
     scrollPositionY: -1,
     scrollTicking: false,
     scrollDirection: 'none',
@@ -368,7 +368,6 @@ export default {
   font-family: 'Roboto', sans-serif;
   line-height: 24px;
   font-weight: 700;
-  border-top: 1px solid #e6e3da;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
   width: 100%;
   .nav {
@@ -419,7 +418,7 @@ export default {
 }
 .header-info-box {
   width: 100%;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   z-index: 3;
   position: relative;
 }
@@ -437,13 +436,13 @@ export default {
 }
 .contacts {
   -webkit-font-smoothing: antialiased;
-  padding: 14px 0;
+  padding: 8px 0;
   margin-left: 8px;
   color: $text_color;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   opacity: 0.7;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.2px;
   @include prefix(
     (
       display: flex,
@@ -459,12 +458,12 @@ export default {
 }
 .help {
   -webkit-font-smoothing: antialiased;
-  padding: 14px 0;
+  padding: 8px 0;
   color: $text_color;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   opacity: 0.7;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.2px;
   margin-right: 16px;
   @include prefix(
     (
@@ -478,7 +477,7 @@ export default {
   position: relative;
   height: 100%;
   cursor: pointer;
-  margin: 0 8px;
+  margin-right: 16px;
   text-decoration: none;
   a {
     text-decoration: none;
@@ -738,7 +737,7 @@ export default {
   background-color: #e6e3da;
 }
 .overlay {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.8);
   position: fixed;
   top: 0;
   right: 0;
