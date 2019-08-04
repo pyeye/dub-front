@@ -1,185 +1,193 @@
 <template>
   <div class="product-detail">
-    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+    <dub-breadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="content">
-      <div class="product-image">
-        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
-        <div class="floating" v-if="selectedInstance.sales.length !== 0">
-          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="label">
-            {{ label }}
-          </sales-badge>
-        </div>
-      </div>
+      
       <div class="product-info">
         <div class="name">
-          {{ product.category.name }}
           {{ product.name }},
           {{selectedInstance.measure_count}}
           {{selectedInstance.measure_value}}
         </div>
         <div class="sales-conditions" v-if="salesWithCondition">
-          <div v-for="sale in salesWithCondition" :key="sale.pk">
+          <div v-for="sale in salesWithCondition" :key="`sale_${sale.pk}`">
             {{ sale.condition }}
           </div>
         </div>
-        <div class="info-box">
-          <div class="info-main">
-            <div class="tab-panel">
-              <div
-                v-response.small.fast
-                class="tab-item"
-                @click="tabIndex = 'main'"
-                :class="{ 'tab-item-active': tabIndex == 'main' }">
-                Характеристики
-              </div>
-              <div
-                v-response.small.fast
-                class="tab-item"
-                @click="tabIndex = 'description'"
-                :class="{ 'tab-item-active': tabIndex == 'description' }">
-                Описание
-              </div>
-            </div>
-
-            <div v-if="tabIndex == 'main'">
-              <div
-                class="info-list"
-                v-for="number_facet in displayNFacets"
-                :key="number_facet.pk"
-              >
-                <div class="info-description">{{number_facet.name}}:</div>
-                <div class="description-flex"></div>
-                <div class="info-value row">
-                  <div class="row-item">
-                    <nuxt-link 
-                      class="list-link"
-:to="`/catalog/${product.category.slug}?nfacets=${number_facet.slug}:${number_facet.value}-${number_facet.value}`">
-                      {{number_facet.value}}{{number_facet.suffix}}
-                    </nuxt-link>
-                    
-                  </div>
+        <div class="info">
+          <div class="info-box">
+            <div class="info-main">
+              <div class="tab-panel">
+                <div
+                  v-response.small.fast
+                  class="tab-item"
+                  @click="tabIndex = 'main'"
+                  :class="{ 'tab-item-active': tabIndex == 'main' }">
+                  Характеристики
+                </div>
+                <div
+                  v-response.small.fast
+                  class="tab-item"
+                  @click="tabIndex = 'description'"
+                  :class="{ 'tab-item-active': tabIndex == 'description' }">
+                  Описание
                 </div>
               </div>
-            
-              <div
-                class="info-list"
-                v-for="string_facet in product.string_facets"
-                :key="string_facet.pk"
-              >
-                <div class="info-description">{{string_facet.name}}:</div>
+
+              <div v-if="tabIndex == 'main'">
+                <div
+                  class="info-list"
+                  v-for="number_facet in displayNFacets"
+                  :key="number_facet.pk"
+                >
+                  <div class="info-description">{{number_facet.name}}:</div>
+                  <div class="description-flex"></div>
+                  <div class="info-value row">
+                    <div class="row-item">
+                      <nuxt-link 
+                        class="list-link"
+  :to="`/catalog/${product.category.slug}?nfacets=${number_facet.slug}:${number_facet.value}-${number_facet.value}`">
+                        {{number_facet.value}}{{number_facet.suffix}}
+                      </nuxt-link>
+                      
+                    </div>
+                  </div>
+                </div>
+              
+                <div
+                  class="info-list"
+                  v-for="string_facet in product.string_facets"
+                  :key="`sfacet_${string_facet.pk}`"
+                >
+                  <div class="info-description">{{string_facet.name}}:</div>
+                  <div class="description-flex"></div>
+                  <div class="info-value row">
+                    <div class="description-flex"></div>
+                    <div
+                      class="row-item"
+                      v-for="value in string_facet.values"
+                      :key="`sfacet_val_${value.pk}`">
+                      <nuxt-link 
+                        class="list-link"
+                        :to="`/catalog/${product.category.slug}?sfacets=${string_facet.slug}:${value.pk}`">
+                        {{ value.name }}
+                      </nuxt-link>
+                    </div>
+                  </div>
+              </div>
+              
+              </div>
+              <div class="secondary-text" v-if="tabIndex == 'description'">
+              Brancott Estate, Marlborough Sauvignon Blanc — необычайно яркое и насыщенное вино,
+              произведенное из винограда, выращенного в уникальном терруаре новозеландского
+              региона Мальборо. Совиньон Блан выращивается на виноградниках,
+              расположенных в южной части долины Вайрау. Сбор начинается середине марта,
+              а заканчивается — в середине апреля. Свежий фруктовый вкус вина многим обязан
+              специальной технологии винификации. Один из главных моментов винификации —
+              чрезвычайно тщательный и мягкий отжим плодов с целью получения чистого,
+              прозрачного сока для ферментации, которая проходит при низкой температуре в
+              стальных емкостях.
+            </div>
+
+            </div>
+            <div class="info-price">
+              <div class="price-row">
+                <dub-price :special-price="selectedInstance.new_price">
+                  <span slot="oldPrice" class="price-old" v-if="selectedInstance.new_price">
+                    {{ selectedInstance.price }} &#x20bd;
+                  </span>
+                  <span slot="specialPrice" class="price-special" v-if="selectedInstance.new_price">
+                    {{ selectedInstance.new_price }} &#x20bd;
+                  </span>
+                  <span slot="regularPrice" class="price-regular" v-if="!selectedInstance.new_price">
+                    {{ selectedInstance.price }} &#x20bd;
+                  </span>
+                </dub-price>
+              </div>
+              <div class="info-list">
+                <div class="info-description">Объемы:</div>
                 <div class="description-flex"></div>
                 <div class="info-value row">
                   <div class="description-flex"></div>
                   <div
-                    class="row-item"
-                    v-for="value in string_facet.values"
-                    :key="value.pk">
-                    <nuxt-link 
-                      class="list-link"
-                      :to="`/catalog/${product.category.slug}?sfacets=${string_facet.slug}:${value.pk}`">
-                      {{ value.name }}
-                    </nuxt-link>
+                    class="row-item item"
+                    v-response.small.fast
+                    v-for="productInstance in product.products"
+                    :key="`sku_${productInstance.sku}`"
+                    :class="{ 'price-active': selectedInstance.sku == productInstance.sku }"
+                    @click="selectInstance(productInstance)"
+                  >
+                    {{productInstance.measure_count}}{{productInstance.measure_value}}
+                    <sales-badge
+                      class="floating-measure" 
+                      v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
+                      type="dot">
+                    </sales-badge>
                   </div>
                 </div>
-            </div>
-            
-            </div>
-            <div class="secondary-text" v-if="tabIndex == 'description'">
-            Brancott Estate, Marlborough Sauvignon Blanc — необычайно яркое и насыщенное вино,
-            произведенное из винограда, выращенного в уникальном терруаре новозеландского
-            региона Мальборо. Совиньон Блан выращивается на виноградниках,
-            расположенных в южной части долины Вайрау. Сбор начинается середине марта,
-            а заканчивается — в середине апреля. Свежий фруктовый вкус вина многим обязан
-            специальной технологии винификации. Один из главных моментов винификации —
-            чрезвычайно тщательный и мягкий отжим плодов с целью получения чистого,
-            прозрачного сока для ферментации, которая проходит при низкой температуре в
-            стальных емкостях.
-          </div>
-
-          </div>
-          <div class="info-price">
-            <div class="price-row">
-              <dub-price :special-price="selectedInstance.new_price">
-                <span slot="oldPrice" class="price-old" v-if="selectedInstance.new_price">
-                  {{ selectedInstance.price }} &#x20bd;
-                </span>
-                <span slot="specialPrice" class="price-special" v-if="selectedInstance.new_price">
-                  {{ selectedInstance.new_price }} &#x20bd;
-                </span>
-                <span slot="regularPrice" class="price-regular" v-if="!selectedInstance.new_price">
-                  {{ selectedInstance.price }} &#x20bd;
-                </span>
-              </dub-price>
-            </div>
-            <div class="info-list">
-              <div class="info-description">Объемы:</div>
-              <div class="description-flex"></div>
-              <div class="info-value row">
+              </div>
+              <div class="info-list">
+                <div class="info-description">Артикул:</div>
                 <div class="description-flex"></div>
-                <div
-                  class="row-item item"
-                  v-response.small.fast
-                  v-for="productInstance in product.products"
-                  :key="productInstance.sku"
-                  :class="{ 'price-active': selectedInstance.sku == productInstance.sku }"
-                  @click="selectInstance(productInstance)"
+                <div class="info-value row">
+                  <div class="description-flex"></div>
+                  <div class="row-item">
+                    #{{selectedInstance.sku}}
+                  </div>
+                </div>
+              </div>
+              <div class="info-list">
+                <div class="info-description">Кол-во в упаковке:</div>
+                <div class="description-flex"></div>
+                <div class="info-value row">
+                  <div class="description-flex"></div>
+                  <div class="row-item">
+                    {{selectedInstance.package_amount}}
+                  </div>
+                </div>
+              </div>
+              <div class="info-list">
+                <div class="info-description">В наличии:</div>
+                <div class="description-flex"></div>
+                <div class="info-value row storage">
+                  <div class="description-flex"></div>
+                  <div class="row-item value">
+                    {{selectedInstance.stock_balance}} шт.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex"></div>
+          <div class="secondary-info">
+            <div class="tag-row">
+              <div class="tag-title">Метки:</div>
+              <div class="filter-tag-menu">
+                <vue-glide 
+                  :options="slider"
+                  @glide:mount-after="loaded = true"
+                  v-show="loaded"
+                  :key="`loaded_${loaded}`"
                 >
-                  {{productInstance.measure_count}}{{productInstance.measure_value}}
-                  <sales-badge
-                    class="floating-measure" 
-                    v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
-                    type="dot">
-                  </sales-badge>
-                </div>
-              </div>
-            </div>
-            <div class="info-list">
-              <div class="info-description">Артикул:</div>
-              <div class="description-flex"></div>
-              <div class="info-value row">
-                <div class="description-flex"></div>
-                <div class="row-item">
-                  #{{selectedInstance.sku}}
-                </div>
-              </div>
-            </div>
-            <div class="info-list">
-              <div class="info-description">Кол-во в упаковке:</div>
-              <div class="description-flex"></div>
-              <div class="info-value row">
-                <div class="description-flex"></div>
-                <div class="row-item">
-                  {{selectedInstance.package_amount}}
-                </div>
-              </div>
-            </div>
-            <div class="info-list">
-              <div class="info-description">В наличии:</div>
-              <div class="description-flex"></div>
-              <div class="info-value row storage">
-                <div class="description-flex"></div>
-                <div class="row-item value">
-                  {{selectedInstance.stock_balance}} шт.
-                </div>
+                  <vue-glide-slide v-for="tag in product.tags" :key="`tag_${tag.pk}`">
+                    <div class="tag" v-response.small.masked>{{tag.name}}</div>
+                  </vue-glide-slide>
+                  <div class="masked-box" v-show="!loaded">
+                    <div class="masked-item" v-for="i in slider.perView" :key="`slider_${i}`"></div>
+                  </div>
+                </vue-glide>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex"></div>
-        <div class="secondary-info">
-          <div class="tag-row">
-            <div class="tag-title">Метки:</div>
-            <div class="filter-tag-menu">
-              <vue-glide :options="slider" @glide:mount-after="loaded = true" v-show="loaded" :key="loaded">
-                <vue-glide-slide v-for="tag in product.tags" :key="tag.pk">
-                  <div class="tag" v-response.small.masked>{{tag.name}}</div>
-                </vue-glide-slide>
-                <div class="masked-box" v-show="!loaded">
-                  <div class="masked-item" v-for="i in slider.perView" :key="i"></div>
-                </div>
-              </vue-glide>
-            </div>
-          </div>
+        
+      </div>
+      <div class="product-image">
+        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
+        <div class="floating" v-if="selectedInstance.sales.length !== 0">
+          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="`sale_label_${label}`">
+            {{ label }}
+          </sales-badge>
         </div>
       </div>
     </div>
@@ -319,17 +327,21 @@ a {
     ),
     webkit ms
   );
-  background-color: $upper_layer_color;
-  border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   width: 100%;
   margin-bottom: 36px;
 }
 .product-image {
+  position: absolute;
+  right: 0;
+  top: 0;
   width: 25%;
   padding: 16px;
   margin: 32px 0;
-  border-right: 1px solid #e6e3da;
+  margin-left: 16px;
+  background-color: $upper_layer_color;
+  border-radius: 4px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 .product-info {
   @include prefix(
@@ -339,10 +351,12 @@ a {
     ),
     webkit ms
   );
-  width: 70%;
+  width: 80%;
+  padding-top: 16px;
   .name {
-    padding: 24px;
+    padding: 24px 12% 24px 24px;
     font-size: 34px;
+    opacity: 0.7;
     font-weight: 500;
     letter-spacing: 0.01em;
     line-height: 42px;
@@ -355,10 +369,22 @@ a {
   padding: 0 16px;
 }
 .image {
-  max-height: 450px;
+  height: 450px;
   max-width: 100%;
 }
-
+.info {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  background-color: $upper_layer_color;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  padding-right: 10%;
+}
 .info-box {
   @include prefix(
     (
@@ -369,7 +395,6 @@ a {
   );
   .info-main {
     width: 65%;
-    border-right: 1px solid #e6e3da;
     padding: 0 24px 24px 24px;
     .title {
       padding: 4px;
@@ -407,7 +432,9 @@ a {
     }
   }
   .info-price {
-    margin: 8px 24px;
+    margin: 16px 0;
+    padding: 0 24px;
+    border-left: 1px solid #e6e3da;
     width: 35%;
     .price-row {
       @include prefix(
@@ -719,7 +746,18 @@ a {
   width: 80%;
   padding: 8px 0 8px 0;
 }
-
+.breadcrumbs {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+      justify-content: center,
+    ),
+    webkit ms
+  );
+  margin: 16px 0;
+}
 .tag-row {
   position: relative;
   @include prefix(
@@ -788,13 +826,12 @@ a {
 
 .tab-item-active {
   border-bottom: 3px solid $primary_color;
-  opacity: 1;
   padding-bottom: 0;
 }
 
 @media (max-width: 1450px) {
   .product-detail {
-    width: 85%;
+    width: 90%;
   }
 }
 
@@ -825,10 +862,9 @@ a {
   right: -2px;
 }
 .sales-conditions {
-  margin: -8px 24px 0 24px;
+  margin: -24px 24px 16px 24px;
   color: #e83841;
   font-size: 16px;
-  line-height: 8px;
   font-weight: 600;
 }
 .masked-box {

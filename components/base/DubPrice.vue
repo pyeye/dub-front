@@ -72,4 +72,7 @@ export default {
   opacity: 0.6;
   margin-right: 6px;
 }
+.price-regular {
+  opacity: 0.7;
+}
 </style>

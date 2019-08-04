@@ -57,7 +57,7 @@ export default {
   );
 }
 .image {
-  max-height: 450px;
+  height: 500px;
   max-width: 100%;
 }
 .thumbnails {

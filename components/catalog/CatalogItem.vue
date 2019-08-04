@@ -76,9 +76,6 @@ export default {
     },
   }),
   computed: {
-    category() {
-      return this.$route.params.category;
-    },
     params() {
       return this.product.string_facets.filter(facet => this.display.common.includes(facet.slug));
     },
@@ -97,7 +94,7 @@ export default {
   created() {
     const [firstInstance] = this.product.products;
     this.selectedInstance = firstInstance;
-    this.productLink = `/catalog/${this.category}/${this.product.pk}`;
+    this.productLink = `/catalog/${this.product.category.slug}/${this.product.pk}`;
   },
   methods: {
     setInstance(instance) {
