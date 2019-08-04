@@ -125,7 +125,8 @@ a {
     );
     font-size: 14px;
     letter-spacing: 0.15px;
-    line-height: 14px;
+    line-height: 16px;
+    font-weight: 600;
     opacity: 1;
     flex: 1;
     .date {
