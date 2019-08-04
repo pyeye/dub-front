@@ -1,25 +1,27 @@
 <template>
   <div class="news-detail">
-     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
-      <div class="detail-content">
-      <div class="hero" :style="'background-image: url('+ article.image +');'">
-        <div class="cover"></div>
-        <div class="cover-text">
-          <div class="title">{{ article.title }}</div>
-          <div class="text-secondary">
-            <div class="date">
-              {{ article.date_created.day }}
-              {{ article.date_created.month }}
-              {{ article.date_created.year }}
-            </div>
-            <nuxt-link :to="`/news?filter=${article.category.pk}`">
-                <div class="category">{{ article.category.name }}</div>
-            </nuxt-link>
+    <div class="header">
+      <div class="title-row">
+        <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+        <div class="title">{{ article.title }}</div>
+        <div class="sub-title">
+          <nuxt-link :to="`/news?filter=${article.category.pk}`">
+              <div class="category">{{ article.category.name }}</div>
+          </nuxt-link>
+          <div class="date">
+            {{ article.date_created.day }}
+            {{ article.date_created.month }}
+            {{ article.date_created.year }}
           </div>
         </div>
       </div>
-      <div class="description" v-html="markdown(article.description)"></div>
-  </div>
+    </div>
+    <div class="content">
+      <div class="description">
+        <div class="description-text" v-html="markdown(article.description)"></div>
+      </div>
+      <div class="hero" :style="'background-image: url('+ article.image.src +');'"></div>
+    </div>
   </div>
 </template>
 
@@ -76,6 +78,7 @@ export default {
 .news-detail {
   position: relative;
   width: 80%;
+  min-height: 800px;
   margin: 0 auto;
 }
 .detail-content {
@@ -85,13 +88,71 @@ export default {
   border-radius: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-.hero {
+.header {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+      justify-content: center,
+    ),
+    webkit ms
+  );
+}
+.title-row {
+  margin: 24px 0;
+  width: 70%;
   position: relative;
-  width: 100%;
-  height: 300px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+      align-items: center,
+      justify-content: center,
+    ),
+    webkit ms
+  );
+}
+.title {
+  margin: 14px 0;
+  font-size: 36px;
+  letter-spacing: 5px;
+  margin-right: -5px;
+  line-height: 40px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+  text-align: center;
+}
+.sub-title {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  line-height: 16px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  text-transform: uppercase;
+  text-align: center;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
+.hero {
+  position: absolute;
+  right: -5.5%;
+  width: 70%;
+  height: 600px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 .cover {
   position: absolute;
@@ -139,22 +200,43 @@ export default {
     margin-top: 16px;
     font-weight: 400;
     opacity: 0.85;
-    .date {
-      margin-right: 16px;
-      padding-bottom: 4px;
-    }
-    .category {
-      border-bottom: 2px solid $primary_color;
-      color: $body_color;
-      padding-bottom: 4px;
-      font-size: 1em;
-      letter-spacing: 0.2px;
-    }
   }
 }
+.category {
+  color: $text_color;
+  margin-right: 16px;
+}
+.content {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+}
 .description {
+  width: 35%;
+  margin-left: 5%;
+  transform: translateY(20%);
+  background-color: $upper_layer_color;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.2),
+    0 1px 8px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+  z-index: 1;
+}
+.description-text {
   padding: 24px;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.15px;
+  font-weight: 400;
+  color: $text_color;
+  opacity: 0.8;
+}
+.description-text::first-letter {
+  font-size: 24px;
+  font-weight: 600;
 }
 .icon-link {
   position: absolute;
@@ -171,7 +253,7 @@ a {
 }
 @media (max-width: 1450px) {
   .news-detail {
-    width: 85%;
+    width: 90%;
   }
 }
 </style>

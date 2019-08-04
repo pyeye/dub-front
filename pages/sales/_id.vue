@@ -276,7 +276,11 @@ export default {
 }
 .description-text {
   padding: 24px;
-  opacity: 0.7;
+  opacity: 0.8;
+}
+.description-text::first-letter {
+  font-size: 24px;
+  font-weight: 600;
 }
 .icon-link {
   position: absolute;

@@ -2,7 +2,7 @@
   <div class="home">
       <sales-carousel class="lax" data-lax-translate-y="(vh-200) 0, (vh+300) -50" :sales="sales"></sales-carousel>
 
-      <news-carousel class="lax" data-lax-translate-y="(vh-200) 0, (vh+200) -100" :news="news"></news-carousel>
+      <home-news class="lax" data-lax-translate-y="(vh-200) 0, (vh+200) -100" :news="news"></home-news>
       
       <!--
       <div class="news">
@@ -112,21 +112,17 @@
 import lax from 'lax.js';
 
 import CatalogItem from '~/components/catalog/CatalogItem';
-import NewsItem from '~/components/news/NewsItem';
-import BestsellersItem from '~/components/home/BestsellersItem';
 import PosterItem from '~/components/home/PosterItem';
 import SalesCarousel from '~/components/sales/SalesCarousel';
-import NewsCarousel from '~/components/news/NewsCarousel';
+import HomeNews from '~/components/home/HomeNews';
 
 export default {
   name: 'DubHome',
   components: {
     CatalogItem,
-    NewsItem,
-    BestsellersItem,
     PosterItem,
     SalesCarousel,
-    NewsCarousel,
+    HomeNews,
   },
   data: () => ({
     slider: {

@@ -48,24 +48,6 @@
       <div class="slider-name">
         <nuxt-link class="news-link" to="/news"> новости </nuxt-link>
       </div>
-
-      <!--
-      <div class="slider-bullets">
-        <span class="link" v-for="(article, index) in news" :key="article.pk">
-          <span 
-            class="bullet"
-            :class="{'actiive-bullet': activeArticle.pk === article.pk}"
-            @click="setSlide(index)"
-          >
-            {{ article.name }}
-          </span>
-        </span>
-      </div>
-      
-      <div class="slider-name">
-        <nuxt-link to="/news"> новости </nuxt-link>
-      </div>
-      -->
     </div>
   </div>
 </template>

@@ -1,22 +1,20 @@
 <template>
-  <div v-if="article" class="news-item" :style="'background-image: url('+ article.image +');'">
-    <nuxt-link :to="`/news/${article.pk}`">
-      <div class="cover"></div>
-      <div class="cover-text">
-        <div class="title">{{ article.title }}</div>
+  <div class="article" :style="`background-image: url(${article.image.src});`">
+    <div class="article-cover"></div>
+      <div class="active-article">
         <div class="text-secondary">
+          <div class="category">{{ article.category.name }}</div>
           <div class="date">
             {{ article.date_created.day }}
             {{ article.date_created.month }}
           </div>
-          <div class="category">{{ article.category.name }}</div>
         </div>
+        <nuxt-link class="nuxt-link" :to="`/news/${article.pk}`">
+          <span class="article-title"><span class="link">{{ article.title }}</span></span>
+        </nuxt-link>
       </div>
-      <div class="cover-inspect">
-        <div>ПОДРОБНЕЕ</div>
-        <dub-icon width=24 height=24><icon-right class="icon-link" /></dub-icon>
-      </div>
-    </nuxt-link>
+      <div class="flex"></div>
+      <slot name="bullets"></slot>
   </div>
 </template>
 
@@ -33,45 +31,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.news-item {
-  cursor: pointer;
-  border-radius: 2px;
+.article {
   position: relative;
   width: 100%;
   height: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  transform: translateY(0);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-  &:hover {
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
-    .cover {
-      opacity: 0.9;
-    }
-    .cover-text {
-      opacity: 0;
-    }
-    .cover-inspect {
-      opacity: 1;
-      -webkit-transform: translate3d(-50%, -50%, 1px);
-      transform: translate3d(-50%, -50%, 1px);
-    }
-  }
-}
-.cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #000;
-  transition: opacity 0.25s ease;
-  opacity: 0.65;
-}
-.cover-text {
+  border-radius: 2px;
   @include prefix(
     (
       display: flex,
@@ -79,60 +46,41 @@ export default {
     ),
     webkit ms
   );
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  color: #fafafa;
-  font-size: 1em;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1em;
-  font-family: 'Roboto', sans-serif;
-  padding: 0.7em;
-  opacity: 1;
-  transition: opacity 0.25s ease;
-  .text-secondary {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-        align-items: center,
-      ),
-      webkit ms
-    );
-    font-size: 0.69em;
-    line-height: 0.69em;
-    margin-top: 0.5em;
-    font-weight: 400;
-    opacity: 0.85;
-    .date {
-      margin-right: 16px;
-      padding-bottom: 4px;
-    }
-    .category {
-      border-bottom: 2px solid $primary_color;
-      color: $body_color;
-      padding-bottom: 4px;
-      font-size: 1em;
-      letter-spacing: 0.2px;
-    }
-  }
 }
-.cover-inspect {
-  color: $primary_color;
-  font-size: 1em;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  line-height: 24px;
+.article-cover {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  opacity: 0;
-  transform: translate3d(-50%, -30%, 1px);
-  will-change: transfrom;
-  transition: opacity 0.4s ease, transform 0.45s ease, -webkit-transform 0.45s ease;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.7;
+  border-radius: 2px;
+}
+.active-article {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  color: $body_color;
+}
+a {
+  margin: 0;
+  padding: 0;
+  color: $body_color;
+  text-decoration: none;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+.article-title {
+  font-size: 20px;
+  line-height: 22px;
+  letter-spacing: 0.15px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  text-decoration: none;
+}
+.text-secondary {
   @include prefix(
     (
       display: flex,
@@ -141,12 +89,39 @@ export default {
     ),
     webkit ms
   );
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.15px;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  margin-bottom: 8px;
+  .date {
+    margin-left: 8px;
+    padding-bottom: 4px;
+  }
+  .category {
+    padding-bottom: 4px;
+    margin-right: 4px;
+  }
 }
-.icon-link {
-  width: 22px;
-  height: 22px;
+.flex {
+  @include prefix(
+    (
+      flex: 1,
+    ),
+    webkit ms
+  );
 }
-a {
-  text-decoration: none;
+.link {
+  cursor: pointer;
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease, color 1.6s ease-in-out;
+  &:hover {
+    background-size: 100% 100%;
+  }
 }
 </style>
