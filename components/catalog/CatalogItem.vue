@@ -166,9 +166,10 @@ export default {
     .name {
       padding: 16px 0 4px 0;
       font-size: 20px;
-      font-weight: 500;
-      letter-spacing: -0.012em;
-      line-height: 24px;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.2222;
+      opacity: 0.7;
     }
   }
 }

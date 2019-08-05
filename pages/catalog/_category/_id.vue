@@ -2,7 +2,14 @@
   <div class="product-detail">
     <dub-breadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="content">
-      
+      <div class="product-image">
+        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
+        <div class="floating" v-if="selectedInstance.sales.length !== 0">
+          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="`sale_label_${label}`">
+            {{ label }}
+          </sales-badge>
+        </div>
+      </div>
       <div class="product-info">
         <div class="name">
           {{ product.name }},
@@ -182,14 +189,7 @@
         </div>
         
       </div>
-      <div class="product-image">
-        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
-        <div class="floating" v-if="selectedInstance.sales.length !== 0">
-          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="`sale_label_${label}`">
-            {{ label }}
-          </sales-badge>
-        </div>
-      </div>
+      
     </div>
   </div>
 </template>
@@ -332,12 +332,11 @@ a {
 }
 .product-image {
   position: absolute;
-  right: 0;
+  left: 0;
   top: 0;
   width: 25%;
   padding: 16px;
-  margin: 32px 0;
-  margin-left: 16px;
+  margin: 16px 0;
   background-color: $upper_layer_color;
   border-radius: 4px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -352,9 +351,9 @@ a {
     webkit ms
   );
   width: 80%;
-  padding-top: 16px;
+  margin-left: 20%;
   .name {
-    padding: 24px 12% 24px 24px;
+    padding: 24px 24px 24px 12%;
     font-size: 34px;
     opacity: 0.7;
     font-weight: 500;
@@ -383,7 +382,7 @@ a {
   background-color: $upper_layer_color;
   border-radius: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  padding-right: 10%;
+  padding-left: 10%;
 }
 .info-box {
   @include prefix(
