@@ -3,12 +3,16 @@
     <div class="header">
       <div class="title-row">
         <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
-        <div class="title">{{ collection.name }}</div>
       </div>
     </div>
     <div class="hero-row">
-      <div class="description-box">
-        <div class="description-text">{{ collection.description }}</div>
+      <div class="description">
+        <div class="description-title">
+          {{ collection.name }}
+        </div>
+        <div class="description-box">
+          <div class="description-text">{{ collection.description }}</div>
+        </div>
       </div>
       <div class="hero" :style="getBgImage(collection.image.src)"></div>
     </div>
@@ -199,14 +203,15 @@ export default {
   );
 }
 .hero {
-  position: relative;
-  width: 80%;
-  margin: 0 0 0 auto;
-  min-height: 400px;
+  position: absolute;
+  right: -5.5%;
+  width: 70%;
+  height: 400px;
+  z-index: 1;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 .cover {
   position: absolute;
@@ -269,16 +274,42 @@ export default {
   );
   margin-bottom: 48px;
 }
+.description {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  width: 35%;
+  margin-left: 5%;
+}
+.description-title {
+  padding: 16px 20% 16px 24px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
 .description-box {
-  width: 30%;
-  transform: translate(25%, 48px);
   background-color: $upper_layer_color;
-  z-index: 1;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  min-height: 300px;
 }
 .description-text {
-  padding: 24px;
+  padding: 16px 20% 24px 24px;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  font-family: 'Roboto', sans-serif;
   opacity: 0.7;
+  color: $text_color;
 }
 .icon-link {
   position: absolute;

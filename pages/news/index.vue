@@ -143,7 +143,7 @@ export default {
     ),
     webkit ms
   );
-  margin: 24px 0;
+  margin-bottom: 24px;
   .filter-menu {
     @include prefix(
       (

@@ -3,22 +3,26 @@
     <div class="header">
       <div class="title-row">
         <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
-        <div class="title">{{ article.title }}</div>
-        <div class="sub-title">
-          <nuxt-link :to="`/news?filter=${article.category.pk}`">
-              <div class="category">{{ article.category.name }}</div>
-          </nuxt-link>
-          <div class="date">
-            {{ article.date_created.day }}
-            {{ article.date_created.month }}
-            {{ article.date_created.year }}
-          </div>
-        </div>
       </div>
     </div>
     <div class="content">
       <div class="description">
-        <div class="description-text" v-html="markdown(article.description)"></div>
+        <div class="description-title">
+          {{ article.title }}
+        </div>
+        <div class="description-box">
+          <div class="description-info">
+            <div class="description-category">
+              <nuxt-link class="link" :to="`/news?filter=${article.category.pk}`">
+                <span class="category">{{ article.category.name }}</span>
+            </nuxt-link>
+            </div>
+            <div class="description-date">
+              {{ article.date_created.day }} {{ article.date_created.month }} {{ article.date_created.year }}
+            </div>
+          </div>
+          <div class="description-text" v-html="markdown(article.description)"></div>
+        </div>
       </div>
       <div class="hero" :style="'background-image: url('+ article.image.src +');'"></div>
     </div>
@@ -148,11 +152,11 @@ export default {
   right: -5.5%;
   width: 70%;
   height: 600px;
+  z-index: 1;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 .cover {
   position: absolute;
@@ -216,27 +220,65 @@ export default {
   );
 }
 .description {
-  width: 35%;
-  margin-left: 5%;
-  transform: translateY(20%);
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  width: 40%;
+}
+.description-title {
+  padding: 16px 20% 16px 24px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.7;
+  color: $text_color;
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.description-box {
   background-color: $upper_layer_color;
-  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.2),
-    0 1px 8px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 2px;
-  z-index: 1;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  min-height: 300px;
+}
+.link {
+  text-decoration: none;
+}
+.description-info {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  padding: 24px 20% 8px 24px;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.6;
+  color: $text_color;
+  text-transform: uppercase;
+}
+.category {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease;
+  &:hover {
+    background-size: 100% 100%;
+  }
 }
 .description-text {
-  padding: 24px;
-  font-size: 16px;
-  line-height: 22px;
-  letter-spacing: 0.15px;
-  font-weight: 400;
-  color: $text_color;
+  padding: 16px 20% 24px 24px;
   opacity: 0.8;
-}
-.description-text::first-letter {
-  font-size: 24px;
-  font-weight: 600;
 }
 .icon-link {
   position: absolute;
