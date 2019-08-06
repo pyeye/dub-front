@@ -20,12 +20,12 @@
             <div class="content-facets" v-for="facet in facets" :key="facet.slug">
               <div class="collapse-title"> {{facet.name}} </div>
               <div v-for="item in facet.values.slice(0,8)" :key="item.pk">
-                <nuxt-link 
-                  :to="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
+                <a 
+                  :href="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
                   class="nav-category link"
                 >
                   <div class="facets-values" @click="closePanel">{{item.name}}</div>
-                </nuxt-link>
+                </a>
               </div>
             </div>
         </div>
