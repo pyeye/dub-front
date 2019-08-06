@@ -159,7 +159,7 @@ export default {
       return encodedFacets;
     },
     decodeTags(queryTags) {
-      if (queryTags === undefined) {
+      if (queryTags === undefined || queryTags.length === 0) {
         return [];
       }
       const decodedTags = [];
