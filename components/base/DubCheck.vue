@@ -109,6 +109,7 @@ export default {
       this.$emit('input', val);
     },
 
+    // eslint-disable-next-line no-underscore-dangle
     __keyDown(e) {
       if (e.keyCode === 13 || e.keyCode === 32) {
         this.stopAndPrevent(e);

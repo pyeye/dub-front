@@ -56,11 +56,11 @@
 </template>
 
 <script>
+import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min';
 import DubCollapse from '@/components/base/DubCollapse';
 import DubCollapseItem from '@/components/base/DubCollapseItem';
 import DubCheck from '@/components/base/DubCheck';
 import DubNumberInput from '@/components/base/DubNumberInput';
-import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min';
 import 'vue-slider-component/dist-css/vue-slider-component.css';
 
 // import theme

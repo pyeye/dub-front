@@ -159,9 +159,9 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import DubHeaderPanel from '@/components/base/DubHeaderPanel';
 import PreventScrollMixin from '@/mixins/prevent-scroll';
-import _ from 'lodash';
 
 export default {
   name: 'DubHeader',

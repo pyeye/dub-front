@@ -37,28 +37,22 @@ module.exports = {
     { src: '~/plugins/auth' },
     { src: '~/plugins/global' },
     { src: '~/plugins/swiper' },
-    { src: '~/plugins/directives/response', ssr: false },
-    { src: '~/plugins/spinner', ssr: false },
+    { src: '~/plugins/directives/response', mode: 'client' },
+    { src: '~/plugins/spinner', mode: 'client' },
   ],
 
   /*
   ** Global CSS
   */
-  css: ['@/assets/directives/response.scss', '@/assets/reset.css', '@/assets/transitions.css'],
+  css: ['@/assets/directives/response', '@/assets/reset', '@/assets/transitions'],
 
   /*
   ** Nuxt.js modules
   */
-  modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios',
-    ['nuxt-sass-resources-loader', ['@/assets/variables.scss']],
-  ],
-  /*
-  ** Axios module configuration
-  */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
+  modules: ['@nuxtjs/style-resources'],
+
+  styleResources: {
+    scss: ['~assets/variables.scss'],
   },
 
   /*
