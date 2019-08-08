@@ -20,12 +20,14 @@
             <div class="content-facets" v-for="facet in facets" :key="facet.slug">
               <div class="collapse-title"> {{facet.name}} </div>
               <div v-for="item in facet.values.slice(0,8)" :key="item.pk">
-                <a 
-                  :href="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
-                  class="nav-category link"
-                >
-                  <div class="facets-values" @click="closePanel">{{item.name}}</div>
-                </a>
+                <span class="nav-category link">
+                  <div
+                    class="facets-values"
+                    @click="facetLinkHandler(activeCategory.category.slug, facet.slug, item.pk)"
+                  >
+                    {{item.name}}
+                  </div>
+                </span>
               </div>
             </div>
         </div>
@@ -77,6 +79,18 @@ export default {
     },
   },
   methods: {
+    facetLinkHandler(category, facet, facetValue) {
+      const currentPath = this.$route.path;
+      const nextPath = `/catalog/${category}`;
+      const sfacetQuery = `${facet}:${facetValue}`;
+      this.$router.push({ path: nextPath, query: { sfacets: sfacetQuery } });
+      this.closePanel();
+      if (currentPath === nextPath) {
+        this.$nextTick(() => {
+          this.$router.go();
+        });
+      }
+    },
     closePanel() {
       this.$emit('close-panel');
     },
@@ -207,6 +221,7 @@ export default {
     font-size: 14px;
     font-weight: 400;
     opacity: 0.7;
+    cursor: pointer;
   }
 
   .image {
