@@ -95,7 +95,7 @@ const decodeTags = (queryTags, tags) => {
   return decodedTags;
 };
 
-const getFilters = (query, products, facets, tags) => {
+export const getFilters = (query, products, facets, tags) => {
   const decodedSfacets = decodeSFacets(query.sfacets, facets.sfacets);
   const decodedNfacets = decodeNFacets(query.nfacets, facets.nfacets);
   const decodedTags = decodeTags(query.tags, tags);
@@ -128,4 +128,53 @@ const getFilters = (query, products, facets, tags) => {
   return { ...defaultFilters, ...filters };
 };
 
-export default getFilters;
+const encodeSFacets = facets => {
+  const facetsQuery = {};
+  const encodedFacets = [];
+  facets.forEach(facet => {
+    if (facet.facetSlug in facetsQuery === false) {
+      facetsQuery[facet.facetSlug] = [];
+    }
+    facetsQuery[facet.facetSlug].push(facet.pk);
+  });
+  Object.keys(facetsQuery).forEach(key => {
+    const codes = facetsQuery[key].join(',');
+    const str = `${key}:${codes}`;
+    encodedFacets.push(str);
+  });
+  return encodedFacets;
+};
+
+const encodeNFacets = facets => {
+  const encodedFacets = [];
+  facets.forEach(facet => {
+    const [minVal, maxVal] = facet.value;
+    if (minVal !== facet.stats.min || maxVal !== facet.stats.max) {
+      const str = `${facet.slug}:${minVal}-${maxVal}`;
+      encodedFacets.push(str);
+    }
+  });
+  return encodedFacets;
+};
+
+const encodeTags = tags => {
+  const encodedTags = tags.map(tag => tag.pk);
+  return encodedTags.length === 0 ? [] : encodedTags.join();
+};
+
+export const getQuery = filters => {
+  const { sfacets, nfacets, tags } = filters;
+  const encodedSfacets = encodeSFacets(sfacets);
+  const encodedNfacets = encodeNFacets(nfacets);
+  const encodedTags = encodeTags(tags);
+  return {
+    sfacets: encodedSfacets,
+    nfacets: encodedNfacets,
+    tags: encodedTags,
+  };
+};
+
+export default {
+  getFilters,
+  getQuery,
+};

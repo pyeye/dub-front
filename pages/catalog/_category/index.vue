@@ -65,7 +65,7 @@ import DubPagination from '@/components/base/DubPagination';
 import DubSelect from '@/components/base/DubSelect';
 
 import debounce from '@/plugins/utils/debounce';
-import getFilters from '@/plugins/utils/catalog';
+import { getFilters, getQuery } from '@/plugins/utils/catalog';
 
 export default {
   name: 'ProductList',
@@ -110,42 +110,9 @@ export default {
     },
   },
   methods: {
-    encodeTags(tags) {
-      const encodedTags = tags.map(tag => tag.pk);
-      return encodedTags.length === 0 ? [] : encodedTags.join();
-    },
-    encodeSFacet(facets) {
-      const facetsQuery = {};
-      const encodedFacets = [];
-      facets.forEach(facet => {
-        if (facet.facetSlug in facetsQuery === false) {
-          facetsQuery[facet.facetSlug] = [];
-        }
-        facetsQuery[facet.facetSlug].push(facet.pk);
-      });
-      Object.keys(facetsQuery).forEach(key => {
-        const codes = facetsQuery[key].join(',');
-        const str = `${key}:${codes}`;
-        encodedFacets.push(str);
-      });
-      return encodedFacets;
-    },
-    encodeNFacet(facets) {
-      const encodedFacets = [];
-      facets.forEach(facet => {
-        const [minVal, maxVal] = facet.value;
-        if (minVal !== facet.stats.min || maxVal !== facet.stats.max) {
-          const str = `${facet.slug}:${minVal}-${maxVal}`;
-          encodedFacets.push(str);
-        }
-      });
-      return encodedFacets;
-    },
     updateQuery() {
-      const query = Object.assign({}, this.$route.query);
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
       this.$set(this.filters.page, 'current', 1);
       query.page = 1;
       this.$router.push({ query });
@@ -177,31 +144,27 @@ export default {
       this.updateQuery();
     },
     async paginationHandler(e) {
-      this.filters.page.current = e;
-      const query = Object.assign({}, this.$route.query);
-      const { category } = this.$route.params;
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
+      this.$set(this.filters.page, 'current', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
       query.page = this.filters.page.current;
       this.$router.push({ query });
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      const products = await this.$api.getProducts({ category, query });
-      this.products = products.items;
-      this.totalProducts = products.total;
+      await this.getProducts(query);
     },
     async selectHandler(e) {
-      this.filters.sort.by = e;
-      const query = Object.assign({}, this.$route.query);
-      const { category } = this.$route.params;
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
+      this.$set(this.filters.sort, 'by', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
       query.sort = this.filters.sort.by.value;
       this.$set(this.filters.page, 'current', 1);
       query.page = 1;
       this.$router.push({ query });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      await this.getProducts(query);
+    },
+    async getProducts(query) {
+      const { category } = this.$route.params;
       const products = await this.$api.getProducts({ category, query });
       this.products = products.items;
       this.totalProducts = products.total;
