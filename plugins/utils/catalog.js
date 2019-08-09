@@ -1,0 +1,131 @@
+const defaultFilters = {
+  sfacets: [],
+  nfacets: [],
+  tags: [],
+  page: {
+    total: 1,
+    current: 1,
+    size: 24,
+  },
+  sort: {
+    by: {
+      name: 'названию (А-Я)',
+      value: 'name-asc',
+    },
+    options: [],
+  },
+};
+
+const decodeSFacet = (queryFacet, sfacets) => {
+  const [slug, strCodes] = queryFacet.split(':');
+  const codes = strCodes.split(',').map(Number);
+  const facet = sfacets.find(f => f.slug === slug);
+  const values = facet.values.filter(v => codes.includes(v.pk));
+  return values.map(value => ({
+    facetSlug: facet.slug,
+    facetName: facet.name,
+    pk: value.pk,
+    name: value.name,
+    count: value.count,
+  }));
+};
+
+const decodeSFacets = (queryFacets, sfacets) => {
+  let decodedFacets = [];
+  if (queryFacets === undefined) {
+    return [];
+  }
+
+  if (Array.isArray(queryFacets)) {
+    queryFacets.forEach(queryFacet => {
+      const decodedFacet = decodeSFacet(queryFacet, sfacets);
+      decodedFacets = decodedFacets.concat(decodedFacet);
+    });
+  } else {
+    decodedFacets = decodeSFacet(queryFacets, sfacets);
+  }
+  return decodedFacets;
+};
+
+const decodeNFacets = (queryFacets, nfacets) => {
+  const decodedFacets = nfacets.map(nfacet => ({
+    slug: nfacet.slug,
+    name: nfacet.name,
+    suffix: nfacet.suffix,
+    stats: {
+      min: nfacet.stats.min,
+      max: nfacet.stats.max,
+    },
+    value: [nfacet.stats.min, nfacet.stats.max],
+  }));
+
+  if (typeof queryFacets !== 'undefined') {
+    if (Array.isArray(queryFacets)) {
+      queryFacets.forEach(queryFacet => {
+        const [slug, stats] = queryFacet.split(':');
+        const [minVal, maxVal] = stats.split('-').map(Number);
+        const facetIndex = decodedFacets.findIndex(facet => facet.slug === slug);
+        decodedFacets[facetIndex].value = [minVal, maxVal];
+      });
+    } else {
+      const [slug, stats] = queryFacets.split(':');
+      const [minVal, maxVal] = stats.split('-').map(Number);
+      const facetIndex = decodedFacets.findIndex(facet => facet.slug === slug);
+      decodedFacets[facetIndex].value = [minVal, maxVal];
+    }
+  }
+
+  return decodedFacets;
+};
+
+const decodeTags = (queryTags, tags) => {
+  if (queryTags === undefined || queryTags.length === 0) {
+    return [];
+  }
+  const decodedTags = [];
+  const tagsCodes = queryTags.split(',').map(Number);
+  tagsCodes.forEach(tagCode => {
+    const tag = tags.find(t => t.pk === tagCode);
+    const decodedTag = {
+      name: tag.name,
+      pk: tag.pk,
+    };
+    decodedTags.push(decodedTag);
+  });
+  return decodedTags;
+};
+
+const getFilters = (query, products, facets, tags) => {
+  const decodedSfacets = decodeSFacets(query.sfacets, facets.sfacets);
+  const decodedNfacets = decodeNFacets(query.nfacets, facets.nfacets);
+  const decodedTags = decodeTags(query.tags, tags);
+
+  const { page } = defaultFilters;
+  if (query.page !== undefined) {
+    page.current = Number(query.page);
+  }
+  page.total = Math.ceil(products.total / page.size);
+
+  const { sort } = defaultFilters;
+  sort.options = [
+    { name: 'цене (по возрастанию)', value: 'price-asc' },
+    { name: 'цене (по убыванию)', value: 'price-desc' },
+    { name: 'названию (А-Я)', value: 'name-asc' },
+    { name: 'названию (Я-А)', value: 'name-desc' },
+  ];
+  if (query.sort !== undefined) {
+    const queryOption = sort.options.find(option => option.value === query.sort);
+    sort.by = queryOption;
+  }
+  const filters = {
+    sfacets: decodedSfacets,
+    nfacets: decodedNfacets,
+    tags: decodedTags,
+    page,
+    sort,
+  };
+
+  return { ...defaultFilters, ...filters };
+};
+
+export default getFilters;
