@@ -210,9 +210,6 @@ export default {
   margin: 0 auto;
   padding-bottom: 24px;
 }
-.filter-tag-menu {
-  padding: 8px 0;
-}
 .header {
   @include prefix(
     (
@@ -222,20 +219,6 @@ export default {
     ),
     webkit ms
   );
-  .filter-description {
-    color: $text_color;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    margin-right: 8px;
-  }
-  .pointer {
-    cursor: pointer;
-  }
-  .pointer:hover {
-    border-bottom: 3px solid $primary_color;
-  }
 }
 .filter-row {
   min-height: 46px;
@@ -256,27 +239,6 @@ export default {
   opacity: 0.7;
   letter-spacing: -0.012em;
   margin: 8px 8px 8px 0;
-}
-.filters {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: column,
-      flex: 1,
-    ),
-    webkit ms
-  );
-  .count {
-    color: $text_color;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.5;
-    margin-left: 8px;
-    margin-bottom: 3px;
-  }
-  .filter-sort-active {
-    border-bottom: 3px solid $primary_color;
-  }
 }
 .sort {
   @include prefix(
@@ -345,62 +307,7 @@ export default {
     }
   }
 }
-.amount {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      justify-content: space-between,
-    ),
-    webkit ms
-  );
-  .description {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-  }
-  .value {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-      ),
-      webkit ms
-    );
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
-    .item {
-      opacity: 0.7;
-    }
-    .item:not(:last-of-type):after {
-      content: '/';
-    }
-    .item:nth-last-of-type(2):before {
-      content: none;
-    }
-  }
-}
 
-.slide {
-  height: 550px;
-  width: 100%;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-}
-.catalog-swiper {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-.facets-checkbox {
-  justify-content: left;
-  margin: 8px 0;
-  color: $text_color;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
-}
 .pagination {
   margin-bottom: 24px;
 }
