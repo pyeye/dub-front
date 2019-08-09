@@ -185,7 +185,7 @@ export default {
       query.tags = this.encodeTags(this.filters.tags);
       query.page = this.filters.page.current;
       this.$router.push({ query });
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       const products = await this.$api.getProducts({ category, query });
       this.products = products.items;
       this.totalProducts = products.total;
@@ -201,7 +201,7 @@ export default {
       this.$set(this.filters.page, 'current', 1);
       query.page = 1;
       this.$router.push({ query });
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       const products = await this.$api.getProducts({ category, query });
       this.products = products.items;
       this.totalProducts = products.total;
