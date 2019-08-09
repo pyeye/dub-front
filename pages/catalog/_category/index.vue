@@ -70,6 +70,7 @@ import getFilters from '@/plugins/utils/catalog';
 export default {
   name: 'ProductList',
   watchQuery: true,
+  scrollToTop: false,
   components: {
     CatalogItem,
     FilterItems,
@@ -272,6 +273,7 @@ export default {
   }
 }
 .filter-row {
+  min-height: 46px;
   @include prefix(
     (
       display: flex,
