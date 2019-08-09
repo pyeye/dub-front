@@ -95,7 +95,7 @@ export default {
   );
 
   .badge-item {
-    margin: 0 8px 8px 8px;
+    margin-right: 16px;
     padding: 6px;
     color: $text_color;
     font-size: 12px;

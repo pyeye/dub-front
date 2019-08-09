@@ -2,12 +2,15 @@
   <div class="catalog-list">
     
     <div class="header">
-      <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
       <div class="title-row">
         <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
         <div class="title">{{ category.name }}</div>
         <div class="sub-title">Найдено {{ totalProducts }}</div>
       </div>
+    </div>
+
+    <div class="filter-row">
+      <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
       <div class="sort">
         <div class="sort-description">Сортировать по:</div>
         <dub-select
@@ -138,9 +141,6 @@ export default {
       return encodedFacets;
     },
     updateQuery() {
-      this.$nextTick(() => {
-        this.$root.$loading.start();
-      });
       const query = Object.assign({}, this.$route.query);
       query.sfacets = this.encodeSFacet(this.filters.sfacets);
       query.nfacets = this.encodeNFacet(this.filters.nfacets);
@@ -148,7 +148,6 @@ export default {
       this.$set(this.filters.page, 'current', 1);
       query.page = 1;
       this.$router.push({ query });
-      this.$root.$loading.finish();
     },
     sliderHandler(payload) {
       const { value, nfacet } = payload;
@@ -249,12 +248,11 @@ export default {
   padding: 8px 0;
 }
 .header {
-  padding-bottom: 16px;
   @include prefix(
     (
       display: flex,
       flex-direction: row,
-      align-items: flex-end,
+      justify-content: center,
     ),
     webkit ms
   );
@@ -273,14 +271,24 @@ export default {
     border-bottom: 3px solid $primary_color;
   }
 }
+.filter-row {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: center,
+      justify-content: space-between,
+    ),
+    webkit ms
+  );
+}
 .badges {
-  width: 33.3%;
   color: $text_color;
   font-size: 14px;
   font-weight: 600;
   opacity: 0.7;
   letter-spacing: -0.012em;
-  margin: 16px 8px 0 0;
+  margin: 8px 8px 8px 0;
 }
 .filters {
   @include prefix(
@@ -304,7 +312,6 @@ export default {
   }
 }
 .sort {
-  width: 33.3%;
   @include prefix(
     (
       display: flex,
@@ -442,7 +449,6 @@ export default {
 }
 .title-row {
   margin: 24px 0;
-  width: 33.3%;
   position: relative;
   @include prefix(
     (
@@ -460,6 +466,7 @@ export default {
   margin-right: -20px;
   line-height: 24px;
   font-family: 'Roboto', sans-serif;
+  font-weight: 600;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
