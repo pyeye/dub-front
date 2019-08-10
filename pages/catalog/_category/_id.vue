@@ -865,6 +865,7 @@ a {
   color: #e83841;
   font-size: 16px;
   font-weight: 600;
+  padding-left: 10%;
 }
 .masked-box {
   height: 33px;
