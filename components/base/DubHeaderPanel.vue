@@ -24,7 +24,7 @@
                   :to="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
                   class="nav-category link"
                 >
-                  <div class="facets-values" @click="closePanel">
+                  <div class="facets-values" @click="facetLinkHandler">
                     {{item.name}}
                   </div>
                 </nuxt-link>
@@ -39,7 +39,7 @@
             @mouseover="activeCategory = moreCategory"
           >
            <nuxt-link :to="`/catalog/${moreCategory.category.slug}`" class="nav-category">
-                <span class="button" @click="closePanel">{{ moreCategory.category.name }}</span>
+                <span class="button" @click="facetLinkHandler">{{ moreCategory.category.name }}</span>
             </nuxt-link>
           </div>
         </div>
@@ -79,17 +79,9 @@ export default {
     },
   },
   methods: {
-    facetLinkHandler(category, facet, facetValue) {
-      const currentPath = this.$route.path;
-      const nextPath = `/catalog/${category}`;
-      const sfacetQuery = `${facet}:${facetValue}`;
-      this.$router.push({ path: nextPath, query: { sfacets: sfacetQuery } });
+    facetLinkHandler() {
       this.closePanel();
-      if (currentPath === nextPath) {
-        this.$nextTick(() => {
-          this.$router.go();
-        });
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     closePanel() {
       this.$emit('close-panel');
