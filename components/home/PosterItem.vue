@@ -90,7 +90,7 @@ export default {
   font-size: 28px;
   letter-spacing: -0.012em;
   line-height: 28px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   padding: 24px;
   opacity: 1;
   transition: color 0.25s ease;

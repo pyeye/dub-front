@@ -1,7 +1,7 @@
 <template>
   <div class="slider">
     
-    <div class="slider-title">
+    <div class="slider-title" v-response.fast>
       <nuxt-link class="link-title" :to="`/sales/${activeSale.pk}`">
         <div class="slider-title-box">
           <transition-group
@@ -21,13 +21,13 @@
           </transition-group>
         
           <div class="revealer-title-box">
-            <div :class="{'revealer-animated': isAnimated}" class="revealer"></div>  
+            <div :class="{'revealer-title-animated': isAnimated}" class="revealer-title"></div>  
           </div>
         </div>
       </nuxt-link>
     </div>
     
-    <div class="slider-box">
+    <div class="slider-box" v-response.fast.masked>
       <transition-group
         name="slide"
         tag="div" 
@@ -144,14 +144,14 @@ export default {
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  width: 85%;
-  margin-left: 20%;
-  font-size: 70px;
+  width: 87%;
+  margin-left: 25%;
+  font-size: 80px;
   letter-spacing: 2px;
-  line-height: 70px;
-  height: 70px;
-  margin-bottom: 4px;
-  font-family: 'Roboto', sans-serif;
+  line-height: 80px;
+  height: 80px;
+  margin-bottom: 8px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
@@ -175,14 +175,14 @@ export default {
 .slider-bullets {
   z-index: 3;
   position: related;
-  width: 200px;
+  width: 300px;
   height: 100%;
   margin: 8px 8px 8px auto;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 18px;
+  line-height: 18px;
   letter-spacing: 0.15px;
-  font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   text-align: right;
   color: #eee;
   @include prefix(
@@ -195,7 +195,7 @@ export default {
 }
 .link {
   text-decoration: none;
-  margin: 8px;
+  margin: 8px 8px 8px 64px;
 }
 .bullet {
   cursor: pointer;
@@ -215,11 +215,11 @@ export default {
 .slider-name {
   position: absolute;
   top: 20%;
-  right: -38px;
-  font-size: 26px;
+  right: -48px;
+  font-size: 32px;
   letter-spacing: 4px;
-  font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
@@ -267,9 +267,9 @@ export default {
 }
 .slider-box {
   position: relative;
-  width: 85%;
-  height: 450px;
-  margin-left: -6%;
+  width: 95%;
+  height: 600px;
+  margin-left: -13%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .transition-box {
@@ -285,22 +285,32 @@ export default {
   bottom: 0;
   right: 0;
   background-color: #ddd;
-  transform: translateX(-100%);
+  transform: translateX(-101%);
+  z-index: 4;
+}
+.revealer-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #ddd;
+  transform: translateX(101%);
   z-index: 4;
 }
 .revealer-box {
   position: relative;
   overflow: hidden;
-  top: -450px;
-  height: 450px;
+  top: -600px;
+  height: 600px;
   width: 100%;
   border-radius: 4px;
 }
 .revealer-title-box {
   position: relative;
   overflow: hidden;
-  top: -70px;
-  height: 70px;
+  top: -80px;
+  height: 80px;
   width: 100%;
 }
 .slide-enter-active {
@@ -336,9 +346,11 @@ export default {
 }
 .slide-title-enter {
   opacity: 0;
+  transform: scale(0.9) translateX(7%);
 }
 .slide-title-enter-to {
   opacity: 1;
+  transform: scale(1) translateX(0);
 }
 .revealer-animated {
   animation-name: slide-in, slide-out;
@@ -347,19 +359,17 @@ export default {
   animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1),
     cubic-bezier(0.215, 0.61, 0.355, 1);
 }
-a {
-  margin: 0;
-  padding: 0;
-  color: $text_color;
-  text-decoration: none;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
-}
 
+.revealer-title-animated {
+  animation-name: slide-in-title, slide-out-title;
+  animation-duration: 800ms, 800ms;
+  animation-delay: 0ms, 800ms; /* add this */
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1),
+    cubic-bezier(0.215, 0.61, 0.355, 1);
+}
 @keyframes slide-in {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-101%);
   }
   100% {
     transform: translateX(0);
@@ -371,6 +381,69 @@ a {
   }
   100% {
     transform: translateX(101%);
+  }
+}
+@keyframes slide-in-title {
+  0% {
+    transform: translateX(101%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-out-title {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-101%);
+  }
+}
+a {
+  margin: 0;
+  padding: 0;
+  color: $text_color;
+  text-decoration: none;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+@media (max-width: 1450px) {
+  .slider-box {
+    width: 85%;
+    height: 450px;
+    margin-left: -6%;
+  }
+  .revealer-box {
+    top: -450px;
+    height: 450px;
+  }
+  .slider-title {
+    width: 85%;
+  }
+  .slider-title {
+    width: 85%;
+    margin-left: 20%;
+    font-size: 70px;
+    letter-spacing: 2px;
+    line-height: 70px;
+    height: 70px;
+  }
+  .revealer-title-box {
+    top: -70px;
+    height: 70px;
+  }
+  .slider-name {
+    right: -38px;
+    font-size: 26px;
+  }
+  .slider-bullets {
+    width: 200px;
+    font-size: 16px;
+    line-height: 16px;
+  }
+  .link {
+    margin: 8px;
   }
 }
 </style>

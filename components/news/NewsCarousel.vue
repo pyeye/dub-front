@@ -122,7 +122,7 @@ export default {
   position: relative;
   width: 25%;
   margin: 0 5% 0 auto;
-  height: 400px;
+  height: 500px;
   transform: translateY(-55%);
   border-radius: 2px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -189,7 +189,7 @@ a {
   line-height: 22px;
   letter-spacing: 0.15px;
   font-weight: 600;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   text-decoration: none;
 }
 .text-secondary {
@@ -205,7 +205,7 @@ a {
   line-height: 16px;
   letter-spacing: 0.15px;
   font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   margin-bottom: 8px;
   .date {
@@ -234,7 +234,7 @@ a {
   line-height: 16px;
   letter-spacing: 0.15px;
   font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   color: #eee;
   @include prefix(
     (
@@ -265,11 +265,11 @@ a {
 .slider-name {
   position: absolute;
   top: 30%;
-  right: -34px;
-  font-size: 24px;
+  right: -42px;
+  font-size: 28px;
   letter-spacing: 3px;
-  font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
@@ -300,5 +300,14 @@ a {
 }
 .slide-enter-to {
   opacity: 1;
+}
+@media (max-width: 1450px) {
+  .slider-box {
+    height: 400px;
+  }
+  .slider-name {
+    right: -34px;
+    font-size: 24px;
+  }
 }
 </style>

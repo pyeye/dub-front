@@ -104,7 +104,7 @@ export default {
     webkit ms
   );
   .price {
-    font-family: 'Roboto', sans-serif;
+    font-family: $accent_font;
     font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.012em;

@@ -82,7 +82,7 @@ export default {
 .news-detail {
   position: relative;
   width: 80%;
-  min-height: 800px;
+  min-height: 1000px;
   margin: 0 auto;
 }
 .detail-content {
@@ -117,46 +117,17 @@ export default {
     webkit ms
   );
 }
-.title {
-  margin: 14px 0;
-  font-size: 36px;
-  letter-spacing: 5px;
-  margin-right: -5px;
-  line-height: 40px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600;
-  opacity: 0.7;
-  color: $text_color;
-  text-transform: uppercase;
-  text-align: center;
-}
-.sub-title {
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  line-height: 16px;
-  font-family: 'Roboto', sans-serif;
-  opacity: 0.7;
-  color: $text_color;
-  text-transform: uppercase;
-  text-align: center;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-    ),
-    webkit ms
-  );
-}
 .hero {
   position: absolute;
-  right: -5.5%;
+  right: -12.5%;
   width: 70%;
-  height: 600px;
+  height: 800px;
   z-index: 1;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.12),
+    0 1px 8px 0 rgba(0, 0, 0, 0.2);
 }
 .cover {
   position: absolute;
@@ -186,7 +157,7 @@ export default {
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 24px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   padding: 24px;
   opacity: 1;
   transition: opacity 0.25s ease;
@@ -211,6 +182,7 @@ export default {
   margin-right: 16px;
 }
 .content {
+  margin-top: 48px;
   @include prefix(
     (
       display: flex,
@@ -227,15 +199,15 @@ export default {
     ),
     webkit ms
   );
-  width: 40%;
+  width: 55%;
 }
 .description-title {
-  padding: 16px 20% 16px 24px;
-  font-family: 'Roboto', sans-serif;
+  padding: 16px 25% 16px 24px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
-  font-size: 32px;
-  line-height: 36px;
+  font-size: 36px;
+  line-height: 42px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -256,13 +228,13 @@ export default {
     ),
     webkit ms
   );
-  padding: 24px 20% 8px 24px;
+  padding: 24px 25% 8px 24px;
   font-size: 16px;
   line-height: 16px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  font-family: 'Roboto', sans-serif;
-  opacity: 0.6;
+  font-family: $accent_font;
+  opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
 }
@@ -277,7 +249,7 @@ export default {
   }
 }
 .description-text {
-  padding: 16px 20% 24px 24px;
+  padding: 16px 25% 24px 24px;
   opacity: 0.8;
 }
 .icon-link {
@@ -296,6 +268,27 @@ a {
 @media (max-width: 1450px) {
   .news-detail {
     width: 90%;
+  }
+  .hero {
+    right: -5.5%;
+  }
+  .description {
+    width: 40%;
+  }
+  .description-title {
+    padding: 16px 20% 16px 24px;
+  }
+  .description-info {
+    padding: 24px 20% 8px 24px;
+  }
+  .description-text {
+    padding: 16px 20% 24px 24px;
+  }
+  .hero {
+    height: 600px;
+  }
+  .news-detail {
+    min-height: 800px;
   }
 }
 </style>

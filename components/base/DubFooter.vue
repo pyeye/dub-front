@@ -121,7 +121,7 @@ export default {
   font-weight: 400;
   margin: 4px;
   opacity: 0.7;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   color: $text_color;
   text-decoration: none;
 }

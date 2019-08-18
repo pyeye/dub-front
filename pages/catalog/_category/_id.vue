@@ -25,20 +25,30 @@
           <div class="info-box">
             <div class="info-main">
               <div class="tab-panel">
-                <div
+                <span
                   v-response.small.fast
                   class="tab-item"
                   @click="tabIndex = 'main'"
-                  :class="{ 'tab-item-active': tabIndex == 'main' }">
-                  Характеристики
-                </div>
-                <div
+                >
+                  <span
+                    class="tab-label"
+                    :class="{ 'tab-label-active': tabIndex == 'main' }"
+                  >
+                    Характеристики
+                  </span>
+                </span>
+                <span
                   v-response.small.fast
                   class="tab-item"
                   @click="tabIndex = 'description'"
-                  :class="{ 'tab-item-active': tabIndex == 'description' }">
-                  Описание
-                </div>
+                >
+                  <span
+                    class="tab-label"
+                    :class="{ 'tab-label-active': tabIndex == 'description' }"
+                  >
+                    Описание
+                  </span>
+                </span>
               </div>
 
               <div v-if="tabIndex == 'main'">
@@ -50,14 +60,14 @@
                   <div class="info-description">{{number_facet.name}}:</div>
                   <div class="description-flex"></div>
                   <div class="info-value row">
-                    <div class="row-item">
+                    <span class="row-item">
                       <nuxt-link 
                         class="list-link"
   :to="`/catalog/${product.category.slug}?nfacets=${number_facet.slug}:${number_facet.value}-${number_facet.value}`">
                         {{number_facet.value}}{{number_facet.suffix}}
                       </nuxt-link>
                       
-                    </div>
+                    </span>
                   </div>
                 </div>
               
@@ -117,11 +127,11 @@
                 <div class="info-value row">
                   <div class="description-flex"></div>
                   <div
-                    class="row-item item"
+                    class="row-item measure-item"
                     v-response.small.fast
                     v-for="productInstance in product.products"
                     :key="`sku_${productInstance.sku}`"
-                    :class="{ 'price-active': selectedInstance.sku == productInstance.sku }"
+                    :class="{ 'measure-active': selectedInstance.sku == productInstance.sku }"
                     @click="selectInstance(productInstance)"
                   >
                     {{productInstance.measure_count}}{{productInstance.measure_value}}
@@ -300,15 +310,20 @@ a {
   color: $text_color;
 }
 .list-link {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.3s ease;
   &:hover {
-    border-bottom: 2px solid $primary_color;
+    background-size: 100% 100%;
   }
 }
 
 .product-detail {
   position: relative;
   flex: 1;
-  width: 80%;
+  width: 1500px;
   margin: 0 auto;
   @include prefix(
     (
@@ -339,7 +354,8 @@ a {
   margin: 16px 0;
   background-color: $upper_layer_color;
   border-radius: 4px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.12),
+    0 1px 8px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 .product-info {
@@ -353,13 +369,13 @@ a {
   width: 80%;
   margin-left: 20%;
   .name {
-    padding: 24px 24px 24px 12%;
-    font-size: 34px;
+    padding: 32px 32px 32px 12%;
+    font-size: 42px;
     opacity: 0.7;
     font-weight: 500;
     letter-spacing: 0.01em;
-    line-height: 42px;
-    font-family: 'Roboto', sans-serif;
+    line-height: 50px;
+    font-family: $accent_font;
   }
 }
 .image-box {
@@ -394,44 +410,18 @@ a {
   );
   .info-main {
     width: 65%;
-    padding: 0 24px 24px 24px;
+    padding: 24px;
     .title {
       padding: 4px;
       font-size: 18px;
       font-weight: 500;
       letter-spacing: -0.01em;
       line-height: 36px;
-      font-family: 'Roboto', sans-serif;
-    }
-    .info-list {
-      @include prefix(
-        (
-          display: flex,
-          flex-direction: row,
-        ),
-        webkit ms
-      );
-      padding: 2px;
-      font-size: 16px;
-      font-weight: 600;
-      opacity: 0.7;
-      letter-spacing: -0.012em;
-      line-height: 24px;
-      text-transform: capitalize;
-      .info-description {
-        margin-right: 4px;
-      }
-      .description-flex {
-        flex: 1;
-        border-bottom: 1px dotted $text_color;
-        margin-bottom: 4px;
-        margin-right: 4px;
-        opacity: 0.7;
-      }
+      font-family: $accent_font;
     }
   }
   .info-price {
-    margin: 16px 0;
+    margin: 24px 0;
     padding: 0 24px;
     border-left: 1px solid #e6e3da;
     width: 35%;
@@ -444,10 +434,10 @@ a {
         ),
         webkit ms
       );
-      margin-bottom: 16px;
+      margin-bottom: 22px;
     }
     .price-value {
-      font-family: 'Roboto', sans-serif;
+      font-family: $accent_font;
       font-size: 32px;
       font-weight: 700;
       letter-spacing: 0.8px;
@@ -478,7 +468,6 @@ a {
   opacity: 0.7;
   letter-spacing: -0.012em;
   line-height: 24px;
-  text-transform: capitalize;
   .info-description {
     margin-right: 4px;
   }
@@ -493,49 +482,7 @@ a {
 .flex {
   flex: 1;
 }
-.amount {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      justify-content: space-between,
-    ),
-    webkit ms
-  );
-  padding: 2px 0;
-  .description {
-    font-size: 16px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    line-height: 24px;
-  }
-  .item {
-    position: relative;
-    opacity: 0.7;
-    margin-left: 8px;
-    cursor: pointer;
-  }
-  .value {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-      ),
-      webkit ms
-    );
-    font-size: 16px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    line-height: 24px;
-    .price-active {
-      border-bottom: 3px solid $primary_color;
-      opacity: 1;
-    }
-  }
-}
-.price-active {
+.measure-active {
   border-bottom: 3px solid $primary_color;
   opacity: 1;
 }
@@ -574,7 +521,7 @@ a {
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 36px;
-    font-family: 'Roboto', sans-serif;
+    font-family: $accent_font;
   }
   .secondary-text {
     padding: 8px 24px;
@@ -598,6 +545,9 @@ a {
 .button {
   margin-top: 16px;
   width: 47%;
+}
+.row-item {
+  text-decoration: none;
 }
 .row-item:not(:last-of-type):after {
   content: ',';
@@ -735,7 +685,7 @@ a {
   font-weight: 600;
   letter-spacing: 0.025em;
   line-height: 40px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.9;
   color: $text_color;
 }
@@ -794,10 +744,13 @@ a {
 .tag-active {
   background-color: $primary_color;
 }
+.measure-item {
+  cursor: pointer;
+}
 
 .tab-panel {
   z-index: 1;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
   @include prefix(
     (
       display: flex,
@@ -809,8 +762,9 @@ a {
 }
 
 .tab-item {
+  text-decoration: none;
   position: relative;
-  margin: 16px 24px 4px 0;
+  margin: 0 24px 4px 0;
   color: $text_color;
   padding-bottom: 3px;
   cursor: pointer;
@@ -818,28 +772,39 @@ a {
   opacity: 0.7;
   font-size: 16px;
 }
-.tab-item:hover {
-  border-bottom: 3px solid $primary_color;
-  padding-bottom: 0;
+
+.tab-label {
+  padding-bottom: 4px;
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.3s ease;
+  &:hover {
+    background-size: 100% 100%;
+  }
+}
+.tab-label-active {
+  background-size: 100% 100%;
 }
 
-.tab-item-active {
-  border-bottom: 3px solid $primary_color;
-  padding-bottom: 0;
-}
-
-@media (max-width: 1450px) {
+@media (max-width: 1599px) {
   .product-detail {
-    width: 90%;
+    width: 1250px;
+  }
+}
+@media (max-width: 1350px) {
+  .product-detail {
+    width: 1150px;
   }
 }
 
 .price-special {
   color: #e83841;
-  font-size: 28px;
+  font-size: 32px;
 }
 .price-regular {
-  font-size: 28px;
+  font-size: 32px;
 }
 .price-old {
   align-self: flex-end;

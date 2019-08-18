@@ -4,6 +4,7 @@
       <news-item :article="mainArticle">
         <div slot="bullets" class="slider-bullets">
           <div class="bullet" v-for="article in restArticles" :key="article.pk">
+            <nuxt-link class="nuxt-link" :to="`/news/${article.pk}`">
             <div class="bullet-text-secondary">
               <div class="category">{{ article.category.name }}</div>
               <div class="date">
@@ -11,7 +12,7 @@
                 {{ article.date_created.month }}
               </div>
             </div>
-            <nuxt-link class="nuxt-link" :to="`/news/${article.pk}`">
+            
               <span class="bullet-link">
                 <span class="bullet-title">{{ article.title }}</span>
               </span>
@@ -65,8 +66,8 @@ export default {
 .slider-box {
   position: relative;
   width: 25%;
-  margin: 0 5% 0 auto;
-  height: 400px;
+  margin: 0 0 0 auto;
+  height: 500px;
   transform: translateY(-55%);
   border-radius: 2px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -85,11 +86,11 @@ a {
 .slider-name {
   position: absolute;
   top: 30%;
-  right: -34px;
-  font-size: 24px;
+  right: -42px;
+  font-size: 28px;
   letter-spacing: 3px;
-  font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
@@ -113,8 +114,8 @@ a {
   font-size: 16px;
   line-height: 18px;
   letter-spacing: 0.15px;
-  font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   color: #eee;
   @include prefix(
     (
@@ -126,6 +127,11 @@ a {
 }
 .bullet {
   margin-bottom: 16px;
+  &:hover {
+    .bullet-title {
+      background-size: 100% 100%;
+    }
+  }
 }
 .bullet-link {
   text-decoration: none;
@@ -137,9 +143,6 @@ a {
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease, color 1.6s ease-in-out;
-  &:hover {
-    background-size: 100% 100%;
-  }
 }
 .bullet-text-secondary {
   @include prefix(
@@ -154,7 +157,7 @@ a {
   line-height: 16px;
   letter-spacing: 0.15px;
   font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   .date {
     margin-left: 8px;
@@ -163,6 +166,16 @@ a {
   .category {
     padding-bottom: 4px;
     margin-right: 4px;
+  }
+}
+@media (max-width: 1450px) {
+  .slider-box {
+    height: 400px;
+    margin: 0 5% 0 auto;
+  }
+  .slider-name {
+    right: -34px;
+    font-size: 24px;
   }
 }
 </style>

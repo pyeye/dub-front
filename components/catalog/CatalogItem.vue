@@ -151,6 +151,7 @@ export default {
     color: $text_color;
     .image-box {
       width: 45%;
+      text-align: center;
       @include prefix(
         (
           align-self: center,
@@ -160,12 +161,13 @@ export default {
       );
     }
     .image {
-      max-height: 270px;
+      max-height: 350px;
       max-width: 100%;
     }
     .name {
-      padding: 16px 0 4px 0;
-      font-size: 20px;
+      padding: 16px 0 32px 0;
+      font-family: $accent_font;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: 0;
       line-height: 1.2222;
@@ -199,7 +201,7 @@ export default {
     ),
     webkit ms
   );
-  padding: 8px 0;
+  padding-bottom: 8px;
   font-size: 14px;
   font-weight: 400;
   line-height: 24px;
@@ -259,20 +261,6 @@ export default {
     ),
     webkit ms
   );
-}
-.price {
-  @include prefix(
-    (
-      align-self: flex-end,
-    ),
-    webkit ms
-  );
-  padding-top: 8px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 26px;
-  font-weight: 600;
-  letter-spacing: -0.012em;
-  line-height: 32px;
 }
 .actions {
   @include prefix(

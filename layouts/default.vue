@@ -62,7 +62,7 @@ export default {
 <style lang="scss" scoped>
 #app {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: $main_font;
   line-height: 1.5;
   min-height: 100vh;
   background-color: #f5f4f0;
@@ -160,7 +160,7 @@ export default {
   font-weight: 600;
   letter-spacing: 0.025em;
   line-height: 42px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   margin-bottom: 16px;
 }
 .agreement-info {

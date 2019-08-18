@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-      <sales-carousel class="lax" data-lax-translate-y="(vh-200) 0, (vh+300) -50" :sales="sales"></sales-carousel>
+      <sales-carousel class="lax" data-lax-translate-y="(elh-300) 0, elh -50" :sales="sales"></sales-carousel>
 
-      <home-news class="lax" data-lax-translate-y="(vh-200) 0, (vh+200) -100" :news="news"></home-news>
+      <home-news class="lax" data-lax-translate-y="elh 0, (elh*8) -100" :news="news"></home-news>
       
       <!--
       <div class="news">
@@ -42,7 +42,7 @@
     <div class="about-row">
       <div
         class="about-text lax"
-        data-lax-translate-y="(vh-300) 250, vh 0"
+        data-lax-translate-y="(elh-300) 150, (elh+300) 0"
       >
         <div class="about-text-logo">
           <img src="~/assets/images/dubbel_text.png" class="img-logo">
@@ -54,7 +54,7 @@
       </div>
       <div
         class="about base-news lax"
-        data-lax-translate-y="(vh-300) 150, vh 0 | speed=1"
+        data-lax-translate-y="(elh-300) 150, (elh+150) 0"
         
       >
       <div class="cover"></div>
@@ -217,15 +217,15 @@ export default {
   }
   .first {
     width: 27%;
-    height: 400px;
+    height: 550px;
   }
   .second {
     width: 35%;
-    height: 550px;
+    height: 700px;
   }
   .third {
     width: 30%;
-    height: 450px;
+    height: 600px;
   }
 }
 .news {
@@ -292,32 +292,35 @@ export default {
   );
 }
 .title {
-  padding-bottom: 16px;
-  font-size: 36px;
+  font-size: 42px;
   letter-spacing: 20px;
-  line-height: 24px;
-  font-family: 'Roboto', sans-serif;
+  margin-right: -20px;
+  line-height: 50px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
 }
 .sub-title {
+  margin-top: 6px;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  line-height: 20px;
-  font-family: 'Roboto', sans-serif;
+  line-height: 16px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
 }
 .about {
-  margin: 64px 0 64px 20%;
+  margin: 64px 0 64px 0;
   border-radius: 2px;
-  position: relative;
-  width: 80%;
-  height: 600px;
+  position: absolute;
+  width: 100%;
+  height: 650px;
   z-index: 1;
+  top: 0;
+  right: -12.5%;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   background-size: cover;
   background-repeat: no-repeat;
@@ -334,15 +337,16 @@ export default {
     webkit ms
   );
   position: relative;
-  margin-top: 36px;
+  margin: 36px 0 164px 0;
+  min-height: 800px;
 }
 .about-text {
   position: absolute;
   padding: 36px;
   top: -10%;
   left: 10%;
-  width: 20%;
-  height: 300px;
+  width: 22%;
+  height: 400px;
   z-index: 10;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   background-color: #fafafa;
@@ -363,7 +367,7 @@ export default {
   font-weight: 400;
   margin: 16px 8px;
   opacity: 0.7;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   color: $text_color;
 }
 .icon-link {
@@ -404,7 +408,7 @@ export default {
   z-index: 1;
   color: $primary_color;
   font-size: 18px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
 }
 .news-relative-text {
   transition: opacity 0.6s ease;
@@ -414,7 +418,7 @@ export default {
   z-index: 1;
   color: #fafafa;
   font-size: 18px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
 }
 .cover-text {
   @include prefix(
@@ -433,7 +437,7 @@ export default {
   font-size: 24px;
   letter-spacing: 0.02em;
   line-height: 30px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   padding: 48px 24px;
   opacity: 1;
   transition: opacity 0.25s ease;
@@ -480,6 +484,7 @@ a {
       display: flex,
       flex-direction: row,
       flex-wrap: wrap,
+      justify-content: center,
     ),
     webkit ms
   );
@@ -512,7 +517,34 @@ a {
     height: 420px;
   }
   .about {
+    margin: 64px 0 64px 20%;
+    width: 80%;
     height: 450px;
+    right: -5.5%;
+  }
+  .about-text {
+    padding: 36px;
+    top: -10%;
+    left: 10%;
+    width: 20%;
+    height: 300px;
+  }
+  .about-row {
+    min-height: 500px;
+  }
+  .posters {
+    .first {
+      width: 27%;
+      height: 400px;
+    }
+    .second {
+      width: 35%;
+      height: 550px;
+    }
+    .third {
+      width: 30%;
+      height: 450px;
+    }
   }
 }
 </style>

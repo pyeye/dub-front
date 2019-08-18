@@ -186,7 +186,7 @@ export default {
 }
 .sales-products {
   position: relative;
-  width: 80%;
+  width: 1500px;
   margin: 0 auto;
 }
 .hero-content {
@@ -206,12 +206,13 @@ export default {
   position: absolute;
   right: -5.5%;
   width: 70%;
-  height: 400px;
+  min-height: 500px;
   z-index: 1;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.12),
+    0 1px 8px 0 rgba(0, 0, 0, 0.2);
 }
 .cover {
   position: absolute;
@@ -239,7 +240,7 @@ export default {
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 24px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   padding: 12px 0;
   opacity: 1;
   transition: opacity 0.25s ease;
@@ -283,15 +284,15 @@ export default {
     webkit ms
   );
   width: 35%;
-  margin-left: 5%;
+  margin-left: 10%;
 }
 .description-title {
-  padding: 16px 20% 16px 24px;
-  font-family: 'Roboto', sans-serif;
+  padding: 16px 32% 16px 24px;
   opacity: 0.7;
   color: $text_color;
-  font-size: 32px;
-  line-height: 36px;
+  font-family: $accent_font;
+  font-size: 36px;
+  line-height: 42px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -299,15 +300,15 @@ export default {
 .description-box {
   background-color: $upper_layer_color;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  min-height: 300px;
+  min-height: 450px;
 }
 .description-text {
-  padding: 16px 20% 24px 24px;
+  padding: 16px 32% 24px 24px;
   font-size: 16px;
   line-height: 16px;
   font-weight: 400;
   letter-spacing: 0.05em;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
 }
@@ -333,36 +334,26 @@ a {
   }
 }
 .title {
-  margin: 14px 0;
-  font-size: 36px;
-  letter-spacing: 5px;
-  margin-right: -5px;
-  line-height: 40px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600;
+  font-size: 42px;
+  letter-spacing: 8px;
+  line-height: 50px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
-  text-align: center;
 }
 .sub-title {
-  font-size: 14px;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   line-height: 16px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
-  text-align: center;
 }
 
-.catalog-list {
-  position: relative;
-  flex: 1;
-  width: 80%;
-  margin: 0 auto;
-  padding-bottom: 24px;
-}
 .filter-tag-menu {
   padding: 8px 0;
 }
@@ -392,15 +383,13 @@ a {
   }
 }
 .title-row {
-  margin: 24px 0;
-  width: 60%;
+  margin: 26px 0;
   position: relative;
   @include prefix(
     (
       display: flex,
       flex-direction: column,
       align-items: center,
-      justify-content: center,
     ),
     webkit ms
   );
@@ -463,7 +452,7 @@ a {
   .filter-panel {
     position: relative;
     height: 100%;
-    width: 25%;
+    width: 22%;
     background-color: $upper-layer-color;
     border-radius: 2px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -483,16 +472,16 @@ a {
       @include prefix(
         (
           flex: 1 1,
-          flex-basis: 26%,
+          flex-basis: 19.62%,
         ),
         webkit ms
       );
-      max-width: 25.6%;
+      max-width: 19.62%;
       background-color: $upper_layer_color;
       border-radius: 2px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
       padding: 24px;
-      margin: 0 8px 32px 8px;
+      margin: 0 0 32px 16px;
       transition: box-shadow 0.25s ease;
       &:hover {
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -568,11 +557,65 @@ a {
     ),
     webkit ms
   );
-  width: 90%;
+  width: 100%;
 }
-@media (max-width: 1450px) {
-  .catalog-list {
-    width: 90%;
+@media (max-width: 1680px) {
+  .description {
+    margin-left: 5%;
+  }
+  .description-title {
+    padding: 16px 20% 16px 24px;
+  }
+  .description-date {
+    padding: 24px 20% 8px 24px;
+  }
+  .description-text {
+    padding: 16px 20% 24px 24px;
+  }
+}
+@media (max-width: 1599px) {
+  .sales-products {
+    width: 1250px;
+  }
+  .content {
+    .grid {
+      .grid-cell {
+        max-width: 26.68%;
+        @include prefix(
+          (
+            flex-basis: 26.68%,
+          ),
+          webkit ms
+        );
+      }
+    }
+  }
+}
+@media (max-width: 1350px) {
+  .sales-products {
+    width: 1150px;
+  }
+  .content {
+    .filter-panel {
+      width: 25%;
+    }
+    .grid {
+      .grid-cell {
+        max-width: 25.9%;
+        @include prefix(
+          (
+            flex-basis: 25.9%,
+          ),
+          webkit ms
+        );
+      }
+    }
+  }
+  .hero {
+    min-height: 400px;
+  }
+  .description-box {
+    min-height: 300px;
   }
 }
 </style>

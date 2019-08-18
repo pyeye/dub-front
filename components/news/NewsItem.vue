@@ -1,6 +1,8 @@
 <template>
-  <div class="article" :style="`background-image: url(${article.image.src});`">
-    <div class="article-cover"></div>
+  
+    <div v-response.masked class="article" :style="`background-image: url(${article.image.src});`">
+      <nuxt-link class="nuxt-link" :to="`/news/${article.pk}`">
+      <div class="article-cover"></div>
       <div class="active-article">
         <div class="text-secondary">
           <div class="category">{{ article.category.name }}</div>
@@ -9,13 +11,14 @@
             {{ article.date_created.month }}
           </div>
         </div>
-        <nuxt-link class="nuxt-link" :to="`/news/${article.pk}`">
-          <span class="article-title"><span class="link">{{ article.title }}</span></span>
-        </nuxt-link>
+        <span class="article-title"><span class="link">{{ article.title }}</span></span>
       </div>
       <div class="flex"></div>
-      <slot name="bullets"></slot>
-  </div>
+      </nuxt-link>
+      <slot class="bullets-slot" name="bullets"></slot>
+      
+    </div>
+  
 </template>
 
 <script>
@@ -77,7 +80,7 @@ a {
   line-height: 22px;
   letter-spacing: 0.15px;
   font-weight: 600;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   text-decoration: none;
 }
 .text-secondary {
@@ -93,7 +96,7 @@ a {
   line-height: 16px;
   letter-spacing: 0.15px;
   font-weight: 400;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   margin-bottom: 8px;
   .date {
@@ -120,7 +123,20 @@ a {
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease, color 1.6s ease-in-out;
-  &:hover {
+}
+
+.nuxt-link {
+  height: 100%;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+}
+.nuxt-link:hover {
+  .link {
     background-size: 100% 100%;
   }
 }

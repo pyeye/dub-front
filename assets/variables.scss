@@ -1,11 +1,14 @@
 $link_color: #42b983;
-$primary_color: #fc0;
+$primary_color: #fba900;
 $text_color: #252525;
 $body_color: #ecf0f3;
 $upper_layer_color: #fff;
 $disable_color: #d1d1d1;
 $error_color: #d32f2f;
 $success_color: #68cd86;
+
+$main_font: 'Open Sans', serif;
+$accent_font: 'Open Sans', sans-serif;
 
 @mixin prefix($declarations, $prefixes: ()) {
   @each $property, $value in $declarations {

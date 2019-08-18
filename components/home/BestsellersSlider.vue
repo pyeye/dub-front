@@ -75,7 +75,7 @@ a {
     margin-bottom: 2px;
     letter-spacing: 0.025em;
     line-height: 42px;
-    font-family: 'Roboto', sans-serif;
+    font-family: $accent_font;
   }
   .secondary-title {
     color: $text_color;

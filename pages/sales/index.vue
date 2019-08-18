@@ -84,7 +84,7 @@ export default {
     font-weight: 600;
     letter-spacing: 0.025em;
     line-height: 42px;
-    font-family: 'Roboto', sans-serif;
+    font-family: $accent_font;
   }
 }
 .grid {
@@ -163,7 +163,7 @@ export default {
   font-size: 32px;
   letter-spacing: 0.25px;
   line-height: 32px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   padding: 16px;
   opacity: 1;
   transition: opacity 0.25s ease;

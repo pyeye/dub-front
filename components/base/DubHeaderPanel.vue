@@ -100,11 +100,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .header-panel {
-  width: 90%;
+  width: 1500px;
   position: absolute;
   left: 50%;
   top: 100%;
-  margin-left: -42.5%;
+  margin-left: -750px;
   background-color: $upper_layer_color;
   border-radius: 0 0 3px 3px;
   z-index: -1;
@@ -155,7 +155,7 @@ export default {
   font-weight: 400;
 }
 .panel-content {
-  height: 350px;
+  height: 450px;
   @include prefix(
     (
       display: flex,
@@ -189,7 +189,7 @@ export default {
       (
         display: grid,
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)),
-        grid-template-rows: 350px,
+        grid-template-rows: 450px,
       ),
       webkit ms
     );
@@ -224,6 +224,34 @@ export default {
   .show-all {
     margin-top: 20px;
     height: 35px;
+  }
+}
+@media (max-width: 1450px) {
+  .header-info {
+    width: 90%;
+  }
+  .header-nav {
+    .nav {
+      width: 90%;
+    }
+  }
+}
+@media (max-width: 1599px) {
+  .header-panel {
+    width: 1250px;
+    margin-left: -625px;
+  }
+  .panel-content {
+    height: 400px;
+  }
+}
+@media (max-width: 1350px) {
+  .header-panel {
+    width: 1150px;
+    margin-left: -575px;
+  }
+  .panel-content {
+    height: 350px;
   }
 }
 </style>

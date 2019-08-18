@@ -256,6 +256,8 @@ $checkbox-transition: 0.22s cubic-bezier(0, 0, 0.2, 1) 0ms;
   &__label {
     padding-left: 4px;
     font-size: 14px;
+    font-weight: 600;
+    opacity: 0.7;
     line-height: 20px;
   }
 

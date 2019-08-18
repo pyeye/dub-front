@@ -3,7 +3,7 @@
     <div class="slider">
       <vue-glide :options="slider" @glide:mount-after="loaded = true" v-show="loaded" :key="loaded">
         <vue-glide-slide v-for="sale in sales" :key="sale.pk">
-          <div class="slide" :style="'background-image: url('+ sale.image.src +');'">
+          <div class="slide" v-response.masked :style="'background-image: url('+ sale.image.src +');'">
             <nuxt-link :to="`/sales/${sale.pk}`">
               <div class="cover-text">
                 <div class="text-secondary">
@@ -68,15 +68,14 @@ a {
   color: $text_color;
 }
 .slider {
-  height: 250px;
+  height: 350px;
 }
 .slide {
   cursor: pointer;
   border-radius: 2px;
   position: relative;
-  border: 2px solid #fff;
   width: 100%;
-  height: 250px;
+  height: 350px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
@@ -107,7 +106,8 @@ a {
   font-size: 22px;
   letter-spacing: 0.25px;
   line-height: 22px;
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-family: $accent_font;
   height: 60%;
   padding: 12px;
   opacity: 1;
@@ -250,5 +250,21 @@ a {
   z-index: 2;
   color: #fff;
   transition: color 0.25s ease;
+}
+@media (max-width: 1599px) {
+  .slider {
+    height: 300px;
+  }
+  .slide {
+    height: 300px;
+  }
+}
+@media (max-width: 1350px) {
+  .slider {
+    height: 250px;
+  }
+  .slide {
+    height: 250px;
+  }
 }
 </style>

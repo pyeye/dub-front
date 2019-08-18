@@ -40,11 +40,12 @@ export default {
   );
 }
 .breadcrumb-label {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
   opacity: 0.7;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   color: $text_color;
   .breadcrumb-title {
     padding-bottom: 2px;

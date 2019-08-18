@@ -84,10 +84,11 @@ export default {
 .news-list {
   position: relative;
   flex: 1;
-  width: 80%;
+  width: 1500px;
   margin: 0 auto;
 }
 .header {
+  margin-bottom: 24px;
   @include prefix(
     (
       display: flex,
@@ -99,8 +100,7 @@ export default {
   );
 }
 .title-row {
-  margin: 24px 0;
-  width: 60%;
+  margin: 26px 0;
   position: relative;
   @include prefix(
     (
@@ -113,22 +113,11 @@ export default {
   );
 }
 .title {
-  margin: 14px 0;
-  font-size: 36px;
+  font-size: 42px;
   letter-spacing: 20px;
   margin-right: -20px;
-  line-height: 24px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600;
-  opacity: 0.7;
-  color: $text_color;
-  text-transform: uppercase;
-}
-.sub-title {
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  line-height: 16px;
-  font-family: 'Roboto', sans-serif;
+  line-height: 50px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
@@ -189,12 +178,12 @@ export default {
     @include prefix(
       (
         flex: 1 1,
-        flex-basis: 24%,
+        flex-basis: 23.93%,
       ),
       webkit ms
     );
-    max-width: 24%;
-    height: 400px;
+    max-width: 23.93%;
+    height: 500px;
     margin: 0 8px 32px 8px;
     transition: box-shadow 0.25s ease;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -203,9 +192,37 @@ export default {
     }
   }
 }
-@media (max-width: 1450px) {
+@media (max-width: 1599px) {
   .news-list {
-    width: 90%;
+    width: 1250px;
+  }
+  .grid {
+    .grid-cell {
+      max-width: 32%;
+      @include prefix(
+        (
+          flex-basis: 32%,
+        ),
+        webkit ms
+      );
+    }
+  }
+}
+@media (max-width: 1350px) {
+  .news-list {
+    width: 1150px;
+  }
+  .grid {
+    .grid-cell {
+      max-width: 31.9%;
+      height: 450px;
+      @include prefix(
+        (
+          flex-basis: 31.9%,
+        ),
+        webkit ms
+      );
+    }
   }
 }
 </style>

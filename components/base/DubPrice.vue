@@ -55,7 +55,7 @@ export default {
     webkit ms
   );
   padding-top: 8px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.032em;

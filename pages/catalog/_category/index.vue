@@ -206,7 +206,7 @@ export default {
 .catalog-list {
   position: relative;
   flex: 1;
-  width: 80%;
+  width: 1500px;
   margin: 0 auto;
   padding-bottom: 24px;
 }
@@ -270,7 +270,7 @@ export default {
   .filter-panel {
     position: relative;
     height: 100%;
-    width: 25%;
+    width: 22%;
     background-color: $upper-layer-color;
     border-radius: 2px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -290,16 +290,16 @@ export default {
       @include prefix(
         (
           flex: 1 1,
-          flex-basis: 26%,
+          flex-basis: 19.62%,
         ),
         webkit ms
       );
-      max-width: 25.6%;
+      max-width: 19.62%;
       background-color: $upper_layer_color;
       border-radius: 2px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
       padding: 24px;
-      margin: 0 8px 32px 8px;
+      margin: 0 0 32px 16px;
       transition: box-shadow 0.25s ease;
       &:hover {
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -322,7 +322,7 @@ export default {
   width: 90%;
 }
 .title-row {
-  margin: 24px 0;
+  margin: 26px 0;
   position: relative;
   @include prefix(
     (
@@ -334,29 +334,63 @@ export default {
   );
 }
 .title {
-  margin: 14px 0;
-  font-size: 36px;
+  font-size: 42px;
   letter-spacing: 20px;
   margin-right: -20px;
-  line-height: 24px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600;
+  line-height: 50px;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
 }
 .sub-title {
-  font-size: 14px;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   line-height: 16px;
-  font-family: 'Roboto', sans-serif;
+  font-family: $accent_font;
   opacity: 0.7;
   color: $text_color;
   text-transform: uppercase;
 }
-@media (max-width: 1450px) {
+@media (max-width: 1599px) {
   .catalog-list {
-    width: 90%;
+    width: 1250px;
+  }
+  .content {
+    .grid {
+      .grid-cell {
+        max-width: 26.68%;
+        @include prefix(
+          (
+            flex-basis: 26.68%,
+          ),
+          webkit ms
+        );
+      }
+    }
+  }
+}
+@media (max-width: 1350px) {
+  .catalog-list {
+    width: 1150px;
+  }
+  .content {
+    .filter-panel {
+      width: 25%;
+    }
+    .grid {
+      .grid-cell {
+        max-width: 25.9%;
+        @include prefix(
+          (
+            flex-basis: 25.9%,
+          ),
+          webkit ms
+        );
+      }
+    }
   }
 }
 </style>
