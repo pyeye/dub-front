@@ -84,20 +84,23 @@ function onWheel(e) {
   }
 }
 
-function prevent(register) {
+function prevent(register, overflow) {
   registered += register ? 1 : -1;
   if (registered > 1) {
     return;
   }
-
   const action = register ? 'add' : 'remove';
   window[`${action}EventListener`]('wheel', stopAndPrevent, { passive: false });
+
+  if (overflow) {
+    document.body.style = register ? 'height: 100vh; overflow: hidden' : '';
+  }
 }
 
 export default {
   methods: {
-    preventScroll(state) {
-      prevent(state);
+    preventScroll(state, overflow = false) {
+      prevent(state, overflow);
     },
   },
 };
