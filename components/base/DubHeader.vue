@@ -150,14 +150,14 @@
             <div class="content-categories">
               <dir class="product-name" @click="selfActive = false">
                 <nuxt-link
-                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`"
+                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}/${activeCategory.name_slug}`"
                   class="nav-category link"
                 >
                   {{activeCategory.category.name}} {{activeCategory.name}}
                 </nuxt-link>
               </dir>
                 <nuxt-link
-                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}`"
+                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}/${activeCategory.name_slug}`"
                   class="nav-category link"
                 >
                   <img class="image" :src="`http://api.mydubbelsite.ru/${productImage}`" @click="selfActive = false">

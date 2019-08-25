@@ -14,6 +14,7 @@ import IconMinus from '~/components/icons/IconMinus';
 import IconClose from '~/components/icons/IconClose';
 import IconInstagram from '~/components/icons/IconInstagram';
 import IconFacebook from '~/components/icons/IconFacebook';
+import IconActionRight from '~/components/icons/IconActionRight';
 
 Vue.component('dub-button', DubButton);
 Vue.component('dub-breadcrumbs', DubBreadcrumbs);
@@ -28,3 +29,4 @@ Vue.component('icon-minus', IconMinus);
 Vue.component('icon-close', IconClose);
 Vue.component('icon-instagram', IconInstagram);
 Vue.component('icon-facebook', IconFacebook);
+Vue.component('icon-action-right', IconActionRight);

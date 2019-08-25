@@ -9,10 +9,11 @@ const defaultFilters = {
   },
   sort: {
     by: {
-      name: 'названию (А-Я)',
-      value: 'name-asc',
+      label: 'названию',
+      code: 'name',
+      direction: 'none',
     },
-    options: [],
+    options: [{ code: 'name', label: 'названию' }, { code: 'date', label: 'дате' }],
   },
 };
 
@@ -107,15 +108,10 @@ export const getFilters = (query, products, facets, tags) => {
   page.total = Math.ceil(products.total / page.size);
 
   const { sort } = defaultFilters;
-  sort.options = [
-    { name: 'цене (по возрастанию)', value: 'price-asc' },
-    { name: 'цене (по убыванию)', value: 'price-desc' },
-    { name: 'названию (А-Я)', value: 'name-asc' },
-    { name: 'названию (Я-А)', value: 'name-desc' },
-  ];
   if (query.sort !== undefined) {
-    const queryOption = sort.options.find(option => option.value === query.sort);
-    sort.by = queryOption;
+    const [querySortCode, querySortDirection] = query.sort.split('-');
+    const queryOption = sort.options.find(option => option.code === querySortCode);
+    sort.by = { ...queryOption, direction: querySortDirection };
   }
   const filters = {
     sfacets: decodedSfacets,

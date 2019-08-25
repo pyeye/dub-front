@@ -50,7 +50,7 @@ export default {
       };
 
       const c = {
-        x: Math.round((ev.clientX - (container.offsetLeft - window.scrollX)) / (e.w / 100) / 2),
+        x: Math.round((ev.clientX / 2 - (container.offsetLeft - window.scrollX)) / (e.w / 100)),
         y: Math.round((ev.clientY - (container.offsetTop - window.scrollY)) / (e.h / 100) - 37),
       };
 
@@ -90,7 +90,7 @@ export default {
   height: 100%;
   background-position: center center;
   background-repeat: no-repeat;
-  background-color: #fafafa;
+  background-color: $upper_layer_color;
   transition: all ease-out 0.3s;
 }
 

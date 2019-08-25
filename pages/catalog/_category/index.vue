@@ -11,14 +11,11 @@
 
     <div class="filter-row">
       <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
-      <div class="sort">
-        <div class="sort-description">Сортировать по:</div>
-        <dub-select
-          :selected="filters.sort.by"
-          :options="filters.sort.options"
-          @updateOption="selectHandler"
-        ></dub-select>
-      </div>
+      <catalog-sort
+        :options="filters.sort.options"
+        :active="filters.sort.by"
+        @change-sort="sortHandler"
+      ></catalog-sort>
     </div>
 
     <catalog-tags :tags="tags" :selected-tags="filters.tags" @tag-selected="tagHandler"></catalog-tags>
@@ -58,6 +55,7 @@
 
 <script>
 import CatalogItem from '@/components/catalog/CatalogItem';
+import CatalogSort from '@/components/catalog/CatalogSort';
 import FilterItems from '@/components/catalog/FilterItems';
 import CatalogTags from '@/components/catalog/CatalogTags';
 import CatalogFacets from '@/components/catalog/CatalogFacets';
@@ -73,6 +71,7 @@ export default {
   scrollToTop: false,
   components: {
     CatalogItem,
+    CatalogSort,
     FilterItems,
     DubPagination,
     CatalogTags,
@@ -152,11 +151,14 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.getProducts(query);
     },
-    async selectHandler(e) {
+    async sortHandler(e) {
       this.$set(this.filters.sort, 'by', e);
       const filtersQuery = getQuery(this.filters);
       const query = { ...this.$route.query, ...filtersQuery };
-      query.sort = this.filters.sort.by.value;
+      query.sort =
+        this.filters.sort.by.direction === 'none'
+          ? undefined
+          : `${this.filters.sort.by.code}-${this.filters.sort.by.direction}`;
       this.$set(this.filters.page, 'current', 1);
       query.page = 1;
       this.$router.push({ query });

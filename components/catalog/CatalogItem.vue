@@ -94,7 +94,9 @@ export default {
   created() {
     const [firstInstance] = this.product.products;
     this.selectedInstance = firstInstance;
-    this.productLink = `/catalog/${this.product.category.slug}/${this.product.pk}`;
+    this.productLink = `/catalog/${this.product.category.slug}/${this.product.pk}/${
+      this.product.name_slug
+    }`;
   },
   methods: {
     setInstance(instance) {
