@@ -73,7 +73,6 @@ export default {
           if (prev.name < next.name) {
             return -1;
           }
-          // a должно быть равным b
           return 0;
         });
       return sortedBadges;

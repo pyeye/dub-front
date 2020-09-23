@@ -5,6 +5,7 @@
       <nuxt-link class="link-title" :to="`/sales/${activeSale.pk}`">
         <div class="slider-title-box">
           <transition-group
+            appear
             name="slide-title"
             tag="div" 
             class="transition-box"
@@ -29,6 +30,7 @@
     
     <div class="slider-box" v-response.fast.masked>
       <transition-group
+        appear
         name="slide"
         tag="div" 
         class="transition-box "
@@ -346,11 +348,11 @@ export default {
 }
 .slide-title-enter {
   opacity: 0;
-  transform: scale(0.9) translateX(7%);
+  transform: translateX(7%);
 }
 .slide-title-enter-to {
   opacity: 1;
-  transform: scale(1) translateX(0);
+  transform: translateX(0);
 }
 .revealer-animated {
   animation-name: slide-in, slide-out;

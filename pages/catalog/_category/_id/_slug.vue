@@ -3,9 +3,9 @@
     <dub-breadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="content">
       <div class="product-image">
-        <catalog-gallery :images="selectedInstance.images"></catalog-gallery>
-        <div class="floating" v-if="selectedInstance.sales.length !== 0">
-          <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="`sale_label_${label}`">
+        <catalog-gallery :images="product.instance.images"></catalog-gallery>
+        <div class="floating" v-if="product.instance.sales.length !== 0">
+          <sales-badge v-for="label in getSaleLabels(product.instance.sales)" :key="`sale_label_${label}`">
             {{ label }}
           </sales-badge>
         </div>
@@ -13,8 +13,7 @@
       <div class="product-info">
         <div class="name">
           {{ product.name }},
-          {{selectedInstance.measure_count}}
-          {{selectedInstance.measure_value}}
+          {{product.instance.measure}}
         </div>
         <div class="sales-conditions" v-if="salesWithCondition">
           <div v-for="sale in salesWithCondition" :key="`sale_${sale.pk}`">
@@ -109,15 +108,15 @@
             </div>
             <div class="info-price">
               <div class="price-row">
-                <dub-price :special-price="selectedInstance.new_price">
-                  <span slot="oldPrice" class="price-old" v-if="selectedInstance.new_price">
-                    {{ selectedInstance.price }} &#x20bd;
+                <dub-price :special-price="product.instance.new_price">
+                  <span slot="oldPrice" class="price-old" v-if="product.instance.new_price">
+                    {{ product.instance.price }} &#x20bd;
                   </span>
-                  <span slot="specialPrice" class="price-special" v-if="selectedInstance.new_price">
-                    {{ selectedInstance.new_price }} &#x20bd;
+                  <span slot="specialPrice" class="price-special" v-if="product.instance.new_price">
+                    {{ product.instance.new_price }} &#x20bd;
                   </span>
-                  <span slot="regularPrice" class="price-regular" v-if="!selectedInstance.new_price">
-                    {{ selectedInstance.price }} &#x20bd;
+                  <span slot="regularPrice" class="price-regular" v-if="!product.instance.new_price">
+                    {{ product.instance.price }} &#x20bd;
                   </span>
                 </dub-price>
               </div>
@@ -126,20 +125,8 @@
                 <div class="description-flex"></div>
                 <div class="info-value row">
                   <div class="description-flex"></div>
-                  <div
-                    class="row-item measure-item"
-                    v-response.small.fast
-                    v-for="productInstance in product.products"
-                    :key="`sku_${productInstance.sku}`"
-                    :class="{ 'measure-active': selectedInstance.sku == productInstance.sku }"
-                    @click="selectInstance(productInstance)"
-                  >
-                    {{productInstance.measure_count}}{{productInstance.measure_value}}
-                    <sales-badge
-                      class="floating-measure" 
-                      v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
-                      type="dot">
-                    </sales-badge>
+                  <div class="row-item measure-item measure-active">
+                    {{product.instance.measure}}
                   </div>
                 </div>
               </div>
@@ -149,7 +136,7 @@
                 <div class="info-value row">
                   <div class="description-flex"></div>
                   <div class="row-item">
-                    #{{selectedInstance.sku}}
+                    #{{product.instance.sku}}
                   </div>
                 </div>
               </div>
@@ -159,7 +146,7 @@
                 <div class="info-value row">
                   <div class="description-flex"></div>
                   <div class="row-item">
-                    {{selectedInstance.package_amount}}
+                    {{product.instance.package_amount}}
                   </div>
                 </div>
               </div>
@@ -169,7 +156,7 @@
                 <div class="info-value row storage">
                   <div class="description-flex"></div>
                   <div class="row-item value">
-                    {{selectedInstance.stock_balance}} шт.
+                    {{product.instance.stock_balance}} шт.
                   </div>
                 </div>
               </div>
@@ -231,7 +218,7 @@ export default {
     tabIndex: 'main',
   }),
   async asyncData(context) {
-    const { store, params, app, query } = context;
+    const { store, params, app } = context;
     const { id, category } = params;
     let product = store.getters['products/product'](category, id);
     if (!product) {
@@ -239,14 +226,8 @@ export default {
       const { data } = await app.$api.get(url);
       product = data;
     }
-    const { sku } = query;
-    let [selectedInstance] = product.products;
-    if (sku !== undefined) {
-      selectedInstance = product.products.find(p => p.sku === Number(sku));
-    }
     return {
       product,
-      selectedInstance,
     };
   },
   computed: {
@@ -266,15 +247,15 @@ export default {
       );
     },
     salesWithCondition() {
-      if (!this.selectedInstance.sales) {
+      if (!this.product.instance.sales) {
         return [];
       }
-      return this.selectedInstance.sales.filter(sale => sale.type === 'condition');
+      return this.product.instance.sales.filter(sale => sale.type === 'condition');
     },
   },
   methods: {
     selectInstance(instance) {
-      this.selectedInstance = instance;
+      this.product.instance = instance;
       const query = Object.assign({}, this.$route.query);
       query.sku = instance.sku;
       this.$router.push({ query });

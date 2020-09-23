@@ -4,7 +4,7 @@ dev:
 		-v /home/arthur/www/dubbel/src/frontend/:/srv/www/dubbel/src/frontend/ \
 		--name vue-serve1 \
 		--network dubbel \
-		--add-host api.mydubbelsite.ru:192.168.1.130 \
+		--add-host api.mydubbelsite.ru:192.168.1.131 \
 		pyeye/dub-vue:latest \
 		npm run dev
 

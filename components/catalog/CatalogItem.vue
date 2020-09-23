@@ -14,18 +14,8 @@
       </div>
         <div class="amount">
           <div class="value">
-            <div 
-              class="product-item" 
-              :class="{'product-item-active': instance.sku === selectedInstance.sku}"
-              v-for="instance in product.products" 
-              :key="instance.sku" 
-              @click="setInstance(instance)">
-              {{instance.measure_count}}{{instance.measure_value}}
-              <sales-badge
-                class="floating-product" 
-                v-if="selectedInstance.sales.length !== 0 && product.products.length > 1" 
-                type="dot">
-              </sales-badge>
+            <div class="product-item product-item-active">
+              {{product.instance.measure_count}}{{product.instance.measure_value}}
             </div>
           </div>
         </div>
@@ -41,11 +31,11 @@
           <div class="value">В наличии</div>
         </div>
         <div class="flex"></div>
-        <dub-price :regular-price="selectedInstance.price" :special-price="selectedInstance.new_price"></dub-price>
+        <dub-price :regular-price="product.instance.price" :special-price="product.instance.new_price"></dub-price>
       </div>
     </div>
-    <div class="floating" v-if="selectedInstance.sales.length !== 0">
-      <sales-badge v-for="label in getSaleLabels(selectedInstance.sales)" :key="label">
+    <div class="floating" v-if="product.instance.sales.length !== 0">
+      <sales-badge v-for="label in getSaleLabels(product.instance.sales)" :key="label">
         {{ label }}
       </sales-badge>
     </div>
@@ -68,7 +58,6 @@ export default {
     },
   },
   data: () => ({
-    selectedInstance: {},
     productLink: '',
     display: {
       common: ['country', 'type'],
@@ -84,25 +73,19 @@ export default {
       return strengthFacet[0].value;
     },
     image() {
-      const mainImage = this.selectedInstance.images.find(i => i.is_main);
+      const mainImage = this.product.instance.images.find(i => i.is_main);
       if (!mainImage) {
-        return this.selectedInstance.images[0].src;
+        return this.product.instance.images[0].src;
       }
       return mainImage.src;
     },
   },
   created() {
-    const [firstInstance] = this.product.products;
-    this.selectedInstance = firstInstance;
-    this.productLink = `/catalog/${this.product.category.slug}/${this.product.pk}/${
+    this.productLink = `/catalog/${this.product.category.slug}/${this.product.instance.pk}/${
       this.product.name_slug
     }`;
   },
   methods: {
-    setInstance(instance) {
-      this.selectedInstance = instance;
-      this.productLink = `${this.productLink}?sku=${instance.sku}`;
-    },
     getSaleLabels(sales) {
       let [hasFixed, hasCondition, hasPercent] = [false, false, false];
       const labels = [];
