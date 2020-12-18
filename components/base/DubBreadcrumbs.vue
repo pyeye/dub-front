@@ -2,7 +2,9 @@
   <div class="breadcrumbs">
     <div class="breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="breadcrumb.label">
       <span class="breadcrumb-label" :class="{'breadcrumb-disabled': index + 1 === breadcrumbs.length}">
-        <span class="breadcrumb-title"><nuxt-link :to="breadcrumb.link" >{{breadcrumb.label}}</nuxt-link></span>
+        <span class="breadcrumb-title">
+          <nuxt-link class="link" :to="breadcrumb.link" >{{breadcrumb.label}}</nuxt-link>
+        </span>
       </span>
       <div class="breadcrumb-separator" v-if="index + 1 !== breadcrumbs.length">/</div>
     </div>
@@ -41,16 +43,15 @@ export default {
 }
 .breadcrumb-label {
   font-size: 16px;
-  font-weight: 600;
-  opacity: 0.7;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: $accent_font;
+  font-weight: 300;
+  line-height: 20px;
+  letter-spacing: 0.16px;
+  font-family: $main_font;
   color: $text_color;
   .breadcrumb-title {
     padding-bottom: 2px;
     width: calc(100%);
-    background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+    background-image: linear-gradient(transparent calc(100% - 2px), #252525 2px);
     background-repeat: no-repeat;
     background-size: 0% 100%;
     transition: background-size 0.3s ease;
@@ -62,9 +63,9 @@ export default {
   }
 }
 .breadcrumb-separator {
-  width: 20px;
-  height: 22px;
-  opacity: 0.8;
+  width: 16px;
+  height: 16px;
+  opacity: 0.4;
   @include prefix(
     (
       display: flex,
@@ -79,10 +80,17 @@ export default {
   pointer-events: none;
   cursor: default;
   text-decoration: none;
-  opacity: 0.7;
 }
-a {
+.link {
   text-decoration: none;
   color: $text_color;
+}
+@media (max-width: 1450px) {
+  .breadcrumb-label {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    letter-spacing: 0.16px;
+  }
 }
 </style>

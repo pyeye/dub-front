@@ -31,8 +31,8 @@ export default {
   font-family: $main_font;
   line-height: 1.5;
   min-height: 100vh;
-  background-color: #f5f4f0;
-  color: #252525;
+  background-color: $body_color;
+  color: $text_color;
   display: flex;
   flex-direction: column;
 }

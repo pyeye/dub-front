@@ -1,7 +1,105 @@
 <template>
   <div class="product-detail">
-    <dub-breadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+    <div class="wrapper">
+      <dub-breadcrumbs class="breadcrumbs" :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+      <div class="hero-title"> {{ product.name }} </div>
+      <div class="primary-wrapper">
+        <div class="overlay"></div>
+        <div class="primary">
+          <h1 class="name">
+            {{ product.name }}
+          </h1>
+          <h3 class="name-locale" v-if="product.extra.name_locale">{{ product.extra.name_locale }}</h3>
+          <div class="primary-info">
+            <div class="info-item">
+              <div class="info-item-value" v-if="activeInstance.stock_balance > 0">В наличии</div>
+              <div class="info-item-value" v-else>Нет в наличии</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item-value">{{ formatMeasure(activeInstance.measure) }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-item-value">#{{ activeInstance.sku }}</div>
+            </div>
+            
+            <div class="info-measures" v-if="product.instances.length == 1">
+              <div class="info-measures-title">Доступные варианты</div>
+              <div class="info-measures-values">
+                  <div 
+                    class="info-measures-value measure-link" 
+                    :class="{'measure-active': isActiveInstance(instance)}"
+                    v-for="instance in product.instances" 
+                    :key="instance.measure"
+                    @click="selectInstance(instance)"
+                  >
+                    {{ formatMeasure(instance.measure) }}
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <dub-price :special-price="activeInstance.new_price" class="detail-price">
+            <span slot="oldPrice" class="price-old" v-if="activeInstance.new_price">
+              {{ formatPrice(activeInstance.price) }} &#x20bd;
+            </span>
+            <span slot="specialPrice" class="price-special" v-if="activeInstance.new_price">
+              {{ formatPrice(activeInstance.new_price) }} &#x20bd;
+            </span>
+            <span slot="regularPrice" class="price-regular" v-if="!activeInstance.new_price">
+              {{ formatPrice(activeInstance.price) }} &#x20bd;
+            </span>
+          </dub-price>
+        </div>
+      </div>
+      
+      <div class="image">
+        <catalog-gallery :images="activeInstance.images"></catalog-gallery>
+        <!--
+        <div class="image-product"></div>
+        <img class="image-shadow" src="http://api.mydubbelsite.ru/img/static/ombre-bouteille-3880.png" />
+        -->
+      </div>
+
+      <div class="secondary">
+        <div class="paragraph">Характеристики</div>      
+        <div class="secondary-list" v-for="facet in product.facets" :key="`sfacet_${facet.pk}`">
+          <div class="secondary-description">{{facet.name}}</div>
+          <div v-if="facet.type === 'string'">
+            <span class="secondary-value" v-for="value in facet.values" :key="`sfacet_val_${value.pk}`">
+              <nuxt-link class="list-link"
+                :to="`/catalog/${product.category.slug}?sfacets=${facet.slug}:${value.pk}`">
+                {{ value.name }}
+              </nuxt-link>
+            </span>
+          </div>
+          <div v-else>
+            <span class="secondary-value">
+              <nuxt-link class="list-link"
+                :to="`/catalog/${product.category.slug}
+                  ?nfacets=${facet.slug}:${facet.value}-${facet.value}`"
+              >
+                {{facet.value}}{{facet.suffix}}
+              </nuxt-link>
+            </span>
+          </div>
+        </div>
+        <div class="secondary-list">
+          <div class="secondary-description">Кол-во в упаковке</div>
+          <div class="secondary-value">{{ activeInstance.package_amount }}</div>
+        </div>
+      </div>
+
+      <div class="description">
+        <div class="paragraph">Описание</div>
+        {{ product.description }}
+      </div>
+    </div>
+    
+    
+    
+    <!--
     <div class="content">
+      
       <div class="product-image">
         <catalog-gallery :images="product.instance.images"></catalog-gallery>
         <div class="floating" v-if="product.instance.sales.length !== 0">
@@ -188,6 +286,7 @@
       </div>
       
     </div>
+    -->
   </div>
 </template>
 
@@ -218,16 +317,19 @@ export default {
     tabIndex: 'main',
   }),
   async asyncData(context) {
-    const { store, params, app } = context;
-    const { id, category } = params;
-    let product = store.getters['products/product'](category, id);
-    if (!product) {
-      const url = `products/${id}/`;
-      const { data } = await app.$api.get(url);
-      product = data;
-    }
+    const { params, app, query } = context;
+    const { slug } = params;
+    const [productId, baseInstanceId] = slug.split('-');
+    const url = `products/${productId}/`;
+    const { data } = await app.$api.get(url);
+    const activeInstanceId = query.active ? query.active : baseInstanceId;
+    const activeInstance = data.instances.find(
+      instance => instance.pk.toString() === activeInstanceId
+    );
     return {
-      product,
+      product: data,
+      activeInstance,
+      baseInstanceId,
     };
   },
   computed: {
@@ -242,23 +344,26 @@ export default {
       ];
     },
     displayNFacets() {
-      return this.product.number_facets.filter(
-        nfacet => !this.exclude.nfacets.includes(nfacet.slug)
-      );
+      return this.product.nfacets.filter(nfacet => !this.exclude.nfacets.includes(nfacet.slug));
     },
     salesWithCondition() {
       if (!this.product.instance.sales) {
         return [];
       }
-      return this.product.instance.sales.filter(sale => sale.type === 'condition');
+      // return this.product.instance.sales.filter(sale => sale.type === 'condition');
+      return '';
     },
   },
   methods: {
     selectInstance(instance) {
-      this.product.instance = instance;
-      const query = Object.assign({}, this.$route.query);
-      query.sku = instance.sku;
-      this.$router.push({ query });
+      this.activeInstance = instance;
+      let query = Object.assign({}, this.$route.query);
+      if (this.baseInstanceId === instance.pk.toString()) {
+        query = {};
+      } else {
+        query.active = instance.pk;
+      }
+      this.$router.replace({ query });
     },
     getSaleLabels(sales) {
       let [hasFixed, hasCondition, hasPercent] = [false, false, false];
@@ -280,6 +385,16 @@ export default {
       });
       return labels;
     },
+    formatMeasure(measure) {
+      return measure >= 1000 ? `${measure / 1000} л.` : `${measure} мл.`;
+    },
+    formatPrice(price) {
+      const [intPart, decimalPart] = price.split('.');
+      return decimalPart === '00' ? intPart : price;
+    },
+    isActiveInstance(instance) {
+      return instance.pk === this.activeInstance.pk;
+    },
   },
 };
 </script>
@@ -292,7 +407,7 @@ a {
 }
 .list-link {
   width: calc(100%);
-  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-image: linear-gradient(transparent calc(100% - 2px), #252525 2px);
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.3s ease;
@@ -303,9 +418,49 @@ a {
 
 .product-detail {
   position: relative;
-  flex: 1;
-  width: 1500px;
-  margin: 0 auto;
+  min-height: 100vh;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(48px, 1fr) [main-start] repeat(16, [col-start] minmax(12px, 160px))
+    [main-end] minmax(48px, 1fr) [full-end];
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-title {
+  font-size: 136px;
+  color: #f8f8f8;
+  font-weight: 700;
+  line-height: 140px;
+  font-family: $accent_font;
+  letter-spacing: -0.64px;
+  overflow: hidden;
+  white-space: nowrap;
+  grid-column: 5 / -1;
+  grid-row: 2;
+  margin: 8px 0 36px 0;
+  cursor: default;
+}
+.primary-wrapper {
+  grid-column: full-start / 7;
+  grid-row: 3 / 4;
+  display: grid;
+  grid-template-columns: minmax(48px, 1fr) repeat(5, minmax(12px, 160px));
+  align-items: start;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+}
+.primary {
+  grid-column: 2 / -1;
+  grid-row: 1;
+  position: relative;
+  padding: 0 24px 24px 0;
   @include prefix(
     (
       display: flex,
@@ -313,6 +468,191 @@ a {
     ),
     webkit ms
   );
+  .name {
+    font-size: 54px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    line-height: 64px;
+    font-family: $main_font;
+  }
+  .name-locale {
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 36px;
+    letter-spacing: 0px;
+    opacity: 0.5;
+  }
+  .primary-info {
+    @include prefix(
+      (
+        display: flex,
+        flex-direction: row,
+        flex-wrap: wrap,
+        justify-content: space-between,
+      ),
+      webkit ms
+    );
+    margin-top: 24px;
+    .info-item {
+      margin-bottom: 16px;
+      .info-item-title {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        letter-spacing: 0.16px;
+      }
+      .info-item-value {
+        opacity: 0.7;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 28px;
+        letter-spacing: 0px;
+      }
+    }
+    .info-measures {
+      width: 100%;
+      .info-measures-title {
+        margin: 16px 0;
+        padding-bottom: 8px;
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 400;
+        letter-spacing: 0px;
+        position: relative;
+        &:after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 1px;
+          background-color: rgba(40, 40, 40, 0.2);
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
+      .info-measures-values {
+        @include prefix(
+          (
+            display: flex,
+            flex-direction: row,
+            flex-wrap: wrap,
+          ),
+          webkit ms
+        );
+        .info-measures-value {
+          margin-right: 16px;
+          cursor: pointer;
+          font-size: 20px;
+          line-height: 28px;
+          font-weight: 400;
+          letter-spacing: 0px;
+          opacity: 0.7;
+
+          background-image: linear-gradient(transparent calc(100% - 2px), #252525 2px);
+          background-repeat: no-repeat;
+          background-size: 0% 100%;
+          transition: background-size 0.3s ease;
+          &:hover {
+            background-size: 100% 100%;
+            opacity: 1;
+          }
+        }
+        .measure-active {
+          background-size: 100% 100%;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .detail-price {
+    margin-top: 16px;
+  }
+}
+.overlay {
+  position: relative;
+  height: 100%;
+  margin-top: 38px;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  background-color: #f8f8f8;
+}
+.image {
+  grid-column: 8 / 12;
+  grid-row: 3 / 4;
+  z-index: 1;
+  margin-top: -10vh;
+  height: 90vh;
+  .image-shadow {
+    left: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    max-width: 100vw;
+    position: relative;
+    right: 50%;
+    width: 99vw;
+    opacity: 0.7;
+  }
+}
+.paragraph {
+  margin: 16px 0;
+  padding-bottom: 16px;
+  position: relative;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 400;
+  letter-spacing: 0px;
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(40, 40, 40, 0.2);
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+.secondary {
+  grid-column: 13 / main-end;
+  grid-row: 3 / 5;
+  margin-top: 96px;
+  padding-left: 24px;
+  position: relative;
+  font-size: 14px;
+  &:after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(40, 40, 40, 0.2);
+    left: 0;
+    top: 0;
+  }
+  .secondary-list {
+    margin-bottom: 16px;
+    .secondary-description {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0.16px;
+    }
+    .secondary-value {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 24px;
+      letter-spacing: 0.16px;
+      margin-right: 4px;
+    }
+  }
+}
+.description {
+  grid-column: main-start / 12;
+  padding-top: 48px;
+  grid-row: 4;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
 }
 .content {
   position: relative;
@@ -324,9 +664,8 @@ a {
     webkit ms
   );
   width: 100%;
-  margin-bottom: 36px;
 }
-.product-image {
+.product-image-old {
   position: absolute;
   left: 0;
   top: 0;
@@ -363,10 +702,6 @@ a {
   position: relative;
   text-align: center;
   padding: 0 16px;
-}
-.image {
-  height: 450px;
-  max-width: 100%;
 }
 .info {
   @include prefix(
@@ -443,12 +778,12 @@ a {
     ),
     webkit ms
   );
-  padding: 2px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   opacity: 0.7;
-  letter-spacing: -0.012em;
-  line-height: 24px;
+  letter-spacing: 0.16px;
+  line-height: 20px;
+  font-family: $main_font;
   .info-description {
     margin-right: 4px;
   }
@@ -462,10 +797,6 @@ a {
 }
 .flex {
   flex: 1;
-}
-.measure-active {
-  border-bottom: 3px solid $primary_color;
-  opacity: 1;
 }
 .storage {
   .value {
@@ -681,12 +1012,13 @@ a {
     (
       display: flex,
       flex-direction: row,
-      align-items: center,
-      justify-content: center,
+      align-items: left,
+      justify-content: left,
     ),
     webkit ms
   );
   margin: 16px 0;
+  grid-column: main-start / main-end;
 }
 .tag-row {
   position: relative;
@@ -769,23 +1101,16 @@ a {
   background-size: 100% 100%;
 }
 
-@media (max-width: 1599px) {
-  .product-detail {
-    width: 1250px;
-  }
-}
-@media (max-width: 1350px) {
-  .product-detail {
-    width: 1150px;
-  }
-}
-
 .price-special {
   color: #e83841;
   font-size: 32px;
 }
 .price-regular {
-  font-size: 32px;
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 50px;
+  font-family: $main_font;
+  letter-spacing: 0px;
 }
 .price-old {
   align-self: flex-end;
@@ -830,5 +1155,63 @@ a {
   margin: 0 4px;
   border-radius: 2px;
   background-color: #ddd;
+}
+@media (max-width: 1450px) {
+  .primary {
+    .name {
+      font-size: 42px;
+      font-weight: 300;
+      letter-spacing: 0px;
+      line-height: 50px;
+    }
+    .name-locale {
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 28px;
+      letter-spacing: 0px;
+    }
+    .primary-info {
+      .info-item {
+        .info-item-value {
+          opacity: 0.7;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 18px;
+          letter-spacing: 0.16px;
+        }
+      }
+      .info-measures {
+        .info-measures-title {
+          font-size: 16px;
+          line-height: 20px;
+          font-weight: 400;
+          letter-spacing: 0.16px;
+        }
+        .info-measures-values {
+          .info-measures-value {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 400;
+            letter-spacing: 0.16px;
+          }
+        }
+      }
+    }
+  }
+  .image {
+    height: 100vh;
+  }
+  .hero-title {
+    font-size: 96px;
+    line-height: 106px;
+    letter-spacing: -0.64px;
+    margin: 8px 0 24px 0;
+  }
+  .overlay {
+    margin-top: 32px;
+  }
+  .price-regular {
+    font-size: 36px;
+  }
 }
 </style>

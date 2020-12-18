@@ -54,7 +54,6 @@ export default {
     ),
     webkit ms
   );
-  padding-top: 8px;
   font-family: $accent_font;
   font-size: 22px;
   font-weight: 600;
@@ -71,8 +70,5 @@ export default {
   line-height: 14px;
   opacity: 0.6;
   margin-right: 6px;
-}
-.price-regular {
-  opacity: 0.7;
 }
 </style>

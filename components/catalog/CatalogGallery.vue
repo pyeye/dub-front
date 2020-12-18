@@ -1,9 +1,10 @@
 <template>
   <div class="gallery"> 
-    <div class="image-box" ref="container" @mousemove="moveBG">
-      <div class="img normal"  :style="{ backgroundImage: getAbsoluteBgUrl(activeImage.src) }"></div>
-      <div class="img zoom" ref="zoom" :style="{ backgroundImage: getAbsoluteBgUrl(activeImage.src) }"></div>
+    <div class="image-box" ref="container">
+      <div class="img"  :style="{ backgroundImage: getAbsoluteBgUrl(activeImage.src) }"></div>
     </div>
+    <img class="img-shadow" src="http://api.mydubbelsite.ru/img/static/rombre-bouteille-3880.png" />
+    <!--
     <div class="thumbnails" v-if="images.length > 1">
       <div
         class="thumbnail-box"
@@ -15,6 +16,7 @@
         <img class="thumbnail" :src="getAbsoluteUrl(image.src)">
       </div>
     </div>
+    -->
   </div>
 </template>
 
@@ -42,20 +44,6 @@ export default {
     getAbsoluteUrl(imageUrl) {
       return this.baseUrl + imageUrl;
     },
-    moveBG(ev) {
-      const { container, zoom } = this.$refs;
-      const e = {
-        w: zoom.offsetWidth,
-        h: zoom.offsetHeight,
-      };
-
-      const c = {
-        x: Math.round((ev.clientX / 2 - (container.offsetLeft - window.scrollX)) / (e.w / 100)),
-        y: Math.round((ev.clientY - (container.offsetTop - window.scrollY)) / (e.h / 100) - 37),
-      };
-
-      zoom.style.backgroundPosition = `${c.x}% ${c.y}%`;
-    },
   },
 };
 </script>
@@ -64,23 +52,16 @@ export default {
 .gallery {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 90vh;
 }
 .image-box {
   position: relative;
-  height: 500px;
+  height: 100vh;
   border: 0;
   overflow: hidden;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 90vh;
   transition: all 0.5s ease-out;
-  &:hover {
-    cursor: move;
-    .normal {
-      opacity: 0;
-      transform: scale(1.1);
-    }
-  }
 }
 .img {
   position: absolute;
@@ -90,13 +71,21 @@ export default {
   height: 100%;
   background-position: center center;
   background-repeat: no-repeat;
-  background-color: $upper_layer_color;
   transition: all ease-out 0.3s;
+  background-size: contain;
+  z-index: 1;
 }
 
-.normal {
-  z-index: 20;
-  background-size: contain;
+.img-shadow {
+  left: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  max-width: 100vw;
+  position: absolute;
+  right: 50%;
+  width: 99vw;
+  opacity: 0.4;
+  bottom: -1.3%;
 }
 
 .zoom {
@@ -127,5 +116,13 @@ export default {
 .thumbnail-active {
   border: 2px solid $primary-color;
   padding: 6px;
+}
+@media (max-width: 1450px) {
+  .gallery {
+    height: 100vh;
+  }
+  .image-box {
+    max-height: 100vh;
+  }
 }
 </style>
