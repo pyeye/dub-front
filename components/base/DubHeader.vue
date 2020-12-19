@@ -1,45 +1,52 @@
 <template>
   <div class="dub-header">
-    <div class="header-info-box">
-      <div class="header-info">
-        <div>
-          <div class="help">
-            <div class="help-link" v-response.small>
-              <span class="link-item">Доставка</span>
-            </div>
-            <div class="help-link" v-response.small>
-              <span class="link-item">Оплата</span>
-            </div>
-            <div class="help-link" v-response.small>
-              <span class="link-item">Контакты</span>
-            </div>
-            <div class="help-link" v-response.small>
-              <nuxt-link to="/news">
-                <span class="link-item" :class="{'nav-selected': isSelected('/news')}">Новости</span>
-              </nuxt-link>
-            </div>
-            <div class="help-link" v-response.small>
-              <span class="link-item">О Магазине</span>
-            </div>
+    <div :class="{'fixed-dummy': navFixed}"></div>
+    <div class="header-wrapper" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
+
+      <div class="header-info-box">
+        <div class="header-info">
+          <div class="flex"></div>
+          <div class="contacts">
+            <span class="phone">+7 (345) 54-54-444</span>
           </div>
         </div>
-        <div class="flex"></div>
-        <div class="contacts">
-          <span class="phone">+7 (345) 54-54-444</span>
-        </div>
       </div>
-    </div>
-    
+      
+      
 
-    <div :class="{'fixed-dummy': navFixed}"></div>
-    <div id="nav" class="header-nav" :class="{'is-fixed': navFixed, 'is-fixed-visible': navVisible}">
-      <div class="nav" :class="{'nav-active': panelActive }">
-        <nuxt-link :to="'/'" class="nav-category">
-          <img class="logo-text" src="~assets/images/house_of_dubbel.png">
-        </nuxt-link>
+      <div 
+        id="nav"
+        class="header-nav" 
+        :class="{'nav-active': panelActive}"
+      >
+          <nuxt-link :to="'/'" class="nav-category">
+            <img class="logo-text" src="~assets/images/house_of_dubbel.png">
+          </nuxt-link>
 
-        <div class="nav-panel"  v-show="searchPanelActive === false">
-          <div class="nav-categories nav-categories-hide" ref="nav">
+          <div class="nav-panel"  v-show="!searchPanelActive">
+            <!--
+              
+            <div
+              class="nav-item"
+              @mouseenter="openProductPanel()"
+              @mouseleave="closeProductPanel"
+              @click="closePernamentPanel()"
+              v-response.small
+            >
+              <span class="link">
+                <span class="link-item" :class="{'nav-selected': isSelected('/catalog')}">
+                  Каталог
+                </span>
+              </span>
+            </div>
+            -->
+            <div class="nav-item" v-response.small>
+              <nuxt-link :to="'/catalog/beer'" class="nav-category">
+                <span class="link">
+                  <span class="link-item" :class="{'nav-selected': isSelected('/catalog')}">Каталог</span>
+                </span>
+              </nuxt-link>
+            </div>
             <div class="nav-item" v-response.small>
               <nuxt-link :to="'/sales/catalog'" class="nav-category">
                 <span class="link">
@@ -47,98 +54,76 @@
                 </span>
               </nuxt-link>
             </div>
-            <div
-              class="nav-item"
-              @mouseenter="openProductPanel(category)"
-              @mouseleave="closeProductPanel"
-              @click="closePernamentPanel()"
-              v-response.small
-              v-for="category in categories"
-              :key="category.category.pk"
-            >
-              <nuxt-link :to="`/catalog/${category.category.slug}`" class="nav-category">
+            <div class="nav-item" v-response.small>
+              <nuxt-link :to="'/sales/catalog'" class="nav-category">
                 <span class="link">
-                  <span
-                    class="link-item"
-                    :class="{
-                      'link-item-hover': isHover(category),
-                      'nav-selected': isSelected(`/catalog/${category.category.slug}`)
-                    }"
-                  >
-                    {{ category.category.name }}
-                  </span>
+                  <span class="link-item" :class="{'nav-selected': isSelected('/sales/catalog')}">Новости</span>
+                </span>
+              </nuxt-link>
+            </div>
+            <div class="nav-item" v-response.small>
+              <nuxt-link :to="'/sales/catalog'" class="nav-category">
+                <span class="link">
+                  <span class="link-item" :class="{'nav-selected': isSelected('/sales/catalog')}">О магазине</span>
                 </span>
               </nuxt-link>
             </div>
           </div>
-        
-          <div ref="navmore" class="nav-more"
-            @mouseenter="openProductPanel(moreCategories[0])"
-            @mouseleave="closeProductPanel"
-          >
-              <span class="link">
-                <span
-                  class="link-item"
-                  :class="{
-                    'nav-selected': isMoreSelected()
-                  }"
-                >
-                  И ещё •••
-                </span>
-              </span>
-          </div>
-          <div class="flex"></div>
-          <div class="nav-icons">
-            <div class="nav-item nav-icon nav-search" v-response.small @click="openSearchPanel()">
+          <div class="search-input" v-show="searchPanelActive">
+              <input
+                ref="search"
+                placeholder="Поиск по каталогу"
+                v-model="searchQuery"
+                @focus="autocompletePanelActive = true"
+                @blur="autocompletePanelActive = false"
+                @keyup.enter="searchHandler"
+                @keyup.up="prevAutocompleteItem"
+                @keyup.down="nextAutocompleteItem"/>
+            </div>
+
+          <div class="nav-icons" >
+            <div class="nav-item nav-icon nav-search" 
+            v-response.small @click="openSearchPanel()" v-show="!searchPanelActive">
                 <div>
                     <div class="link"><dub-icon  width=24 height=24 class="icon-link"><icon-search/></dub-icon></div>
                 </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Search Panel -->
-        <div class="search-panel" :class="{'search-panel-active': searchPanelActive}">
-          <div class="search-input">
-            <input
-              ref="search"
-              placeholder="Поиск по каталогу"
-              v-model="searchQuery"
-              @focus="autocompletePanelActive = true"
-              @blur="autocompletePanelActive = false"
-              @keyup.enter="searchHandler"
-              @keyup.up="prevAutocompleteItem"
-              @keyup.down="nextAutocompleteItem"/>
-          </div>
-          <dub-icon
-            width=24
-            height=24
-            class="icon-link search-close"
-            @click.native="closeSearchPanel()"
-          >
-            <icon-close/>
-          </dub-icon>
-          <div 
-            @mouseleave="autocompleteIndex = -1"
-            v-show="autocompletePanelActive && searchAutocomplete.length > 0"
-            class="search-autocomplete"
-          >
-            <div
-              class="search-autocomplete-item"
-              :class="{'search-autocomplete-item-selected': searchAutocomplete[autocompleteIndex] === autocompleteItem}"
-              @mouseenter="autocompleteIndex = index"
-              @click="searchQuery = autocompleteItem"
-              v-for="(autocompleteItem, index) in searchAutocomplete"
-              :key="index">
-              {{ autocompleteItem }}
+            <div class="nav-item nav-icon nav-search" 
+            v-response.small @click="closeSearchPanel()" v-show="searchPanelActive">
+                <div>
+                    <div class="link"><dub-icon  width=24 height=24 class="icon-link"><icon-close/></dub-icon></div>
+                </div>
             </div>
           </div>
-        </div>
-        <!-- End Search Panel -->
-        
-      </div>
 
-      <!-- Header Panel -->
+          
+
+     
+     </div> 
+
+    
+
+    </div>
+    <!-- Search Panel -->
+
+            <div 
+              @mouseleave="autocompleteIndex = -1"
+              v-show="searchPanelActive && autocompletePanelActive && searchAutocomplete.length > 0"
+              class="search-autocomplete"
+            >
+              <div
+                class="search-autocomplete-item"
+                :class="{'autocomplete-item-selected': searchAutocomplete[autocompleteIndex] === autocompleteItem}"
+                @mouseenter="autocompleteIndex = index"
+                @click="searchQuery = autocompleteItem"
+                v-for="(autocompleteItem, index) in searchAutocomplete"
+                :key="index">
+                {{ autocompleteItem }}
+              </div>
+            </div>
+        <!-- End Search Panel -->
+
+     <!-- Header Panel
      <transition name="slidepan">
         <div
         class="header-panel"
@@ -146,63 +131,10 @@
         @mouseenter="selfActive = true"
         @mouseleave="closeSelf"
         >
-          <div class="panel-content">
-            <div class="content-categories">
-              <dir class="product-name" @click="selfActive = false">
-                <nuxt-link
-                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}/${activeCategory.name_slug}`"
-                  class="nav-category link"
-                >
-                  {{activeCategory.category.name}} {{activeCategory.name}}
-                </nuxt-link>
-              </dir>
-                <nuxt-link
-                  :to="`/catalog/${activeCategory.category.slug}/${activeCategory.pk}/${activeCategory.name_slug}`"
-                  class="nav-category link"
-                >
-                  <img class="image" :src="`http://api.mydubbelsite.ru/${productImage}`" @click="selfActive = false">
-                </nuxt-link>
-                <dub-button type="secondary" class="show-all">
-                    <nuxt-link :to="`/catalog/${activeCategory.category.slug}`" class="nav-category">
-                      <span class="button" @click="selfActive = false">показать все</span>
-                    </nuxt-link>
-                </dub-button>
-            </div>
-            <div class="content-meta">
-                <div class="content-facets" v-for="facet in facets" :key="facet.slug">
-                  <div class="collapse-title"> {{facet.name}} </div>
-                  <div class="link-facet" v-for="item in facet.values.slice(0,8)" :key="item.pk">
-                    <nuxt-link
-                      :to="`/catalog/${activeCategory.category.slug}?sfacets=${facet.slug}:${item.pk}`"
-                      class="nav-category-link"
-                    >
-                      <span class="facets-values" @click="facetLinkHandler">
-                        {{item.name}}
-                      </span>
-                    </nuxt-link>
-                  </div>
-                </div>
-            </div>
-            <div class="more-categories" v-if="morePanelActive">
-              <div
-                class="more-category"
-                v-for="moreCategory in moreCategories" 
-                :key="moreCategory.category.slug"
-                @mouseenter="activeCategory = moreCategory"
-              >
-              <nuxt-link :to="`/catalog/${moreCategory.category.slug}`" class="nav-category">
-                    <span class="button" @click="facetLinkHandler">{{ moreCategory.category.name }}</span>
-                </nuxt-link>
-              </div>
-            </div>
-          </div>
         </div>
      </transition>
-      
+      End Header Panel -->
 
-     <!-- End Header Panel -->
-
-    </div>
     <transition name="fadelol">
       <div v-show="searchPanelActive || panelActive" @click="closeSearchPanel()" class="overlay"></div>
     </transition>
@@ -226,8 +158,8 @@ export default {
     closePermanent: false,
     navFixed: false,
     navVisible: false,
-    navBottomOffcet: 175,
-    navTopOffcet: 37,
+    navBottomOffcet: 85,
+    navTopOffcet: 0,
     scrollPositionY: -1,
     scrollTicking: false,
     scrollDirection: 'none',
@@ -283,27 +215,7 @@ export default {
     },
   },
   mounted() {
-    const hideCategoriesIndex = [];
-    this.navWidth = this.$refs.nav.clientWidth;
     window.addEventListener('scroll', this.scrollHandler);
-    Array.from(this.$refs.nav.children).reduce((acc, value, index) => {
-      const newAcc = acc + value.clientWidth;
-      if (newAcc > this.navWidth) {
-        hideCategoriesIndex.push(index);
-        value.classList.add('nav-category-hide');
-        return newAcc;
-      }
-      return newAcc;
-    }, 0);
-    if (hideCategoriesIndex.length > 0) {
-      const allCategories = Object.assign([], this.categories);
-      const [hideFrom] = hideCategoriesIndex;
-      this.moreCategories = allCategories.splice(hideFrom);
-    } else {
-      this.$refs.navmore.classList.add('nav-category-hide');
-    }
-    this.$refs.nav.classList.remove('nav-categories-hide');
-    // reduce sum children width < panel width rest set display none and get last visible index
     this.debounceAutocomplete = _.debounce(this.requestAutocomplete, 500);
   },
   destroyed() {
@@ -343,7 +255,7 @@ export default {
       if (!this.navFixed && this.scrollPositionY > this.navBottomOffcet) {
         this.navFixed = true;
       }
-      if (this.navFixed && this.scrollPositionY < this.navTopOffcet) {
+      if (this.navFixed && this.scrollPositionY <= this.navTopOffcet) {
         this.navFixed = false;
       }
       if (this.scrollDirection === 'top') {
@@ -405,8 +317,9 @@ export default {
       this.selfActive = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    isHover(category) {
-      return this.panelActive && category.category.slug === this.activeCategory.category.slug;
+    isHover() {
+      // return this.panelActive && category.category.slug === this.activeCategory.category.slug;
+      return true;
     },
     isMoreSelected() {
       // eslint-disable-next-line consistent-return
@@ -424,10 +337,18 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .dub-header {
-  display: block;
   background-color: #fafafa;
   position: relative;
   z-index: 9999;
+}
+.header-wrapper {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(48px, 1fr) [main-start] repeat(16, [col-start] minmax(12px, 160px))
+    [main-end] minmax(48px, 1fr) [full-end];
+  grid-template-rows: repeat(2, auto);
+  background-color: #fafafa;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 .logo {
   display: block;
@@ -445,6 +366,7 @@ export default {
   cursor: pointer;
 }
 .header-nav {
+  grid-column: main-start / main-end;
   position: relative;
   z-index: 3;
   background-color: #fafafa;
@@ -452,45 +374,37 @@ export default {
   font-family: $accent_font;
   line-height: 24px;
   font-weight: 700;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
   width: 100%;
-  .nav {
-    @include prefix(
-      (
-        display: flex,
-        flex-direction: row,
-        align-items: flex-end,
-      ),
-      webkit ms
-    );
-    width: 1500px;
-    margin: 0 auto;
-    height: 60px;
-  }
+  height: 60px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      justify-content: space-between,
+    ),
+    webkit ms
+  );
   .nav-active {
     box-shadow: 0 6px 4px -4px rgba(0, 0, 0, 0.1);
   }
 }
 .nav-panel {
   height: 100%;
-  width: 100%;
   @include prefix(
     (
       display: flex,
       flex-direction: row,
+      align-items: stretch,
+      justify-content: space-around,
     ),
     webkit ms
   );
+  cursor: pointer;
 }
 .search-panel {
-  width: 100%;
   position: relative;
   height: 100%;
-  opacity: 0;
-  display: none;
   transition: opacity 0.3s ease;
-}
-.search-panel-active {
   @include prefix(
     (
       display: flex,
@@ -498,17 +412,14 @@ export default {
     ),
     webkit ms
   );
-  opacity: 1;
 }
 .header-info-box {
   width: 100%;
-  background-color: #f5f5f5;
   z-index: 3;
   position: relative;
+  grid-column: main-start / main-end;
 }
 .header-info {
-  width: 1500px;
-  margin: 0 auto;
   position: relative;
   @include prefix(
     (
@@ -520,12 +431,11 @@ export default {
 }
 .contacts {
   -webkit-font-smoothing: antialiased;
-  padding: 8px 0;
+  padding-top: 4px;
   margin-left: 8px;
   color: $text_color;
   font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
+  font-weight: 400;
   letter-spacing: -0.2px;
   @include prefix(
     (
@@ -606,21 +516,6 @@ export default {
   padding-left: 8px;
 }
 
-.nav-categories {
-  position: relative;
-  cursor: pointer;
-  height: 100%;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: stretch,
-      justify-content: space-around,
-    ),
-    webkit ms
-  );
-}
-
 .nav-categories-hide {
   @include prefix(
     (
@@ -637,6 +532,7 @@ export default {
 
 .nav-icons {
   height: 100%;
+  min-width: 166px;
   @include prefix(
     (
       display: flex,
@@ -655,7 +551,7 @@ export default {
     ),
     webkit ms
   );
-  margin: 0 12px;
+  margin-left: auto;
 }
 .nav-category {
   @include prefix(
@@ -730,9 +626,12 @@ export default {
   );
 }
 .link-item {
-  opacity: 0.7;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.16px;
   width: calc(100%);
-  background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+  background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.3s ease;
@@ -778,12 +677,12 @@ export default {
 }
 .search-input input {
   border: 0;
-  width: 100%;
   font-size: 20px;
-  padding: 8px 0 8px 8px;
-  background: transparent;
+  padding: 8px;
   color: #252525;
-  background-color: #eee;
+  text-align: center;
+  width: 100%;
+  background-color: #f7f7f7;
   border-radius: 4px;
 }
 .search-input input:focus {
@@ -812,25 +711,23 @@ export default {
   color: $text_color;
   position: absolute;
   z-index: 4;
-  top: 60px;
+  top: 85px;
   width: 100%;
 }
 .search-autocomplete-item {
   padding: 8px;
   cursor: pointer;
 }
-.search-autocomplete-item-selected {
+.autocomplete-item-selected {
   background-color: #e6e3da;
 }
 .overlay {
   background: rgba(0, 0, 0, 0.8);
   position: fixed;
-  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  top: 85px;
   z-index: 2;
   opacity: 1;
 }
@@ -860,28 +757,37 @@ a {
 }
 .is-fixed {
   position: fixed;
-  top: -65px;
+  top: -85px;
   transition: top 0.3s ease;
 }
 .is-fixed-visible {
   top: 0;
 }
 .fixed-dummy {
-  height: 60px;
+  height: 85px;
 }
 
 .header-panel {
-  width: 1500px;
   position: absolute;
-  left: 50%;
   top: 100%;
-  margin-left: -750px;
+  left: 0;
+  right: 0;
   background-color: $upper_layer_color;
   border-radius: 0 0 3px 3px;
-  z-index: -1;
+  z-index: 3;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   padding: 24px 0;
   opacity: 1;
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(40, 40, 40, 0.2);
+    left: 0;
+    right: 0;
+    top: 0;
+  }
 }
 
 .slidepan-enter-active,
@@ -1020,46 +926,6 @@ a {
   .show-all {
     margin-top: 20px;
     height: 35px;
-  }
-}
-@media (max-width: 1599px) {
-  .header-info {
-    width: 1250px;
-  }
-  .header-nav {
-    .nav {
-      width: 1250px;
-    }
-  }
-  .header-panel {
-    width: 1250px;
-    margin-left: -625px;
-  }
-  .panel-content {
-    height: 400px;
-    .content-meta {
-      width: 1000px;
-    }
-    .image {
-      height: 230px;
-    }
-  }
-}
-@media (max-width: 1350px) {
-  .header-info {
-    width: 1150px;
-  }
-  .header-nav {
-    .nav {
-      width: 1150px;
-    }
-  }
-  .header-panel {
-    width: 1200px;
-    margin-left: -600px;
-  }
-  .panel-content {
-    height: 350px;
   }
 }
 </style>
