@@ -22,7 +22,7 @@
               <div class="info-item-value">#{{ activeInstance.sku }}</div>
             </div>
             
-            <div class="info-measures" v-if="product.instances.length == 1">
+            <div class="info-measures" v-if="product.instances.length > 1">
               <div class="info-measures-title">Доступные варианты</div>
               <div class="info-measures-values">
                   <div 
