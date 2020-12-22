@@ -88,7 +88,7 @@ export default {
 @media (max-width: 1450px) {
   .breadcrumb-label {
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 20px;
     letter-spacing: 0.16px;
   }

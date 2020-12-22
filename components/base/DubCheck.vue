@@ -256,9 +256,9 @@ $checkbox-transition: 0.22s cubic-bezier(0, 0, 0.2, 1) 0ms;
   &__label {
     padding-left: 4px;
     font-size: 14px;
-    font-weight: 600;
-    opacity: 0.7;
-    line-height: 20px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0.16px;
   }
 
   &.reverse &__label {
@@ -307,9 +307,9 @@ $checkbox-transition: 0.22s cubic-bezier(0, 0, 0.2, 1) 0ms;
 
     &--active,
     &--indeterminate {
-      color: $primary_color;
+      color: rgba(0, 0, 0, 0.54);
       .q-checkbox__bg {
-        background: currentColor;
+        background: $overlay_color;
       }
     }
 

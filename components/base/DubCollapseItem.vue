@@ -109,6 +109,7 @@ export default {
 .vs-collapse-item {
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   transition: all 0.25s ease;
+  margin-right: 16px;
 
   &.disabledx {
     opacity: 1;
@@ -124,7 +125,7 @@ export default {
 
 .vs-collapse-item--header {
   display: block;
-  padding: 10px;
+  padding: 10px 0;
   position: relative;
   transition: all 0.25s ease;
 }
@@ -149,8 +150,6 @@ export default {
 }
 
 .con-content--item {
-  padding: 10px 4px;
-  padding-top: 0px;
   font-size: 0.85rem;
   // transform: translate(0,-20px)
   opacity: 1;

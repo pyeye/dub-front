@@ -50,9 +50,9 @@ export default {
 .sort-label {
   color: $text_color;
   font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
-  letter-spacing: -0.012em;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.16px;
   margin-right: 8px;
 }
 .sort-items {

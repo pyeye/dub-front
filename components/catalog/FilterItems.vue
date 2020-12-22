@@ -95,14 +95,12 @@ export default {
 
   .badge-item {
     margin-right: 16px;
-    padding: 6px;
+    padding: 4px 8px;
     color: $text_color;
     font-size: 12px;
-    font-weight: 600;
-    opacity: 0.8;
-    background-color: $primary_color;
-    border-radius: 3px;
-    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    background-color: $overlay_color;
+    border: 1px solid rgba(40, 40, 40, 0.2);
     @include prefix(
       (
         display: flex,

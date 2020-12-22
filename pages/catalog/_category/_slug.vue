@@ -433,7 +433,7 @@ a {
 }
 .hero-title {
   font-size: 136px;
-  color: #f8f8f8;
+  color: $overlay_color;
   font-weight: 700;
   line-height: 140px;
   font-family: $accent_font;
@@ -574,7 +574,7 @@ a {
   margin-top: 38px;
   grid-column: 1 / -1;
   grid-row: 1;
-  background-color: #f8f8f8;
+  background-color: $overlay_color;
 }
 .image {
   grid-column: 8 / 12;

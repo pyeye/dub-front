@@ -44,7 +44,6 @@ export default {
   cursor: pointer;
   border-radius: 8px;
   // box-shadow: 0px 2px 12px 0px rgba(0,0,0,.05)
-  padding: 10px;
 
   &.shadow {
     .open-item {

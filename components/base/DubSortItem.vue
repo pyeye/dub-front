@@ -78,13 +78,13 @@ export default {
   text-decoration: none;
   color: $text_color;
   font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
-  letter-spacing: -0.012em;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.16px;
 
   .label {
     width: calc(100%);
-    background-image: linear-gradient(transparent calc(100% - 3px), $primary_color 3px);
+    background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
     background-repeat: no-repeat;
     background-size: 0% 100%;
     transition: background-size 0.3s ease;

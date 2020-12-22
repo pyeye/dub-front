@@ -131,18 +131,19 @@ export default {
   position: relative;
   color: $text_color;
   font-size: 16px;
-  font-weight: 500;
-  letter-spacing: -0.012em;
-  font-weight: 600;
-  opacity: 0.7;
+  font-weight: 400;
+  letter-spacing: 0px;
+  line-height: 24px;
 }
 .show-all {
   cursor: pointer;
   color: $text_color;
   font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0.16px;
   margin-left: 34px;
+  margin-top: 4px;
   &:hover {
     text-decoration: underline;
   }

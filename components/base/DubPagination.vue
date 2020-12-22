@@ -204,7 +204,6 @@ export default {
 }
 .vs-pagination--input-goto {
   padding: 8px;
-  border-radius: 5px;
   border: 0px solid rgba(0, 0, 0, 0.2);
   background: rgb(240, 240, 240);
   margin-left: 5px;
@@ -220,8 +219,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0px;
-  background: rgb(240, 240, 240);
-  border-radius: 20px;
+  background: $overlay_color;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -233,12 +231,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
   transition: all 0.25s ease;
   position: relative;
   backface-visibility: visible;
   margin: 0px 2px;
-  font-weight: bold;
+  font-weight: 500;
   color: rgba(0, 0, 0, 0.5);
   span {
     z-index: 100;
@@ -247,39 +244,35 @@ export default {
     z-index: 50;
     content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background: $primary_color;
-    left: 0px;
+    width: 80%;
+    height: 90%;
+    background: $overlay_color;
+    left: 50%;
     top: 0px;
     display: block;
-    border-radius: 8px;
-    transform: scale(0.5);
+    transform: scale(0.5) translateX(-50%);
     opacity: 0;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
   }
   &.is-current {
     transform: scale(1.05);
     color: rgba(0, 0, 0, 0.6);
     font-weight: bold;
     cursor: default;
-    background: $primary_color;
+    background: $overlay_color;
     .effect {
       opacity: 1;
-      transform: scale(1) !important;
-      box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+      transform: scale(1) translateX(-50%) !important;
     }
   }
   &:hover:not(.is-current) {
-    color: $primary_color;
+    color: $text_color;
   }
 }
 
 .vs-pagination--buttons {
   width: 35px;
   height: 35px;
-  border-radius: 50%;
   border: 0px;
   cursor: pointer;
   display: flex;
@@ -287,14 +280,15 @@ export default {
   justify-content: center;
   color: rgba(0, 0, 0, 0.6);
   transition: all 0.2s ease;
-  background: rgb(240, 240, 240);
   margin: 0px;
   z-index: 200;
   &.vs-pagination--button-prev {
     margin-right: 5px;
+    background-color: $overlay_color;
   }
   &.vs-pagination--button-next {
     margin-left: 5px;
+    background-color: $overlay_color;
   }
   &.disabled,
   &:disabled {
@@ -306,7 +300,6 @@ export default {
     font-size: 1.2rem;
   }
   &:hover {
-    background: $primary_color;
     color: rgba(0, 0, 0, 0.6);
   }
 }
@@ -314,17 +307,12 @@ export default {
 .vs-pagination-primary {
   li {
     &:hover:not(.is-current) {
-      color: $primary_color !important;
+      color: $text_color !important;
     }
   }
   .effect {
-    background: $primary_color !important;
-    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
-  }
-  .vs-pagination--buttons {
-    &:hover {
-      background: $primary_color !important;
-    }
+    background: $overlay_color !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.8) !important;
   }
 }
 </style>

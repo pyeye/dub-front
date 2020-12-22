@@ -2,19 +2,19 @@
   <div class="price">
     <slot name="oldPrice">
       <span class="price-old" v-if="specialPrice">
-        {{ regularPrice }} &#x20bd;
+        {{ formatPrice(regularPrice) }} &#x20bd;
       </span>
     </slot>
 
     <slot name="specialPrice">
       <span class="price-special" v-if="specialPrice">
-        {{ specialPrice }} &#x20bd;
+        {{ formatPrice(specialPrice) }} &#x20bd;
       </span>
     </slot>
 
     <slot name="regularPrice">
       <span class="price-regular"  v-if="!specialPrice">
-        {{ regularPrice }} &#x20bd;
+        {{ formatPrice(regularPrice) }} &#x20bd;
       </span>
     </slot>
   </div>
@@ -31,6 +31,12 @@ export default {
     specialPrice: {
       type: String,
       default: null,
+    },
+  },
+  methods: {
+    formatPrice(price) {
+      const [intPart, decimalPart] = price.split('.');
+      return decimalPart === '00' ? intPart : price;
     },
   },
 };
@@ -55,10 +61,10 @@ export default {
     webkit ms
   );
   font-family: $accent_font;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.032em;
-  line-height: 28px;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0px;
+  line-height: 36px;
 }
 .price-special {
   color: #e83841;

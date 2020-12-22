@@ -1,11 +1,6 @@
 <template>
   <div class="catalog-item ">
     <div class="link-box">
-      <div class="image-box">
-        <nuxt-link class="" :to="productLink">
-          <img class="image" :src="`http://api.mydubbelsite.ru/${image}`">
-        </nuxt-link>
-      </div>
       <div class="description-box">
         <div class="name">
         <nuxt-link class="" :to="productLink">
@@ -27,11 +22,18 @@
         <div class="facet-info" v-for="param in params" :key="param.pk">
           {{ param.values[0].name }}
         </div>
+        <!--
         <div class="storage">
           <div class="value">В наличии</div>
         </div>
+        -->
         <div class="flex"></div>
         <dub-price :regular-price="product.instance.price" :special-price="product.instance.new_price"></dub-price>
+      </div>
+      <div class="image-box">
+        <nuxt-link class="" :to="productLink">
+          <img class="image" :src="`http://api.mydubbelsite.ru/${image}`">
+        </nuxt-link>
       </div>
     </div>
     <div class="floating" v-if="product.instance.sales.length !== 0">
@@ -81,9 +83,9 @@ export default {
     },
   },
   created() {
-    this.productLink = `/catalog/${this.product.category.slug}/${this.product.instance.pk}/${
-      this.product.name_slug
-    }`;
+    this.productLink = `/catalog/${this.product.category.slug}/${this.product.product_info_pk}-${
+      this.product.instance.pk
+    }-${this.product.name_slug}`;
   },
   methods: {
     getSaleLabels(sales) {
@@ -117,11 +119,10 @@ export default {
   margin-bottom: 32px;
   background-color: $upper_layer_color;
   border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  padding: 32px;
+  padding: 16px;
   transition: box-shadow 0.25s ease;
   &:hover {
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   }
   .link-box {
     @include prefix(
@@ -152,18 +153,17 @@ export default {
     .name {
       padding: 16px 0 32px 0;
       font-family: $accent_font;
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 0;
-      line-height: 1.2222;
-      opacity: 0.7;
+      font-size: 24px;
+      font-weight: 300;
+      letter-spacing: 0px;
+      line-height: 30px;
     }
   }
 }
 
 .description-box {
   width: 55%;
-  margin-left: 16px;
+  margin-right: 16px;
   @include prefix(
     (
       display: flex,
@@ -174,8 +174,9 @@ export default {
 }
 .facet-info {
   font-size: 14px;
-  font-weight: 600;
-  opacity: 0.7;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.16px;
 }
 .amount {
   @include prefix(
