@@ -35,6 +35,9 @@ export default {
   },
   methods: {
     formatPrice(price) {
+      if (price === null) {
+        return price;
+      }
       const [intPart, decimalPart] = price.split('.');
       return decimalPart === '00' ? intPart : price;
     },
