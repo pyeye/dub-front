@@ -5,7 +5,6 @@
         <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
       </div>
     </div>
-    <div class="content">
       <div class="description">
         <div class="description-title">
           {{ article.title }}
@@ -25,7 +24,6 @@
         </div>
       </div>
       <div class="hero" :style="'background-image: url('+ article.image.src +');'"></div>
-    </div>
   </div>
 </template>
 
@@ -81,9 +79,13 @@ export default {
 <style lang="scss" scoped>
 .news-detail {
   position: relative;
-  width: 80%;
-  min-height: 1000px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
 }
 .detail-content {
   position: relative;
@@ -93,36 +95,25 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .header {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      align-items: center,
-      justify-content: center,
-    ),
-    webkit ms
-  );
+  grid-column: main-start / main-end;
+  grid-row: 1;
 }
 .title-row {
   margin: 24px 0;
-  width: 70%;
+  width: 100%;
   position: relative;
   @include prefix(
     (
       display: flex,
       flex-direction: column,
-      align-items: center,
-      justify-content: center,
     ),
     webkit ms
   );
 }
 .hero {
-  position: absolute;
-  right: -12.5%;
-  width: 70%;
+  grid-column: 9 / full-end;
+  grid-row: 2;
   height: 800px;
-  z-index: 1;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
@@ -154,7 +145,7 @@ export default {
   z-index: 1;
   color: #fafafa;
   font-size: 36px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.02em;
   line-height: 24px;
   font-family: $accent_font;
@@ -192,25 +183,17 @@ export default {
   );
 }
 .description {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: column,
-    ),
-    webkit ms
-  );
-  width: 55%;
+  grid-column: main-start / 9;
+  grid-row: 2;
 }
 .description-title {
-  padding: 16px 25% 16px 24px;
+  padding: 16px 0;
   font-family: $accent_font;
-  opacity: 0.7;
   color: $text_color;
-  font-size: 36px;
-  line-height: 42px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-size: 42px;
+  line-height: 50px;
+  font-weight: 300;
+  letter-spacing: 0px;
 }
 .description-box {
   background-color: $upper_layer_color;
@@ -228,10 +211,10 @@ export default {
     ),
     webkit ms
   );
-  padding: 24px 25% 8px 24px;
+  padding: 24px 0;
   font-size: 16px;
   line-height: 16px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.05em;
   font-family: $accent_font;
   opacity: 0.7;
@@ -240,7 +223,7 @@ export default {
 }
 .category {
   width: calc(100%);
-  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease;
@@ -266,29 +249,17 @@ a {
   text-decoration: none;
 }
 @media (max-width: 1450px) {
-  .news-detail {
-    width: 90%;
-  }
-  .hero {
-    right: -5.5%;
-  }
-  .description {
-    width: 40%;
-  }
   .description-title {
-    padding: 16px 20% 16px 24px;
+    padding: 16px 0;
   }
   .description-info {
-    padding: 24px 20% 8px 24px;
+    padding: 24px 0 8px 0;
   }
   .description-text {
-    padding: 16px 20% 24px 24px;
+    padding: 16px 0 24px 0;
   }
   .hero {
     height: 600px;
-  }
-  .news-detail {
-    min-height: 800px;
   }
 }
 </style>

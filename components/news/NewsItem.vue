@@ -76,10 +76,10 @@ a {
   background: transparent;
 }
 .article-title {
-  font-size: 20px;
-  line-height: 22px;
-  letter-spacing: 0.15px;
-  font-weight: 600;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: 0;
+  font-weight: 300;
   font-family: $accent_font;
   text-decoration: none;
 }
@@ -119,7 +119,7 @@ a {
 .link {
   cursor: pointer;
   width: calc(100%);
-  background-image: linear-gradient(transparent calc(100% - 2px), $primary_color 2px);
+  background-image: linear-gradient(transparent calc(100% - 2px), $body_color 2px);
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease, color 1.6s ease-in-out;
