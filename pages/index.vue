@@ -1,10 +1,15 @@
 <template>
   <div class="home">
-      <sales-carousel class="lax" data-lax-translate-y="(elh-300) 0, elh -50" :sales="sales"></sales-carousel>
+    <div class="home-wrapper">
+      <sales-carousel class="lax carousel" data-lax-translate-y="(elh-300) 0, elh -50" :sales="sales">
+      </sales-carousel>
 
-      <home-news class="lax" data-lax-translate-y="elh 0, (elh*8) -100" :news="news"></home-news>
+      
       
       <!--
+      <home-news class="lax" data-lax-translate-y="elh 0, (elh*8) -100" :news="news"></home-news>
+
+
       <div class="news">
         <div
           v-for="(article, index) in news"
@@ -38,7 +43,7 @@
           </nuxt-link>
         </div>
       </div>
-      -->
+     
     <div class="about-row">
       <div
         class="about-text lax"
@@ -60,49 +65,119 @@
       <div class="cover"></div>
       </div>
     </div>
+     -->
 
 
     
-    <div class="title-row lax" data-lax-translate-y= "vh 200, (vh+600) 0 | speed=1">
-      <div class="title">Коллекции </div>
-      <div class="sub-title">от House of Dubbel</div>
+    <div class="news-wrapper">
+      <div class="news-title">Новости</div>
+      <span class="news-all-link"><span>Все материалы</span></span>
+
+      <div class="article-first">
+        <news-item
+          class="poster-item"
+          :article="news[0]"
+        ></news-item>
+      </div>
+      <div class="article-second">
+        <news-item
+          class="poster-item"
+          :article="news[1]"
+        ></news-item>
+      </div>
+      <div class="article-third">
+        <news-item
+          class="poster-item"
+          :article="news[2]"
+        ></news-item>
+      </div>
     </div>
 
-
+<!--
+  <div class="title-row lax" data-lax-translate-y= "vh 200, (vh+600) 0 | speed=1">
+      <div class="title">Новости </div>
+      <div class="sub-title">от House of Dubbel</div>
+    </div>
     <div class="posters">
-        <poster-item
+        <news-item
           class="poster-item first lax"
           data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
           data-lax-translate-x="vh 0, (vh+600) 40 | speed=1"
-          :poster="collections[0]"
-        ></poster-item>
+          :article="news[0]"
+        ></news-item>
       
-      <poster-item
+      <news-item
         class="poster-item second lax"
         data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
         data-lax-translate-x="vh 0, (vh+600) 10 | speed=1"
-        :poster="collections[1]"
-      ></poster-item>
+        :article="news[1]"
+      ></news-item>
 
-      <poster-item
+      <news-item
         class="poster-item third lax"
         data-lax-translate-y="vh 200, (vh+600) 0 | speed=1"
         data-lax-translate-x="vh 40, (vh+600) -10 | speed=1"
-        :poster="collections[2]"
-      ></poster-item>
+        :article="news[2]"
+      ></news-item>
     </div>
+    -->
 
-    <div class="title-row lax" data-lax-translate-y= "(vh*2) 200, (vh*2+600) 0 | speed=1">
-      <div class="title">Новинки</div>
-    </div>
+      <div class="title-row-new">
+        <div class="title">Новинки</div>
+      </div>
 
-    <div class="grid lax" data-lax-translate-y= "(vh*2) 200, (vh*2+600) 0 | speed=1">
-      <catalog-item
-        class="grid-cell"
-        v-for="product in products"
-        :key="product.pk"
-        :product="product"
-      ></catalog-item>
+      <div class="grid-new-products">
+        <catalog-item
+          v-for="product in products"
+          :key="product.pk"
+          :product="product"
+        ></catalog-item>
+      </div>
+
+      <div class="collection-hero">
+          <div class="title">Коллекции</div>
+          <div class="subtitle">от house of dubbel</div>
+      </div>
+
+      <div class="collection-wrapper first-collection-wrapper" v-if="collections[0].products">
+        
+        <div class="collection-description">
+          <div class="name">{{collections[0].name}}</div>
+          <div class="text">{{collections[0].description}}</div>
+          <div class="more-link">все товары коллекции</div>
+        </div>
+        <div class="collection-products"><catalog-item
+          v-for="product in collections[0].products.items.slice(4)"
+          :key="product.pk"
+          :product="product"
+        ></catalog-item></div>
+      </div>
+
+      <div class="collection-wrapper second-collection-wrapper" v-if="collections[1].products">
+        <div class="collection-description">
+          <div class="name">{{collections[1].name}}</div>
+          <div class="text">{{collections[1].description}}</div>
+          <div class="more-link">все товары коллекции</div>
+        </div>
+        <div class="collection-products"><catalog-item
+          v-for="product in collections[1].products.items.slice(4)"
+          :key="product.pk"
+          :product="product"
+        ></catalog-item></div>
+      </div>
+
+      <div class="collection-wrapper third-collection-wrapper" v-if="collections[2].products">
+        <div class="collection-description">
+          <div class="name">{{collections[2].name}}</div>
+          <div class="text">{{collections[2].description}}</div>
+          <div class="more-link">все товары коллекции</div>
+        </div>
+        <div class="collection-products"><catalog-item
+          v-for="product in collections[2].products.items.slice(4)"
+          :key="product.pk"
+          :product="product"
+        ></catalog-item></div>
+      </div>
     </div>
   </div>
 
@@ -112,7 +187,7 @@
 import lax from 'lax.js';
 
 import CatalogItem from '~/components/catalog/CatalogItem';
-import PosterItem from '~/components/home/PosterItem';
+import NewsItem from '~/components/home/NewsItem';
 import SalesCarousel from '~/components/sales/SalesCarousel';
 import HomeNews from '~/components/home/HomeNews';
 
@@ -120,7 +195,7 @@ export default {
   name: 'DubHome',
   components: {
     CatalogItem,
-    PosterItem,
+    NewsItem,
     SalesCarousel,
     HomeNews,
   },
@@ -142,6 +217,15 @@ export default {
       app.$api.get('/home/collections/'),
       app.$api.get('/home/new/', { params: { sort: 'created_at-desc' } }),
     ]);
+    await Promise.all(
+      collections.data.map(async collection => {
+        const products = await app.$api.get('/products/', {
+          params: { collections: collection.pk },
+        });
+        // eslint-disable-next-line no-param-reassign
+        collection.products = products.data;
+      })
+    );
     return {
       news: news.data,
       sales: sales.data,
@@ -172,9 +256,70 @@ export default {
 <style lang="scss" scoped>
 .home {
   position: relative;
-  flex: 1;
-  width: 80%;
-  margin: 0 auto;
+}
+.home-wrapper {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
+}
+.carousel {
+  grid-column: full-start / full-end;
+  grid-row: 1;
+}
+.news-wrapper {
+  grid-column: full-start / full-end;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
+  margin: 96px 0;
+  .news-title {
+    grid-column: main-start / 7;
+    grid-row: 1 / 2;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 64px;
+    letter-spacing: 0px;
+    margin-bottom: 24px;
+  }
+  .news-all-link {
+    grid-column: 13 / main-end;
+    grid-row: 1 / 2;
+    align-self: center;
+    justify-self: center;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0px;
+    margin-top: -16px;
+    cursor: pointer;
+    background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    transition: background-size 0.4s ease;
+    &:hover {
+      background-size: 100% 100%;
+    }
+  }
+  .article-first {
+    grid-column: main-start / 7;
+    grid-row: 2 / 3;
+  }
+  .article-second {
+    grid-column: 7 / 13;
+    grid-row: 1 / 3;
+  }
+  .article-third {
+    grid-column: 13 / main-end;
+    grid-row: 2 / 3;
+  }
 }
 .sales-news {
   @include prefix(
@@ -202,6 +347,9 @@ export default {
   background-position: 50% 50%;
 }
 .posters {
+  overflow: hidden;
+  grid-column: full-start / full-end;
+  grid-row: 3;
   @include prefix(
     (
       display: flex,
@@ -282,25 +430,24 @@ export default {
 .title-row {
   margin: 48px 0;
   position: relative;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: column,
-      align-items: center,
-    ),
-    webkit ms
-  );
+  grid-column: main-start / 6;
+  grid-row: 3;
 }
-.title {
-  font-size: 42px;
-  letter-spacing: 20px;
-  margin-right: -20px;
-  line-height: 50px;
-  font-family: $accent_font;
-  opacity: 0.7;
-  color: $text_color;
-  text-transform: uppercase;
+.title-row-new {
+  position: relative;
+  grid-column: main-start / 8;
+  grid-row: 4;
+  .title {
+    margin-bottom: 24px;
+    font-size: 72px;
+    font-weight: 300;
+    letter-spacing: -0.64px;
+    line-height: 80px;
+    font-family: $accent_font;
+    color: $text_color;
+  }
 }
+
 .sub-title {
   margin-top: 6px;
   font-size: 16px;
@@ -478,41 +625,114 @@ export default {
 a {
   text-decoration: none;
 }
-.grid {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      flex-wrap: wrap,
-      justify-content: center,
-    ),
-    webkit ms
-  );
-  width: 100%;
-  .grid-cell {
-    @include prefix(
-      (
-        flex: 1 1,
-        flex-basis: 19.2%,
-      ),
-      webkit ms
-    );
-    max-width: 19.2%;
-    background-color: $upper_layer_color;
-    border-radius: 2px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    padding: 24px;
-    margin: 0 8px 32px 8px;
-    transition: box-shadow 0.25s ease;
-    &:hover {
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    }
+.grid-new-products {
+  grid-column: main-start / main-end;
+  grid-row: 5;
+  display: grid;
+  grid-template-columns: repeat(16, [col-start] 1fr);
+  grid-gap: 16px;
+  padding: 24px 0;
+}
+.grid-new-products > div:not(.first) {
+  grid-column-start: auto;
+}
+.grid-new-products > div {
+  grid-column: col-start 1 / span 4;
+}
+.grid-new-products > div:not(:nth-child(4n))::after {
+  content: '';
+  height: 100%;
+  width: 1px;
+  position: absolute;
+  right: -8px;
+  top: 0;
+  background-color: rgba(40, 40, 40, 0.2);
+}
+.collection-hero {
+  grid-column: main-start / main-end;
+  grid-row: 6;
+  .title {
+    font-size: 72px;
+    font-weight: 300;
+    letter-spacing: -0.64px;
+    line-height: 80px;
+    font-family: $accent_font;
+    color: $text_color;
+  }
+  .subtitle {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    line-height: 36px;
+    font-family: $accent_font;
+    color: $text_color;
   }
 }
-@media (max-width: 1450px) {
-  .home {
-    width: 90%;
+.first-collection-wrapper {
+  grid-row: 7;
+}
+.second-collection-wrapper {
+  grid-row: 8;
+}
+.third-collection-wrapper {
+  grid-row: 9;
+}
+.collection-wrapper {
+  grid-column: main-start / main-end;
+  display: grid;
+  grid-template-columns: repeat(16, [col-start] 1fr);
+  grid-gap: 16px;
+  align-items: baseline;
+  .collection-description {
+    grid-column: 1 / 9;
+    grid-row: 1;
+    position: sticky;
+    top: 84px;
+    .name {
+      font-size: 56px;
+      font-weight: 300;
+      letter-spacing: -0.64px;
+      line-height: 80px;
+      font-family: $accent_font;
+      color: $text_color;
+    }
+    .text {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: 0px;
+    }
+    .more-link {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0px;
+      line-height: 20px;
+    }
   }
+  .collection-products {
+    grid-column: 9 / -1;
+    display: grid;
+    grid-template-columns: repeat(8, [col-start] 1fr);
+    grid-gap: 16px;
+  }
+  .collection-products > div:not(.first) {
+    grid-column-start: auto;
+  }
+  .collection-products > div {
+    grid-column: col-start 1 / span 4;
+  }
+  .collection-products > div:not(:nth-child(2n))::after {
+    content: '';
+    height: 100%;
+    width: 1px;
+    position: absolute;
+    right: -8px;
+    top: 0;
+    background-color: rgba(40, 40, 40, 0.2);
+  }
+}
+
+@media (max-width: 1450px) {
   .sales-news {
     height: 420px;
   }

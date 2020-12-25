@@ -1,9 +1,8 @@
 <template>
   <div class="slider">
     
-    <div class="slider-title" v-response.fast>
-      <nuxt-link class="link-title" :to="`/sales/${activeSale.pk}`">
-        <div class="slider-title-box">
+    <div class="slider-header" v-response.fast>
+        <div class="slider-header-box">
           <transition-group
             appear
             name="slide-title"
@@ -25,9 +24,43 @@
             <div :class="{'revealer-title-animated': isAnimated}" class="revealer-title"></div>  
           </div>
         </div>
-      </nuxt-link>
     </div>
     
+    <div class="slider-title-wrapper">
+      <div class="slider-title-overlay"></div>
+      <div class="slider-title">
+        <transition-group
+            appear
+            name="sliderk"
+            tag="div" 
+            class="transition-box"
+            @before-leave="beforeLeaveHandler"
+            @after-enter="afterEnterHandler"
+          >
+            <div
+              class="transition-item"
+              v-for="number in [activeSaleIndex]"
+              :key="number"
+            >
+              <span class="slider-title-text">
+          <span class="underline">
+            {{ activeSale.name }}
+          </span>
+        </span>
+        <div class="slider-title-description">
+          {{ activeSale.description }}
+        </div>
+        <div class="slider-pagination">
+          <dub-icon  width=24 height=24 class="icon-link" @click.native="prevSlide"><icon-left/></dub-icon>
+          {{ realSaleIndex + 1 }} / {{ sales.length }}
+          <dub-icon  width=24 height=24 class="icon-link" @click.native="nextSlide"><icon-right/></dub-icon>
+        </div>
+            </div>
+          </transition-group>
+        
+      </div>
+    </div>
+
     <div class="slider-box" v-response.fast.masked>
       <transition-group
         appear
@@ -51,23 +84,6 @@
         <div :class="{'revealer-animated': isAnimated}" class="revealer"></div>  
       </div>
 
-      <div class="slider-bullets-reveal">
-        <div class="slider-bullets">
-          <span class="link" v-for="(sale, index) in sales" :key="sale.pk">
-            <span 
-              class="bullet"
-              :class="{'actiive-bullet': activeSale.pk === sale.pk}"
-              @click="setSlide(index)"
-            >
-              {{ sale.name }}
-            </span>
-          </span>
-        </div>
-      </div>
-
-      <div class="slider-name">
-        <nuxt-link to="/sales/catalog">акции</nuxt-link>
-      </div>
     </div>
   </div>
 </template>
@@ -89,7 +105,10 @@ export default {
   }),
   computed: {
     activeSale() {
-      return this.sales[Math.abs(this.activeSaleIndex) % this.sales.length];
+      return this.sales[this.realSaleIndex];
+    },
+    realSaleIndex() {
+      return Math.abs(this.activeSaleIndex) % this.sales.length;
     },
   },
   mounted() {
@@ -108,6 +127,9 @@ export default {
     },
     nextSlide() {
       this.activeSaleIndex = this.activeSaleIndex + 1;
+    },
+    prevSlide() {
+      this.activeSaleIndex = this.activeSaleIndex - 1;
     },
     startSlider() {
       this.sliderInterval = setInterval(this.nextSlide, this.duration);
@@ -132,38 +154,112 @@ export default {
 
 <style lang="scss" scoped>
 .slider {
-  width: 100%;
-  margin-top: 36px;
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: column,
-    ),
-    webkit ms
-  );
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
 }
-.slider-title {
+.slider-header {
+  grid-column: 4 / full-end;
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  width: 87%;
-  margin-left: 25%;
-  font-size: 80px;
-  letter-spacing: 2px;
-  line-height: 80px;
-  height: 80px;
-  margin-bottom: 8px;
+  margin: 24px 0 -36px 0;
+  font-size: 136px;
+  color: $overlay_color;
+  font-weight: 700;
+  line-height: 140px;
+  height: 140px;
   font-family: $accent_font;
-  opacity: 0.7;
-  color: $text_color;
+  letter-spacing: -0.64px;
+  font-family: $accent_font;
   text-transform: uppercase;
+  cursor: default;
+  z-index: 1;
 }
-.slider-title-box {
+.slider-header-box {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
+.slider-title-wrapper {
+  grid-column: full-start / 6;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: [full-start] minmax(16px, 1fr) [main-start] repeat(
+      4,
+      [col-start] minmax(8px, 100px)
+    );
+  grid-column-gap: 24px;
+  align-items: start;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 96px 0 32px 0;
+}
+
+.slider-title-overlay {
+  grid-column: full-start / -1;
+  grid-row: 1;
+  background-color: $overlay_color;
+  position: relative;
+  height: 100%;
+  margin-top: 32px;
+}
+
+.slider-title {
+  grid-column: 2 / -1;
+  grid-row: 1;
+  position: relative;
+  height: 300px;
+}
+
+.slider-title-text {
+  position: relative;
+  font-size: 46px;
+  font-weight: 300;
+  letter-spacing: 0px;
+  line-height: 52px;
+  font-family: $main_font;
+}
+
+.slider-title-description {
+  position: relative;
+  margin: 24px 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0px;
+}
+
+.slider-pagination {
+  position: relative;
+  margin: 16px 0;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 36px;
+  letter-spacing: 0px;
+  margin-left: auto;
+}
+
+.underline {
+  cursor: pointer;
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.3s ease;
+  &:hover {
+    background-size: 100% 100%;
+  }
+}
+.icon-link {
+  cursor: pointer;
+}
 .slider-bullets-reveal {
   z-index: 3;
   position: absolute;
@@ -269,10 +365,11 @@ export default {
 }
 .slider-box {
   position: relative;
-  width: 95%;
+  grid-column: 7 / full-end;
+  grid-row: 2;
   height: 600px;
-  margin-left: -13%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 .transition-box {
   position: relative;
@@ -286,7 +383,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: #ddd;
+  background-color: $overlay_color;
   transform: translateX(-101%);
   z-index: 4;
 }
@@ -296,7 +393,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: #ddd;
+  background-color: $body_color;
   transform: translateX(101%);
   z-index: 4;
 }
@@ -334,6 +431,25 @@ export default {
   opacity: 1;
   transform: scale(1) translateX(0);
 }
+.sliderk-enter-active {
+  transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-delay: 0.7s;
+}
+.sliderk-leave-active {
+  transition: all 0.8s linear;
+}
+.sliderk-leave-to {
+  opacity: 0;
+  transform: translateX(10%);
+}
+.sliderk-enter {
+  opacity: 0;
+  transform: translateX(-10%);
+}
+.sliderk-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
 
 .slide-title-enter-active {
   transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -368,6 +484,33 @@ export default {
   animation-delay: 0ms, 800ms; /* add this */
   animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1),
     cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.revealer-title-description {
+  animation-name: hide-desc, show-desc;
+  animation-duration: 800ms, 800ms;
+  animation-delay: 0ms, 800ms; /* add this */
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1),
+    cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+@keyframes hide-desc {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(7%);
+  }
+}
+@keyframes show-desc {
+  0% {
+    opacity: 0;
+    transform: translateX(7%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes slide-in {
   0% {
@@ -412,28 +555,15 @@ a {
 }
 @media (max-width: 1450px) {
   .slider-box {
-    width: 85%;
     height: 450px;
-    margin-left: -6%;
   }
   .revealer-box {
     top: -450px;
     height: 450px;
   }
-  .slider-title {
-    width: 85%;
-  }
-  .slider-title {
-    width: 85%;
-    margin-left: 20%;
-    font-size: 70px;
-    letter-spacing: 2px;
-    line-height: 70px;
-    height: 70px;
-  }
   .revealer-title-box {
-    top: -70px;
-    height: 70px;
+    top: -140px;
+    height: 140px;
   }
   .slider-name {
     right: -38px;
