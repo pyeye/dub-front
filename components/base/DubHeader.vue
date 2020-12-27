@@ -43,7 +43,7 @@
             <div class="nav-item" v-response.small>
               <nuxt-link :to="'/catalog/beer'" class="nav-category">
                 <span class="link">
-                  <span class="link-item" :class="{'nav-selected': isSelected('/catalog')}">Каталог</span>
+                  <span class="link-item" :class="{'nav-selected': isSelected('/catalog/beer')}">Каталог</span>
                 </span>
               </nuxt-link>
             </div>
@@ -64,7 +64,7 @@
             <div class="nav-item" v-response.small>
               <nuxt-link :to="'/sales/catalog'" class="nav-category">
                 <span class="link">
-                  <span class="link-item" :class="{'nav-selected': isSelected('/sales/catalog')}">О магазине</span>
+                  <span class="link-item" :class="{'nav-selected': isSelected('/about')}">О магазине</span>
                 </span>
               </nuxt-link>
             </div>

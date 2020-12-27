@@ -1,4 +1,51 @@
 <template>
+<div class="catalog-list-wrapper">
+  <dub-breadcrumbs :breadcrumbs="breadcrumbs" class="breadcrumbs"></dub-breadcrumbs>
+
+  <div class="catalog-header">
+    <div class="header-title">{{ collection.name }}</div>
+    <div class="total-products">Найдено {{ totalProducts }}</div>
+    
+    <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
+    <catalog-sort
+      class="header-sort"
+      :options="filters.sort.options"
+      :active="filters.sort.by"
+      @change-sort="sortHandler"
+    ></catalog-sort>
+  </div>
+
+  <div class="filter-panel-wrapper">
+    <div class="overlay"></div>
+    <div class="filter-panel">
+      <catalog-facets 
+          :sfacets="facets.sfacets"
+          :selected-sfacets="filters.sfacets"
+          :nfacets="filters.nfacets"
+          @update-facet-values="updateFacetValues"
+          @slider-selected="sliderHandler"
+          @number-selected="numberHandler"
+          @checkbox-selected="checkboxHandler"
+        ></catalog-facets>
+    </div>
+  </div>
+
+  <div class="product-list-wrapper">
+    <catalog-item
+      
+      v-for="product in products"
+      :key="product.pk"
+      :product="product"
+    ></catalog-item>
+  </div>
+  <dub-pagination
+    class="pagination-grid"
+    :value="filters.page.current"
+    :total="filters.page.total"
+    @change="paginationHandler"
+  ></dub-pagination>
+</div>
+<!--
   <div class="news-detail">
     <div class="header">
       <div class="title-row">
@@ -39,7 +86,6 @@
           ></dub-select>
         </div>
       </div>
-      <catalog-tags :tags="tags" :selected-tags="filters.tags" @tag-selected="tagHandler"></catalog-tags>
 
       <div class="content">
         <div class="filter-panel">
@@ -74,6 +120,7 @@
     </div>
      
   </div>
+  -->
 </template>
 
 <script>
@@ -179,6 +226,105 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.catalog-list-wrapper {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
+}
+.breadcrumbs {
+  margin: 16px 0;
+  grid-column: main-start / main-end;
+}
+.catalog-header {
+  margin: 32px 0 4px 0;
+  grid-column: main-start / main-end;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: flex-end,
+    ),
+    webkit ms
+  );
+  .header-title {
+    font-size: 54px;
+    font-weight: 300;
+    line-height: 64px;
+    font-family: $main_font;
+    letter-spacing: 0px;
+    margin-bottom: -24px;
+    z-index: 1;
+  }
+  .total-products {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    font-family: $main_font;
+    letter-spacing: 0px;
+    margin: 0 24px 0 8px;
+  }
+  .header-sort {
+    flex: 1;
+  }
+}
+
+.filter-panel-wrapper {
+  grid-column: full-start / 6;
+  grid-row: 3 / 4;
+  display: grid;
+  grid-template-columns: [full-start] minmax(16px, 1fr) [main-start] repeat(
+      4,
+      [col-start] minmax(8px, 100px)
+    );
+  grid-column-gap: 24px;
+  align-items: start;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.filter-panel {
+  grid-column: 2 / -1;
+  grid-row: 1;
+  position: relative;
+  padding: 24px 0;
+}
+.overlay {
+  position: relative;
+  height: 100%;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  background-color: $overlay_color;
+}
+.product-list-wrapper {
+  grid-column: 6 / main-end;
+  display: grid;
+  grid-template-columns: repeat(12, [col-start] 1fr);
+  grid-gap: 16px;
+  padding: 24px 0;
+}
+.product-list-wrapper > div:not(.first) {
+  grid-column-start: auto;
+}
+.product-list-wrapper > div {
+  grid-column: col-start 1 / span 4;
+}
+.product-list-wrapper > div:not(:nth-child(3n))::after {
+  content: '';
+  height: 100%;
+  width: 1px;
+  position: absolute;
+  right: -8px;
+  top: 0;
+  background-color: rgba(40, 40, 40, 0.2);
+}
+.pagination-grid {
+  grid-column: main-start / main-end;
+  grid-row: 4;
+}
 .news-detail {
   position: relative;
   width: 100%;
@@ -411,17 +557,17 @@ a {
     margin-left: 8px;
     margin-bottom: 3px;
   }
-  .badges {
-    color: $text_color;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.7;
-    letter-spacing: -0.012em;
-    margin-right: 8px;
-  }
   .filter-sort-active {
     border-bottom: 3px solid $primary_color;
   }
+}
+.badges {
+  color: $text_color;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.012em;
+  margin: 8px 8px 8px 0;
 }
 .sort {
   @include prefix(

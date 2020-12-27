@@ -28,7 +28,7 @@
         </div>
         -->
         <div class="flex"></div>
-        <dub-price :regular-price="product.instance.price" :special-price="product.instance.new_price"></dub-price>
+        <dub-price :regular-price="product.instance.base_price" :special-price="product.instance.price"></dub-price>
       </div>
       <div class="image-box">
         <nuxt-link class="" :to="productLink">

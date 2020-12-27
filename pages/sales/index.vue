@@ -39,17 +39,12 @@ export default {
   data: () => ({
     breadcrumbs: [{ label: 'Главная', link: '/' }, { label: 'Акции', link: '' }],
   }),
-  computed: {
-    sales() {
-      return this.$store.getters['sales/sales'];
-    },
-    total() {
-      return this.$store.getters['sales/total'];
-    },
-  },
-  async fetch(context) {
-    const { store } = context;
-    await store.dispatch('sales/requestSales');
+  async asyncData(context) {
+    const { app } = context;
+    const sales = await app.$api.get('/home/sales/');
+    return {
+      sales: sales.data,
+    };
   },
 };
 </script>
