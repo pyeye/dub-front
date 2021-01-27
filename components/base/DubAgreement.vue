@@ -14,8 +14,8 @@
         и предназначены только для личного использования.
       </div>
       <div class="agreement-actions">
-        <dub-button type="secondary" class="agree" @click.native="agree()">
-          продолжить
+        <dub-button type="secondary" @click.native="agree()">
+          <span class="agree">продолжить</span>
         </dub-button>
       </div>
     </div>
@@ -61,12 +61,10 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 99999;
-  background-color: #000;
-  background-image: url(http://mydubbelsite.ru/img/static/rhett-wesley-479644.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  color: #fafafa;
+  color: $text_color;
   @include prefix(
     (
       display: flex,
@@ -83,19 +81,20 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #000;
-  opacity: 0.7;
+  background-color: #fff;
+  opacity: 0.9;
 }
 .agreement {
+  padding: 48px;
+  background-color: $overlay_color;
   z-index: 2;
   width: 40%;
-  transform: translateY(10%);
 }
 .agreement-title {
   text-align: center;
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: 0.025em;
+  font-size: 54px;
+  font-weight: 300;
+  letter-spacing: 6px;
   line-height: 42px;
   font-family: $accent_font;
   margin-bottom: 16px;
@@ -103,7 +102,7 @@ export default {
 .agreement-info {
   padding: 16px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 400;
   line-height: 24px;
 }
 .agreement-actions {
@@ -118,16 +117,11 @@ export default {
   );
   margin-top: 48px;
 }
-.my-button {
-  color: #fafafa !important;
-  font-size: 16px !important;
-}
-.my-button:hover {
-  background-color: #ffd633 !important;
-  color: #252525 !important;
-}
 .agree {
-  width: 35%;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-transform: uppercase;
 }
 .fade-enter-active,
 .fade-leave-active {

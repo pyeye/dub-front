@@ -46,11 +46,12 @@ export default {
     ),
     webkit ms
   );
+  margin: 4px 0;
 }
 .sort-label {
   color: $text_color;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.16px;
   margin-right: 8px;

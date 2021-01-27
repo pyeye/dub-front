@@ -1,15 +1,24 @@
 $link_color: #42b983;
 $primary_color: #fba900;
 $text_color: #282828;
+$secondary_text_color: rgb(102, 102, 102);
 $body_color: #ffffff;
 $upper_layer_color: #fff;
 $disable_color: #d1d1d1;
 $overlay_color: #f8f8f8;
+$border_color: rgba(40, 40, 40, 0.2);
+$oo: #f1efe9;
+$oo2:  #f3f0e6;
+$oo3:  #f3eed9;
+$oo4:  #f3f3ed;
+$oo5:  #f3f3ec;
+$oo6:  #f8f7f1;
+$ooooo: #f8f8f5;
 $error_color: #d32f2f;
 $success_color: #68cd86;
 
 $main_font: 'Inter', sans-serif;
-$accent_font: 'Inter', sans-serif;
+$accent_font: 'Raleway', sans-serif;
 
 @mixin prefix($declarations, $prefixes: ()) {
   @each $property, $value in $declarations {

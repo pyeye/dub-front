@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
 import DubButton from '~/components/base/DubButton';
+import DubLink from '~/components/base/DubLink';
 import DubBreadcrumbs from '~/components/base/DubBreadcrumbs';
 
 import DubIcon from '~/components/icons/DubIcon';
@@ -17,6 +18,7 @@ import IconFacebook from '~/components/icons/IconFacebook';
 import IconActionRight from '~/components/icons/IconActionRight';
 
 Vue.component('dub-button', DubButton);
+Vue.component('dub-link', DubLink);
 Vue.component('dub-breadcrumbs', DubBreadcrumbs);
 Vue.component('dub-icon', DubIcon);
 Vue.component('icon-right', IconRight);

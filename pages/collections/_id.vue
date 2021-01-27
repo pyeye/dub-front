@@ -4,7 +4,7 @@
 
   <div class="catalog-header">
     <div class="header-title">{{ collection.name }}</div>
-    <div class="total-products">Найдено {{ totalProducts }}</div>
+    <div class="total-products">{{ totalProducts }}</div>
     
     <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
     <catalog-sort
@@ -125,29 +125,32 @@
 
 <script>
 import CatalogItem from '@/components/catalog/CatalogItem';
+import CatalogSort from '@/components/catalog/CatalogSort';
 import FilterItems from '@/components/catalog/FilterItems';
-import CatalogTags from '@/components/catalog/CatalogTags';
+// import CatalogTags from '@/components/catalog/CatalogTags';
 import CatalogFacets from '@/components/catalog/CatalogFacets';
 import DubPagination from '@/components/base/DubPagination';
 import DubSelect from '@/components/base/DubSelect';
-import CatalogMixin from '@/mixins/catalog';
+
+import debounce from '@/plugins/utils/debounce';
+import { getFilters, getQuery } from '@/plugins/utils/catalog';
 
 export default {
-  name: 'DubCollectionDetail',
+  name: 'DubCollectionCatalog',
+  watchQuery: ['sfacets', 'nfacets', 'tags'],
+  scrollToTop: false,
   components: {
     CatalogItem,
+    CatalogSort,
     FilterItems,
     DubPagination,
-    CatalogTags,
+    //  CatalogTags,
     CatalogFacets,
     DubSelect,
   },
-  mixins: [CatalogMixin],
-  data: () => ({
-    baseUrl: 'http://api.mydubbelsite.ru/',
-  }),
+  data: () => ({}),
   async asyncData(context) {
-    const { query, params, app } = context;
+    const { params, query, app } = context;
     const { id } = params;
     const url = `collections/${id}/`;
     const [products, facets, tags, collection] = await Promise.all([
@@ -156,12 +159,14 @@ export default {
       app.$api.getTags({ collections: id, query }),
       app.$api.get(url),
     ]);
+    const filters = getFilters(query, products, facets, tags);
     return {
-      collection: collection.data,
+      filters,
       products: products.items,
       totalProducts: products.total,
       facets,
       tags,
+      collection: collection.data,
     };
   },
   computed: {
@@ -172,53 +177,100 @@ export default {
         { label: this.collection.name, link: '' },
       ];
     },
+    debounceUpdateQuery() {
+      return debounce(this.updateQuery, 500);
+    },
   },
   methods: {
+    updateQuery() {
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
+      this.$set(this.filters.page, 'current', 1);
+      query.page = 1;
+      this.$router.push({ query });
+    },
+    sliderHandler(payload) {
+      const { value, nfacet } = payload;
+      const nfacetIndex = this.filters.nfacets.findIndex(n => n.slug === nfacet.slug);
+      this.filters.nfacets[nfacetIndex].value = value;
+      this.updateQuery();
+    },
+    numberHandler(payload) {
+      const { value, nfacet, type } = payload;
+      const [minVal, maxVal] = nfacet.value;
+      const nfacetIndex = this.filters.nfacets.findIndex(n => n.slug === nfacet.slug);
+      if (type === 'min') {
+        this.filters.nfacets[nfacetIndex].value = [Number(value), maxVal];
+      } else {
+        this.filters.nfacets[nfacetIndex].value = [minVal, Number(value)];
+      }
+      this.debounceUpdateQuery();
+    },
+    tagHandler(tag) {
+      const index = this.filters.tags.findIndex(t => t.pk === tag.pk);
+      if (index === -1) {
+        this.filters.tags.push(tag);
+      } else {
+        this.filters.tags.splice(index, 1);
+      }
+      this.updateQuery();
+    },
     async paginationHandler(e) {
-      this.filters.page.current = e;
-      const query = Object.assign({}, this.$route.query);
-      const { id } = this.$route.params;
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
+      this.$set(this.filters.page, 'current', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
       query.page = this.filters.page.current;
       this.$router.push({ query });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      await this.getProducts(query);
+    },
+    async sortHandler(e) {
+      this.$set(this.filters.sort, 'by', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
+      query.sort =
+        this.filters.sort.by.direction === 'none'
+          ? undefined
+          : `${this.filters.sort.by.code}-${this.filters.sort.by.direction}`;
+      this.$set(this.filters.page, 'current', 1);
+      query.page = 1;
+      this.$router.push({ query });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      await this.getProducts(query);
+    },
+    async getProducts(query) {
+      const { id } = this.$router.params;
       const products = await this.$api.getProducts({ collections: id, query });
       this.products = products.items;
       this.totalProducts = products.total;
     },
-    async selectHandler(e) {
-      this.filters.sort.by = e;
-      const query = Object.assign({}, this.$route.query);
-      const { id } = this.$route.params;
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
-      query.sort = this.filters.sort.by.value;
-      this.$router.push({ query });
-      const products = await this.$api.getProducts({ collections: id, query });
-      this.products = products.items;
-      this.totalProducts = products.total;
+    checkboxHandler(payload) {
+      const sfacetIndex = this.filters.sfacets.findIndex(s => s.pk === payload.pk);
+      if (sfacetIndex === -1) {
+        this.filters.sfacets.push(payload);
+      } else {
+        this.filters.sfacets.splice(sfacetIndex, 1);
+      }
+      this.updateQuery();
     },
-    async updateQuery() {
-      const query = Object.assign({}, this.$route.query);
-      const { id } = this.$route.params;
-      query.sfacets = this.encodeSFacet(this.filters.sfacets);
-      query.nfacets = this.encodeNFacet(this.filters.nfacets);
-      query.tags = this.encodeTags(this.filters.tags);
-      this.$router.push({ query });
-      const [products, facets, tags] = await Promise.all([
-        this.$api.getProducts({ collections: id, query }),
-        this.$api.getFacets({ collections: id, query }),
-        this.$api.getTags({ collections: id, query }),
-      ]);
-      this.tags = tags;
-      this.products = products.items;
-      this.totalProducts = products.total;
-      this.facets = facets;
+    deleteBadge(e) {
+      if (e.filter.type === 'nfacets') {
+        const index = this.filters.nfacets.findIndex(nfacet => nfacet.slug === e.filter.slug);
+        const { stats } = this.filters.nfacets[index];
+        this.filters.nfacets[index].value = [stats.min, stats.max];
+      } else if (e.filter.type === 'sfacets') {
+        const index = this.filters.sfacets.findIndex(sfacet => sfacet.slug === e.filter.slug);
+        this.filters.sfacets.splice(index, 1);
+      } else if (e.filter.type === 'tags') {
+        const index = this.filters.tags.findIndex(tag => tag.pk === e.pk);
+        this.filters.tags.splice(index, 1);
+      }
+      this.updateQuery();
     },
-    getBgImage(imageUrl) {
-      return `background-image: url(${this.baseUrl}${imageUrl});`;
+    updateFacetValues(payload) {
+      const { facet, values } = payload;
+      const facetIndex = this.facets.sfacets.findIndex(sfacet => sfacet.slug === facet.slug);
+      this.facets.sfacets[facetIndex].values = values;
     },
   },
 };
@@ -254,7 +306,7 @@ export default {
     font-size: 54px;
     font-weight: 300;
     line-height: 64px;
-    font-family: $main_font;
+    font-family: $accent_font;
     letter-spacing: 0px;
     margin-bottom: -24px;
     z-index: 1;

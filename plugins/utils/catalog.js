@@ -53,6 +53,7 @@ const decodeNFacets = (queryFacets, nfacets) => {
     slug: nfacet.slug,
     name: nfacet.name,
     suffix: nfacet.suffix,
+    all_stats: nfacet.all_stats,
     stats: {
       min: nfacet.stats.min,
       max: nfacet.stats.max,

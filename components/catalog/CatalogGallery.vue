@@ -1,10 +1,13 @@
 <template>
   <div class="gallery"> 
+    <img class="product-image" :src="getAbsoluteUrl(activeImage.src)" />
+    <img class="img-shadow" src="http://api.mydubbelsite.ru/img/static/rombre-bouteille-3880.png" />
+    <!--
     <div class="image-box" ref="container">
       <div class="img"  :style="{ backgroundImage: getAbsoluteBgUrl(activeImage.src) }"></div>
     </div>
     <img class="img-shadow" src="http://api.mydubbelsite.ru/img/static/rombre-bouteille-3880.png" />
-    <!--
+
     <div class="thumbnails" v-if="images.length > 1">
       <div
         class="thumbnail-box"
@@ -53,6 +56,12 @@ export default {
   position: relative;
   width: 100%;
   height: 90vh;
+}
+.product-image {
+  object-position: center bottom;
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
 }
 .image-box {
   position: relative;

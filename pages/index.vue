@@ -70,24 +70,56 @@
 
     
     <div class="news-wrapper">
-      <div class="news-title">Новости</div>
-      <span class="news-all-link"><span>Все материалы</span></span>
+      <div 
+        class="news-title lax"
+        data-lax-opacity="vh 0, (vh/1.6) 1"
+        data-lax-anchor="self"
+      >
+        Новости
+      </div>
+      <div 
+        class="news-all-link lax"
+        data-lax-opacity="vh 0, (vh/1.8) 1"
+        data-lax-anchor="self"
+      >
+          <dub-link to="/news" class="news-link-button">
+            <span class="news-link-text">Все материалы</span>
+          </dub-link>
 
-      <div class="article-first">
+      </div>
+
+      <div 
+        class="article-first lax"
+        data-lax-translate-y="vh 200, (vh/3.8) 0"
+        data-lax-translate-x="vh -40, (vh/3.6) 0"
+        data-lax-opacity="vh 0, (vh/2) 1"
+        data-lax-anchor="self"
+      >
         <news-item
-          class="poster-item"
+          class="poster-item poster-first-article"
           :article="news[0]"
         ></news-item>
       </div>
-      <div class="article-second">
+      <div 
+        class="article-second lax"
+        data-lax-translate-y="vh 200, (vh/3.8) 0, 0 0, (vh*-1.7) -200"
+        data-lax-opacity="vh 0, (vh/2) 1"
+        data-lax-anchor="self"
+      >
         <news-item
-          class="poster-item"
+          class="poster-item poster-second-article"
           :article="news[1]"
         ></news-item>
       </div>
-      <div class="article-third">
+      <div
+        class="article-third lax"
+        data-lax-translate-y="vh 200, (vh/3.8) 0"
+        data-lax-translate-x="vh 40, (vh/3.6) 0"
+        data-lax-opacity="vh 0, (vh/2) 1"
+        data-lax-anchor="self"
+      >
         <news-item
-          class="poster-item"
+          class="poster-item poster-third-article"
           :article="news[2]"
         ></news-item>
       </div>
@@ -128,56 +160,62 @@
 
       <div class="grid-new-products">
         <catalog-item
-          v-for="product in products"
+          v-for="product in products.slice(0, 10)"
           :key="product.pk"
           :product="product"
         ></catalog-item>
       </div>
 
-      <div class="collection-hero">
-          <div class="title">Коллекции</div>
-          <div class="subtitle">от house of dubbel</div>
-      </div>
-
       <div class="collection-wrapper first-collection-wrapper" v-if="collections[0].products">
         
         <div class="collection-description">
+          <div class="collection-sup">коллекция</div>
           <div class="name">{{collections[0].name}}</div>
-          <div class="text">{{collections[0].description}}</div>
-          <div class="more-link">все товары коллекции</div>
+          <div class="text">{{collections[0].description}} 
+          </div>
+          <dub-link :to="`/collections/${collections[0].pk}`" class="description-link">
+            <span class="more-link">все товары коллекции</span>
+          </dub-link>
         </div>
         <div class="collection-products"><catalog-item
-          v-for="product in collections[0].products.items.slice(4)"
+          v-for="product in collections[0].products.items.slice(0, 6)"
           :key="product.pk"
           :product="product"
         ></catalog-item></div>
+        
       </div>
 
       <div class="collection-wrapper second-collection-wrapper" v-if="collections[1].products">
         <div class="collection-description">
+          <div class="collection-sup">коллекция</div>
           <div class="name">{{collections[1].name}}</div>
-          <div class="text">{{collections[1].description}}</div>
-          <div class="more-link">все товары коллекции</div>
+          <div class="text">{{collections[1].description}}
+          </div>
+          <dub-link to="sss" class="description-link"><span class="more-link">все товары коллекции</span></dub-link>
         </div>
         <div class="collection-products"><catalog-item
-          v-for="product in collections[1].products.items.slice(4)"
+          v-for="product in collections[1].products.items.slice(0, 6)"
           :key="product.pk"
           :product="product"
         ></catalog-item></div>
       </div>
 
+      <!--
+
       <div class="collection-wrapper third-collection-wrapper" v-if="collections[2].products">
         <div class="collection-description">
+          <div class="collection-sup">коллекция от house of dubbel</div>
           <div class="name">{{collections[2].name}}</div>
           <div class="text">{{collections[2].description}}</div>
           <div class="more-link">все товары коллекции</div>
         </div>
         <div class="collection-products"><catalog-item
-          v-for="product in collections[2].products.items.slice(4)"
+          v-for="product in collections[2].products.items.slice(0, 4)"
           :key="product.pk"
           :product="product"
         ></catalog-item></div>
       </div>
+      -->
     </div>
   </div>
 
@@ -277,48 +315,57 @@ export default {
     [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
     [main-end] minmax(16px, 1fr) [full-end];
   grid-column-gap: 24px;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: [title] 100px repeat(3, auto);
   align-items: start;
-  margin: 96px 0;
+  margin: 300px 0 400px 0;
   .news-title {
-    grid-column: main-start / 7;
+    grid-column: main-start / 8;
     grid-row: 1 / 2;
     font-size: 64px;
     font-weight: 300;
-    line-height: 64px;
-    letter-spacing: 0px;
-    margin-bottom: 24px;
+    line-height: 76px;
+    letter-spacing: 8px;
+    align-self: center;
+    font-family: $accent_font;
   }
   .news-all-link {
-    grid-column: 13 / main-end;
+    grid-column: 14 / main-end;
     grid-row: 1 / 2;
     align-self: center;
     justify-self: center;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 28px;
-    letter-spacing: 0px;
-    margin-top: -16px;
-    cursor: pointer;
-    background-image: linear-gradient(transparent calc(100% - 2px), $text_color 2px);
-    background-repeat: no-repeat;
-    background-size: 0% 100%;
-    transition: background-size 0.4s ease;
-    &:hover {
-      background-size: 100% 100%;
+    .news-link-button {
+      .news-link-text {
+        text-transform: uppercase;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 20px;
+        letter-spacing: 0px;
+        color: $text_color;
+      }
     }
   }
+  .poster-first-article {
+    height: 500px;
+  }
+  .poster-second-article {
+    height: 700px;
+  }
+  .poster-third-article {
+    height: 400px;
+  }
   .article-first {
-    grid-column: main-start / 7;
+    grid-column: main-start / 10;
     grid-row: 2 / 3;
+    margin-right: 24px;
   }
   .article-second {
-    grid-column: 7 / 13;
+    grid-column: 10 / 14;
     grid-row: 1 / 3;
   }
   .article-third {
-    grid-column: 13 / main-end;
+    grid-column: 14 / main-end;
     grid-row: 2 / 3;
+    margin-left: 24px;
   }
 }
 .sales-news {
@@ -438,11 +485,11 @@ export default {
   grid-column: main-start / 8;
   grid-row: 4;
   .title {
-    margin-bottom: 24px;
-    font-size: 72px;
+    margin-bottom: 48px;
+    font-size: 64px;
     font-weight: 300;
-    letter-spacing: -0.64px;
-    line-height: 80px;
+    letter-spacing: 8px;
+    line-height: 76px;
     font-family: $accent_font;
     color: $text_color;
   }
@@ -629,22 +676,21 @@ a {
   grid-column: main-start / main-end;
   grid-row: 5;
   display: grid;
-  grid-template-columns: repeat(16, [col-start] 1fr);
-  grid-gap: 16px;
-  padding: 24px 0;
+  grid-template-columns: repeat(15, [col-start] 1fr);
+  grid-gap: 24px;
 }
 .grid-new-products > div:not(.first) {
   grid-column-start: auto;
 }
 .grid-new-products > div {
-  grid-column: col-start 1 / span 4;
+  grid-column: col-start 1 / span 3;
 }
-.grid-new-products > div:not(:nth-child(4n))::after {
+.grid-new-products > div:not(:nth-child(5n))::after {
   content: '';
   height: 100%;
   width: 1px;
   position: absolute;
-  right: -8px;
+  right: -12px;
   top: 0;
   background-color: rgba(40, 40, 40, 0.2);
 }
@@ -652,10 +698,10 @@ a {
   grid-column: main-start / main-end;
   grid-row: 6;
   .title {
-    font-size: 72px;
+    font-size: 64px;
     font-weight: 300;
     letter-spacing: -0.64px;
-    line-height: 80px;
+    line-height: 70px;
     font-family: $accent_font;
     color: $text_color;
   }
@@ -678,50 +724,71 @@ a {
   grid-row: 9;
 }
 .collection-wrapper {
+  position: relative;
+  margin-top: 100px;
+  padding-top: 100px;
+  border-top: 1px solid $border_color;
   grid-column: main-start / main-end;
   display: grid;
   grid-template-columns: repeat(16, [col-start] 1fr);
   grid-gap: 16px;
   align-items: baseline;
   .collection-description {
-    grid-column: 1 / 9;
+    grid-column: 1 / 6;
     grid-row: 1;
     position: sticky;
     top: 84px;
+    margin-bottom: 24px;
+    .collection-sup {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0px;
+      line-height: 20px;
+      font-family: $main_font;
+      color: $text_color;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
     .name {
-      font-size: 56px;
+      font-size: 64px;
       font-weight: 300;
       letter-spacing: -0.64px;
-      line-height: 80px;
+      line-height: 76px;
       font-family: $accent_font;
       color: $text_color;
     }
     .text {
+      opacity: 0.7;
       font-size: 16px;
       font-weight: 400;
-      line-height: 20px;
+      line-height: 24px;
       letter-spacing: 0px;
+      margin: 16px 24px 0 0;
     }
-    .more-link {
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0px;
-      line-height: 20px;
+    .description-link {
+      margin-top: 24px;
+      .more-link {
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: -0.16px;
+        line-height: 20px;
+        text-transform: uppercase;
+      }
     }
   }
   .collection-products {
-    grid-column: 9 / -1;
+    grid-column: 8 / -1;
     display: grid;
-    grid-template-columns: repeat(8, [col-start] 1fr);
+    grid-template-columns: repeat(9, [col-start] 1fr);
     grid-gap: 16px;
   }
   .collection-products > div:not(.first) {
     grid-column-start: auto;
   }
   .collection-products > div {
-    grid-column: col-start 1 / span 4;
+    grid-column: col-start 1 / span 3;
   }
-  .collection-products > div:not(:nth-child(2n))::after {
+  .collection-products > div:not(:nth-child(3n))::after {
     content: '';
     height: 100%;
     width: 1px;
@@ -729,6 +796,15 @@ a {
     right: -8px;
     top: 0;
     background-color: rgba(40, 40, 40, 0.2);
+  }
+  .description-link {
+    .more-link {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0px;
+      line-height: 20px;
+      text-transform: uppercase;
+    }
   }
 }
 
@@ -764,6 +840,120 @@ a {
     .third {
       width: 30%;
       height: 450px;
+    }
+  }
+  .news-wrapper {
+    margin: 200px 0 300px 0;
+    .news-title {
+      font-weight: 200;
+    }
+    .poster-first-article {
+      height: 300px;
+    }
+    .poster-second-article {
+      height: 500px;
+    }
+    .poster-third-article {
+      height: 200px;
+    }
+    .article-first {
+      margin-right: 8px;
+    }
+    .article-third {
+      margin-left: 8px;
+    }
+  }
+  .title-row-new {
+    .title {
+      font-weight: 200;
+    }
+  }
+  .grid-new-products {
+    grid-template-columns: repeat(16, [col-start] 1fr);
+    grid-gap: 16px;
+    max-height: 866px;
+    overflow: hidden;
+  }
+  .grid-new-products > div {
+    grid-column: col-start 1 / span 4;
+  }
+  .grid-new-products > div:not(:nth-child(5n))::after {
+    width: 0px;
+  }
+  .grid-new-products > div:not(:nth-child(4n))::after {
+    content: '';
+    height: 100%;
+    width: 1px;
+    position: absolute;
+    right: -12px;
+    top: 0;
+    background-color: rgba(40, 40, 40, 0.2);
+  }
+  .collection-wrapper {
+    grid-column: main-start / main-end;
+    display: grid;
+    grid-template-columns: repeat(16, [col-start] 1fr);
+    grid-gap: 16px;
+    align-items: baseline;
+    .collection-description {
+      grid-column: 1 / 9;
+      grid-row: 1;
+      position: sticky;
+      top: 84px;
+      .collection-sup {
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: 0px;
+        line-height: 20px;
+        font-family: $main_font;
+        color: $text_color;
+        margin-top: 4px;
+      }
+      .name {
+        font-size: 64px;
+        font-weight: 200;
+        letter-spacing: 0px;
+        line-height: 70px;
+        font-family: $accent_font;
+        color: $text_color;
+      }
+      .text {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 22px;
+        letter-spacing: 0px;
+        margin-top: 16px;
+      }
+      .more-link {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0px;
+        line-height: 20px;
+        margin-top: 8px;
+      }
+    }
+    .collection-products {
+      grid-column: 9 / -1;
+      display: grid;
+      grid-template-columns: repeat(8, [col-start] 1fr);
+      grid-gap: 16px;
+      max-height: 866px;
+      overflow: hidden;
+    }
+    .collection-products > div:not(.first) {
+      grid-column-start: auto;
+    }
+    .collection-products > div {
+      grid-column: col-start 1 / span 4;
+    }
+    .collection-products > div:not(:nth-child(2n))::after {
+      content: '';
+      height: 100%;
+      width: 1px;
+      position: absolute;
+      right: -8px;
+      top: 0;
+      background-color: rgba(40, 40, 40, 0.2);
     }
   }
 }

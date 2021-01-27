@@ -5,6 +5,9 @@
 
       <div class="header-info-box">
         <div class="header-info">
+          <div class="contacts">
+            <span class="phone">г.Челябинск ул.Свободы 2</span>
+          </div>
           <div class="flex"></div>
           <div class="contacts">
             <span class="phone">+7 (345) 54-54-444</span>
@@ -74,8 +77,6 @@
                 ref="search"
                 placeholder="Поиск по каталогу"
                 v-model="searchQuery"
-                @focus="autocompletePanelActive = true"
-                @blur="autocompletePanelActive = false"
                 @keyup.enter="searchHandler"
                 @keyup.up="prevAutocompleteItem"
                 @keyup.down="nextAutocompleteItem"/>
@@ -108,7 +109,7 @@
 
             <div 
               @mouseleave="autocompleteIndex = -1"
-              v-show="searchPanelActive && autocompletePanelActive && searchAutocomplete.length > 0"
+              v-show="searchPanelActive && searchAutocomplete.length > 0"
               class="search-autocomplete"
             >
               <div
@@ -169,7 +170,6 @@ export default {
     searchQuery: '',
     searchAutocomplete: [],
     autocompleteIndex: -1,
-    autocompletePanelActive: false,
   }),
   computed: {
     categories() {
@@ -337,18 +337,26 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .dub-header {
-  background-color: #fafafa;
+  background-color: $body_color;
   position: relative;
   z-index: 9999;
 }
 .header-wrapper {
   display: grid;
   grid-template-columns:
-    [full-start] minmax(48px, 1fr) [main-start] repeat(16, [col-start] minmax(12px, 160px))
-    [main-end] minmax(48px, 1fr) [full-end];
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
   grid-template-rows: repeat(2, auto);
-  background-color: #fafafa;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+  background-color: $body_color;
+  box-shadow: 0 1px 1px rgba(40, 40, 40, 0.2);
+}
+.phone {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  opacity: 0.6;
 }
 .logo {
   display: block;
@@ -360,7 +368,6 @@ export default {
 }
 .logo-text {
   display: inline-block;
-  margin-right: 16px;
   margin-bottom: 6px;
   width: 150px;
   cursor: pointer;
@@ -369,7 +376,7 @@ export default {
   grid-column: main-start / main-end;
   position: relative;
   z-index: 3;
-  background-color: #fafafa;
+  background-color: $body_color;
   font-size: 18px;
   font-family: $accent_font;
   line-height: 24px;
@@ -627,7 +634,7 @@ export default {
 }
 .link-item {
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 20px;
   letter-spacing: 0.16px;
   width: calc(100%);
@@ -705,9 +712,10 @@ export default {
   );
 }
 .search-autocomplete {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
-  background-color: #eee;
+  line-height: 28px;
+  letter-spacing: 0px;
   color: $text_color;
   position: absolute;
   z-index: 4;
@@ -716,20 +724,21 @@ export default {
 }
 .search-autocomplete-item {
   padding: 8px;
+  text-align: center;
   cursor: pointer;
 }
 .autocomplete-item-selected {
-  background-color: #e6e3da;
+  background-color: $overlay_color;
 }
 .overlay {
-  background: rgba(0, 0, 0, 0.8);
+  background: $body_color;
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
   top: 85px;
   z-index: 2;
-  opacity: 1;
+  opacity: 0.95;
 }
 
 .icon-link {

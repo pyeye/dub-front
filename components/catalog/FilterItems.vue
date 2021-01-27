@@ -121,4 +121,7 @@ export default {
     }
   }
 }
+.badges-row > div {
+  margin-top: 4px;
+}
 </style>

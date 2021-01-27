@@ -1,25 +1,33 @@
 <template>
-  <div class="catalog-item ">
-    <div class="link-box">
+  <div class="catalog-item " v-response.masked.large>
+    <nuxt-link class="" :to="productLink">
+    <div class="link-box" >
+       
       <div class="description-box">
         <div class="name">
-        <nuxt-link class="" :to="productLink">
-          {{ product.name }}
-        </nuxt-link>
+          <span class="line">
+            <span>
+              {{ product.name }}
+            </span>
+          </span>
+       
+          
+       
       </div>
+      <!--
         <div class="amount">
           <div class="value">
             <div class="product-item product-item-active">
-              {{product.instance.measure_count}}{{product.instance.measure_value}}
+              {{product.instance.measure}} {{ strength }}%
             </div>
           </div>
         </div>
-        <!--
-        <div class="facet-info">
-          {{ strength }}%
-        </div>
         -->
-        <div class="facet-info" v-for="param in params" :key="param.pk">
+        <div class="facet-info number-facet">
+          <div class="facet-measure">{{formatMeasure(product.instance.measure)}}</div>
+          <div class="facet-strength">{{ strength }}% </div>
+        </div>
+        <div class="facet-info" v-for="param in params.reverse()" :key="param.pk">
           {{ param.values[0].name }}
         </div>
         <!--
@@ -35,7 +43,9 @@
           <img class="image" :src="`http://api.mydubbelsite.ru/${image}`">
         </nuxt-link>
       </div>
+       
     </div>
+    </nuxt-link>
     <div class="floating" v-if="product.instance.sales.length !== 0">
       <sales-badge v-for="label in getSaleLabels(product.instance.sales)" :key="label">
         {{ label }}
@@ -108,6 +118,9 @@ export default {
       });
       return labels;
     },
+    formatMeasure(measure) {
+      return measure >= 1000 ? `${measure / 1000} л.` : `${measure} мл.`;
+    },
   },
 };
 </script>
@@ -121,9 +134,6 @@ export default {
   border-radius: 2px;
   padding: 16px;
   transition: box-shadow 0.25s ease;
-  &:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  }
   .link-box {
     @include prefix(
       (
@@ -136,7 +146,7 @@ export default {
     text-decoration: none;
     color: $text_color;
     .image-box {
-      width: 45%;
+      width: 50%;
       text-align: center;
       @include prefix(
         (
@@ -159,11 +169,23 @@ export default {
       line-height: 30px;
     }
   }
+  &:hover {
+    .line {
+      background-size: 100% 100%;
+    }
+  }
+}
+
+.line {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 1px), $text_color 1px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.4s ease;
 }
 
 .description-box {
-  width: 55%;
-  margin-right: 16px;
+  width: 50%;
   @include prefix(
     (
       display: flex,
@@ -177,6 +199,20 @@ export default {
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.16px;
+  opacity: 0.7;
+}
+.number-facet {
+  margin-bottom: 8px;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  .facet-measure {
+    margin-right: 8px;
+  }
 }
 .amount {
   @include prefix(

@@ -42,12 +42,13 @@ export default {
   );
 }
 .breadcrumb-label {
-  font-size: 16px;
-  font-weight: 300;
+  font-size: 14px;
+  font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.16px;
   font-family: $main_font;
   color: $text_color;
+  opacity: 0.6;
   .breadcrumb-title {
     padding-bottom: 2px;
     width: calc(100%);
@@ -80,6 +81,7 @@ export default {
   pointer-events: none;
   cursor: default;
   text-decoration: none;
+  opacity: 0.4;
 }
 .link {
   text-decoration: none;

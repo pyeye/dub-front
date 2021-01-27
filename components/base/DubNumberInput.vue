@@ -141,7 +141,7 @@ export default {
       return 0;
     },
     getColor() {
-      return '#fc0';
+      return '#282828';
     },
     listeners() {
       return {
@@ -248,7 +248,7 @@ export default {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    color: $text_color;
+    color: $overlay_color;
     backface-visibility: hidden;
     &:disabled {
       opacity: 0.5;
@@ -300,7 +300,7 @@ export default {
 
 .vs-input-number-primary {
   button {
-    background: $primary_color;
+    background: $text_color;
 
     &:hover {
       box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.2);

@@ -3,8 +3,8 @@
   <dub-breadcrumbs :breadcrumbs="breadcrumbs" class="breadcrumbs"></dub-breadcrumbs>
 
   <div class="catalog-header">
-    <div class="header-title">{{ category.name }}</div>
-    <div class="total-products">Найдено {{ totalProducts }}</div>
+    <div class="header-title">Каталог</div>
+    <div class="total-products">{{ totalProducts }}</div>
     
     <filter-items class="badges" :filters="filters" @delete-badge="deleteBadge"></filter-items>
     <catalog-sort
@@ -153,7 +153,7 @@ export default {
       return this.$store.getters['products/category'](category) || {};
     },
     breadcrumbs() {
-      return [{ label: 'Главная', link: '/' }, { label: this.category.name, link: '' }];
+      return [{ label: 'Главная', link: '/' }, { label: 'Каталог', link: '' }];
     },
     debounceUpdateQuery() {
       return debounce(this.updateQuery, 500);
@@ -270,7 +270,7 @@ export default {
   grid-column: main-start / main-end;
 }
 .catalog-header {
-  margin: 32px 0 4px 0;
+  margin: 164px 0 8px 0;
   grid-column: main-start / main-end;
   @include prefix(
     (
@@ -281,29 +281,27 @@ export default {
     webkit ms
   );
   .header-title {
-    font-size: 54px;
+    font-size: 64px;
     font-weight: 300;
     line-height: 64px;
-    font-family: $main_font;
-    letter-spacing: 0px;
-    margin-bottom: -24px;
+    font-family: $accent_font;
+    letter-spacing: -1px;
+    margin-bottom: -32px;
     z-index: 1;
   }
   .total-products {
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 300;
     font-family: $main_font;
     letter-spacing: 0px;
     margin: 0 24px 0 8px;
-  }
-  .header-sort {
-    flex: 1;
+    color: $secondary_text_color;
   }
 }
 
 .filter-panel-wrapper {
-  grid-column: full-start / 6;
+  grid-column: full-start / 5;
   grid-row: 3 / 4;
   display: grid;
   grid-template-columns: [full-start] minmax(16px, 1fr) [main-start] repeat(
@@ -320,7 +318,7 @@ export default {
   grid-column: 2 / -1;
   grid-row: 1;
   position: relative;
-  padding: 24px 0;
+  padding: 48px 0;
 }
 .overlay {
   position: relative;
@@ -330,7 +328,7 @@ export default {
   background-color: $overlay_color;
 }
 .product-list-wrapper {
-  grid-column: 6 / main-end;
+  grid-column: 5 / main-end;
   display: grid;
   grid-template-columns: repeat(12, [col-start] 1fr);
   grid-gap: 16px;
@@ -340,9 +338,9 @@ export default {
   grid-column-start: auto;
 }
 .product-list-wrapper > div {
-  grid-column: col-start 1 / span 4;
+  grid-column: col-start 1 / span 3;
 }
-.product-list-wrapper > div:not(:nth-child(3n))::after {
+.product-list-wrapper > div:not(:nth-child(4n))::after {
   content: '';
   height: 100%;
   width: 1px;
@@ -391,7 +389,8 @@ export default {
   font-weight: 600;
   opacity: 0.7;
   letter-spacing: -0.012em;
-  margin: 8px 8px 8px 0;
+  margin: 0 8px;
+  flex: 1;
 }
 .sort {
   @include prefix(
@@ -507,43 +506,49 @@ export default {
   color: $text_color;
   text-transform: uppercase;
 }
-@media (max-width: 1599px) {
-  .catalog-list {
-    width: 1250px;
-  }
-  .content {
-    .grid {
-      .grid-cell {
-        max-width: 26.68%;
-        @include prefix(
-          (
-            flex-basis: 26.68%,
-          ),
-          webkit ms
-        );
-      }
+
+@media (max-width: 1450px) {
+  .catalog-header {
+    margin: 104px 0 8px 0;
+    .header-title {
+      font-size: 52px;
+      font-weight: 200;
+      line-height: 64px;
+      font-family: $accent_font;
+      letter-spacing: 4px;
+      margin-bottom: -32px;
+      z-index: 1;
+    }
+    .total-products {
+      font-size: 20px;
+      line-height: 20px;
+      font-weight: 300;
+      font-family: $main_font;
+      letter-spacing: 0px;
+      margin: 0 24px 0 8px;
+      color: $secondary_text_color;
     }
   }
-}
-@media (max-width: 1350px) {
-  .catalog-list {
-    width: 1150px;
+  .filter-panel-wrapper {
+    grid-column: full-start / 6;
   }
-  .content {
-    .filter-panel {
-      width: 25%;
-    }
-    .grid {
-      .grid-cell {
-        max-width: 25.9%;
-        @include prefix(
-          (
-            flex-basis: 25.9%,
-          ),
-          webkit ms
-        );
-      }
-    }
+  .product-list-wrapper {
+    grid-column: 6 / main-end;
+  }
+  .product-list-wrapper > div {
+    grid-column: col-start 1 / span 4;
+  }
+  .product-list-wrapper > div:not(:nth-child(4n))::after {
+    width: 0px;
+  }
+  .product-list-wrapper > div:not(:nth-child(3n))::after {
+    content: '';
+    height: 100%;
+    width: 1px;
+    position: absolute;
+    right: -8px;
+    top: 0;
+    background-color: rgba(40, 40, 40, 0.2);
   }
 }
 </style>

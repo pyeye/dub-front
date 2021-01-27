@@ -26,16 +26,16 @@
         <div class="nfacet-num-row">
           <dub-number-input
             :value="nfacet.value[0]"
-            :min="nfacet.stats.min"
-            :max="nfacet.stats.max"
-            :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
+            :min="nfacet.all_stats.min"
+            :max="nfacet.all_stats.max"
+            :step="getInterval(nfacet.all_stats.min, nfacet.all_stats.max)"
             @input="numberHandler($event, nfacet, 'min')"
           />
           <dub-number-input
             :value="nfacet.value[1]"
-            :min="nfacet.stats.min"
-            :max="nfacet.stats.max"
-            :step="getInterval(nfacet.stats.min, nfacet.stats.max)"
+            :min="nfacet.all_stats.min"
+            :max="nfacet.all_stats.max"
+            :step="getInterval(nfacet.all_stats.min, nfacet.all_stats.max)"
             @input="numberHandler($event, nfacet, 'max')"
           />
         </div>
@@ -43,11 +43,11 @@
         <vue-slider
           class="nfacet-slider"
           :value="nfacet.value"
-          :min="nfacet.stats.min"
-          :max="nfacet.stats.max"
+          :min="nfacet.all_stats.min"
+          :max="nfacet.all_stats.max"
           :tooltip-placement="'bottom'"
           :lazy="true"
-          :interval="getInterval(nfacet.stats.min, nfacet.stats.max)"
+          :interval="0.1"
           @change="sliderHandler($event, nfacet)"
         ></vue-slider>
       </div>

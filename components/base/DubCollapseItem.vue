@@ -12,7 +12,7 @@
         <dub-icon width=24 height=24><icon-arrow-down class="icon-link" /></dub-icon>
       </span>
     </header>
-    <div ref="content" :style="styleContent" class="vs-collapse-item--content">
+    <div ref="contentos" :style="styleContent" class="vs-collapse-item--content">
       <div class="con-content--item">
         <slot></slot>
       </div>
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     changeHeight() {
-      const maxHeightx = this.$refs.content.scrollHeight;
+      const maxHeightx = this.$refs.contentos.scrollHeight;
       // eslint-disable-next-line eqeqeq
       if (this.maxHeight != '0px') {
         this.maxHeight = `${maxHeightx}px`;
@@ -79,7 +79,7 @@ export default {
         this.$parent.closeAllItems(this.$el);
       }
 
-      const maxHeightx = this.$refs.content.scrollHeight;
+      const maxHeightx = this.$refs.contentos.scrollHeight;
       // eslint-disable-next-line eqeqeq
       if (this.maxHeight == '0px') {
         this.maxHeight = `${maxHeightx}px`;
@@ -91,7 +91,7 @@ export default {
       if (this.disabled) {
         return;
       }
-      const maxHeightx = this.$refs.content.scrollHeight;
+      const maxHeightx = this.$refs.contentos.scrollHeight;
       if (this.openHover) {
         this.maxHeight = `${maxHeightx}px`;
       }

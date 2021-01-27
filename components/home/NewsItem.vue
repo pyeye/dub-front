@@ -1,16 +1,16 @@
 <template>
 <div class="news-item">
   <nuxt-link :to="`news/${article.pk}`">
-    <div class="news-image" :style="`background-image: url(${article.image.src});`"></div>
-      <div class="news-text">
-          <span class="link"><span class="title">{{ article.title }}</span></span>
-          <div class="subtitle">
-            <div class="date">{{article.date_updated.day}} {{article.date_updated.month}}</div>
-            <div class="category">{{article.category.name}}</div>
-          </div>
-          <div class="description">{{article.description}}</div>
-          <span class="more-link"><span class="more">читать дальше</span></span>
-      </div>
+    <img class="news-image" :src="article.image.src" />
+    <div class="news-text">
+        <span class="link"><span class="title">{{ article.title }}</span></span>
+        <div class="subtitle">
+          <div class="date">{{article.date_updated.day}} {{article.date_updated.month}}</div>
+          <div class="category">{{article.category.name}}</div>
+        </div>
+        <div class="description">{{article.description}}</div>
+        <dub-link :to="`news/${article.pk}`" class="more-link">читать дальше</dub-link>
+    </div>
   </nuxt-link>
 </div>
   
@@ -40,15 +40,15 @@ export default {
 <style lang="scss" scoped>
 .news-item {
   cursor: pointer;
-  border-radius: 2px;
   position: relative;
   width: 100%;
+  font-family: $main_font;
 }
 .news-image {
-  height: 400px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
+  object-position: center bottom;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 .link {
@@ -59,6 +59,7 @@ export default {
   font-weight: 500;
   letter-spacing: 0px;
   line-height: 20px;
+  margin-top: 8px;
 }
 .title {
   width: calc(100%);
@@ -66,10 +67,11 @@ export default {
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 300;
   letter-spacing: 0px;
-  line-height: 36px;
+  line-height: 40px;
+  font-family: $accent_font;
   &:hover {
     background-size: 100% 100%;
   }
@@ -83,8 +85,8 @@ export default {
     ),
     webkit ms
   );
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 300;
   letter-spacing: 0px;
   line-height: 24px;
   .category {
@@ -94,19 +96,20 @@ export default {
 .description {
   display: block;
   font-size: 16px;
+  font-weight: 400;
   text-overflow: ellipsis;
   word-wrap: break-word;
   overflow: hidden;
   max-height: 3.6em;
   line-height: 1.8em;
   margin: 8px 0 -8px 0;
+  opacity: 0.7;
 }
 .news-text {
   color: $text_color;
   font-size: 28px;
   letter-spacing: -0.012em;
   line-height: 28px;
-  font-family: $accent_font;
   padding: 16px 0;
 }
 .more {
@@ -115,6 +118,7 @@ export default {
   background-repeat: no-repeat;
   background-size: 0% 100%;
   transition: background-size 0.4s ease;
+  opacity: 0.7;
   &:hover {
     background-size: 100% 100%;
   }
@@ -129,8 +133,15 @@ a {
   text-decoration: none;
 }
 @media (max-width: 1450px) {
-  .news-image {
-    height: 300px;
+  .title {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    line-height: 36px;
+  }
+  .subtitle {
+    font-size: 14px;
+    font-weight: 400;
   }
 }
 </style>

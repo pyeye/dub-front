@@ -34,8 +34,8 @@ export default {
   computed: {
     btnStyle() {
       return {
-        'my-button-primary': this.type === 'primary',
-        'my-button-secondary': this.type === 'secondary',
+        primary: this.type === 'primary',
+        secondary: this.type === 'secondary',
         'button-active': this.active,
         'button-primary-disabled': this.type === 'primary' && this.disabled,
         'button-secondary-disabled': this.type === 'secondary' && this.disabled,
@@ -48,48 +48,84 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .my-button {
-  @include prefix(
-    (
-      display: flex,
-      flex-direction: row,
-      justify-content: center,
-      align-items: center,
-    ),
-    webkit ms
-  );
   position: relative;
   box-sizing: border-box;
-  min-width: 5.14em;
-  padding: 0.7em 0.57em;
-  height: 40px;
-  color: #252525;
-  text-transform: uppercase;
+  padding: 8px 16px;
   text-decoration: none !important;
-  font-size: 12px;
   outline: none;
-  vertical-align: baseline;
-  font-weight: 700;
-  line-height: 1.5;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-  letter-spacing: 0.025em;
-  transition: box-shadow 0.25s ease, border 0.25s ease, background-color 0.25s ease;
   cursor: pointer;
-}
-.my-button-primary {
-  background-color: #fc0;
-  border-top: 1px solid #ffd633;
-  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
   border: none;
-}
-.my-button-primary:hover {
-  background-color: #fcc403;
-}
-.my-button-secondary {
-  border: 2px solid #ffd633;
-}
-.my-button-secondary:hover {
-  background-color: #ffd633;
+  background-color: transparent;
+
+  &.secondary {
+    color: $text_color;
+
+    &.secondary:after,
+    &.secondary:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 100%;
+      left: 25%;
+      width: 50%;
+      height: 2px;
+      background-color: $text_color;
+      transition: all 0.3s ease;
+      transform: scale(0.6);
+    }
+
+    &.secondary:hover:before {
+      top: 0;
+      transform: scale(1);
+    }
+
+    &.secondary:hover:after {
+      transform: scale(1);
+    }
+  }
+
+  &.primary {
+    color: $text_color;
+
+    &.primary::after,
+    &.primary::before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 20%;
+      height: 20%;
+      border: 2px solid;
+      transition: all 0.45s ease;
+    }
+
+    &.primary::after {
+      bottom: 0;
+      right: 0;
+      border-top-color: transparent;
+      border-left-color: transparent;
+      border-bottom-color: $text_color;
+      border-right-color: $text_color;
+    }
+
+    &.primary::before {
+      top: 0;
+      left: 0;
+      border-bottom-color: transparent;
+      border-right-color: transparent;
+      border-top-color: $text_color;
+      border-left-color: $text_color;
+    }
+
+    &.primary:hover:after,
+    &.primary:hover:before {
+      border-bottom-color: $text_color;
+      border-right-color: $text_color;
+      border-top-color: $text_color;
+      border-left-color: $text_color;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 .button-active {
   cursor: default;

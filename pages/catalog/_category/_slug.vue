@@ -12,18 +12,21 @@
           <h3 class="name-locale" v-if="product.extra.name_locale">{{ product.extra.name_locale }}</h3>
           <div class="primary-info">
             <div class="info-item">
+              Доступно
               <div class="info-item-value" v-if="activeInstance.stock_balance > 0">В наличии</div>
               <div class="info-item-value" v-else>Нет в наличии</div>
             </div>
             <div class="info-item">
+              Объем
               <div class="info-item-value">{{ formatMeasure(activeInstance.measure) }}</div>
             </div>
             <div class="info-item">
-              <div class="info-item-value">#{{ activeInstance.sku }}</div>
+              Артикул
+              <div class="info-item-value">{{ activeInstance.sku }}</div>
             </div>
             
             <div class="info-measures" v-if="product.instances.length > 1">
-              <div class="info-measures-title">Доступные варианты</div>
+              <div class="info-measures-title">Варианты</div>
               <div class="info-measures-values">
                   <div 
                     class="info-measures-value measure-link" 
@@ -38,17 +41,21 @@
             </div>
           </div>
 
-          <dub-price :special-price="activeInstance.new_price" class="detail-price">
-            <span slot="oldPrice" class="price-old" v-if="activeInstance.new_price">
+          <div class="detail-price">
+            <span class="price-old" 
+              v-if="formatPrice(activeInstance.price) !== formatPrice(activeInstance.base_price)"
+            >
+              {{ formatPrice(activeInstance.base_price) }} &#x20bd;
+            </span>
+            <span class="price-special" 
+              v-if="formatPrice(activeInstance.price) !== formatPrice(activeInstance.base_price)">
               {{ formatPrice(activeInstance.price) }} &#x20bd;
             </span>
-            <span slot="specialPrice" class="price-special" v-if="activeInstance.new_price">
-              {{ formatPrice(activeInstance.new_price) }} &#x20bd;
-            </span>
-            <span slot="regularPrice" class="price-regular" v-if="!activeInstance.new_price">
+            <span class="price-regular" 
+              v-if="formatPrice(activeInstance.price) === formatPrice(activeInstance.base_price)">
               {{ formatPrice(activeInstance.price) }} &#x20bd;
             </span>
-          </dub-price>
+          </div>
         </div>
       </div>
       
@@ -89,9 +96,9 @@
         </div>
       </div>
 
-      <div class="description">
-        <div class="paragraph">Описание</div>
-        {{ product.description }}
+      <div class="description" v-if="product.description">
+        <div class="description-paragraph">Описание</div>
+        <div class="description-text">{{ product.description }}</div>
       </div>
     </div>
     
@@ -337,7 +344,7 @@ export default {
       return [
         { label: 'Главная', link: '/' },
         {
-          label: this.product.category.name,
+          label: 'Каталог',
           link: `/catalog/${this.product.category.slug}`,
         },
         { label: this.product.name, link: '' },
@@ -423,8 +430,9 @@ a {
 .wrapper {
   display: grid;
   grid-template-columns:
-    [full-start] minmax(48px, 1fr) [main-start] repeat(16, [col-start] minmax(12px, 160px))
-    [main-end] minmax(48px, 1fr) [full-end];
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
   grid-template-rows: repeat(3, auto);
   align-items: start;
   width: 100%;
@@ -432,17 +440,18 @@ a {
   margin-right: auto;
 }
 .hero-title {
-  font-size: 136px;
+  font-size: 164px;
   color: $overlay_color;
-  font-weight: 700;
-  line-height: 140px;
+  font-weight: 300;
+  line-height: 180px;
   font-family: $accent_font;
-  letter-spacing: -0.64px;
+  letter-spacing: 16px;
   overflow: hidden;
   white-space: nowrap;
+  text-transform: uppercase;
   grid-column: 5 / -1;
   grid-row: 2;
-  margin: 8px 0 36px 0;
+  margin: 24px 0;
   cursor: default;
 }
 .primary-wrapper {
@@ -460,7 +469,7 @@ a {
   grid-column: 2 / -1;
   grid-row: 1;
   position: relative;
-  padding: 0 24px 24px 0;
+  padding: 0 48px 24px 0;
   @include prefix(
     (
       display: flex,
@@ -469,11 +478,11 @@ a {
     webkit ms
   );
   .name {
-    font-size: 54px;
+    font-size: 64px;
     font-weight: 300;
     letter-spacing: 0px;
-    line-height: 64px;
-    font-family: $main_font;
+    line-height: 68px;
+    font-family: $accent_font;
   }
   .name-locale {
     font-size: 28px;
@@ -492,9 +501,10 @@ a {
       ),
       webkit ms
     );
-    margin-top: 24px;
+    margin-top: 32px;
     .info-item {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
+      font-weight: 500;
       .info-item-title {
         font-size: 14px;
         font-weight: 500;
@@ -502,17 +512,18 @@ a {
         letter-spacing: 0.16px;
       }
       .info-item-value {
-        opacity: 0.7;
         font-size: 20px;
-        font-weight: 400;
+        font-weight: 300;
         line-height: 28px;
         letter-spacing: 0px;
       }
     }
     .info-measures {
       width: 100%;
+      position: relative;
+
       .info-measures-title {
-        margin: 16px 0;
+        margin: 24px 0 16px 0;
         padding-bottom: 8px;
         font-size: 20px;
         line-height: 28px;
@@ -540,7 +551,7 @@ a {
           webkit ms
         );
         .info-measures-value {
-          margin-right: 16px;
+          margin-right: 24px;
           cursor: pointer;
           font-size: 20px;
           line-height: 28px;
@@ -565,7 +576,14 @@ a {
     }
   }
   .detail-price {
-    margin-top: 16px;
+    margin-top: 48px;
+    @include prefix(
+      (
+        display: flex,
+        flex-direction: column,
+      ),
+      webkit ms
+    );
   }
 }
 .overlay {
@@ -597,9 +615,9 @@ a {
   margin: 16px 0;
   padding-bottom: 16px;
   position: relative;
-  font-size: 20px;
-  line-height: 28px;
-  font-weight: 400;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 300;
   letter-spacing: 0px;
   &:after {
     content: '';
@@ -619,6 +637,7 @@ a {
   padding-left: 24px;
   position: relative;
   font-size: 14px;
+  z-index: 1;
   &:after {
     content: '';
     position: absolute;
@@ -632,7 +651,7 @@ a {
     margin-bottom: 16px;
     .secondary-description {
       font-size: 16px;
-      font-weight: 400;
+      font-weight: 600;
       line-height: 24px;
       letter-spacing: 0.16px;
     }
@@ -646,13 +665,43 @@ a {
   }
 }
 .description {
-  grid-column: main-start / 12;
-  padding-top: 48px;
+  position: relative;
+  grid-column: main-start / 13;
+  margin-top: 128px;
+  padding-top: 32px;
   grid-row: 4;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  &:after {
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background-color: rgba(40, 40, 40, 0.2);
+    top: 0;
+    right: 0;
+  }
+}
+.description-paragraph {
+  padding-right: 10%;
+  position: relative;
+  font-size: 64px;
+  line-height: 70px;
+  font-weight: 300;
+  font-family: $accent_font;
+  letter-spacing: -1px;
+}
+.description-text {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
   letter-spacing: 0px;
+  padding: 16px 24px;
 }
 .content {
   position: relative;
@@ -753,7 +802,7 @@ a {
       margin-bottom: 22px;
     }
     .price-value {
-      font-family: $accent_font;
+      font-family: $main_font;
       font-size: 32px;
       font-weight: 700;
       letter-spacing: 0.8px;
@@ -1103,7 +1152,12 @@ a {
 
 .price-special {
   color: #e83841;
-  font-size: 32px;
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 50px;
+  font-family: $main_font;
+  letter-spacing: 0px;
+  align-self: flex-end;
 }
 .price-regular {
   font-size: 42px;
@@ -1111,6 +1165,7 @@ a {
   line-height: 50px;
   font-family: $main_font;
   letter-spacing: 0px;
+  align-self: flex-end;
 }
 .price-old {
   align-self: flex-end;
@@ -1118,7 +1173,6 @@ a {
   font-size: 16px;
   line-height: 16px;
   opacity: 0.6;
-  margin-right: 6px;
 }
 .floating {
   position: absolute;
@@ -1158,6 +1212,7 @@ a {
 }
 @media (max-width: 1450px) {
   .primary {
+    padding: 0 24px 24px 0;
     .name {
       font-size: 42px;
       font-weight: 300;
@@ -1172,11 +1227,14 @@ a {
     }
     .primary-info {
       .info-item {
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 400;
+        letter-spacing: 0.16px;
         .info-item-value {
-          opacity: 0.7;
           font-size: 16px;
-          font-weight: 400;
-          line-height: 18px;
+          font-weight: 300;
+          line-height: 24px;
           letter-spacing: 0.16px;
         }
       }
@@ -1202,16 +1260,52 @@ a {
     height: 100vh;
   }
   .hero-title {
-    font-size: 96px;
+    font-size: 106px;
     line-height: 106px;
-    letter-spacing: -0.64px;
-    margin: 8px 0 24px 0;
+    letter-spacing: 8px;
+    margin: 16px 0;
   }
   .overlay {
     margin-top: 32px;
   }
   .price-regular {
     font-size: 36px;
+  }
+  .description {
+    padding-top: 48px;
+    padding-right: 48px;
+    @include prefix(
+      (
+        flex-direction: column,
+      ),
+      webkit ms
+    );
+    &:after {
+      width: 0;
+      height: 0;
+    }
+  }
+  .description-paragraph {
+    margin: 16px 0;
+    padding-bottom: 16px;
+    position: relative;
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background-color: rgba(40, 40, 40, 0.2);
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+  .description-text {
+    padding: 16px 0;
   }
 }
 </style>

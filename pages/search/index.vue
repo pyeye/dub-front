@@ -1,4 +1,31 @@
 <template>
+  <div class="catalog-list-wrapper">
+    <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
+    <div class="catalog-header">
+      <div class="header-title">Результаты "{{ q }}"</div>
+      
+      <catalog-sort
+        class="header-sort"
+        :options="filters.sort.options"
+        :active="filters.sort.by"
+        @change-sort="sortHandler"
+      ></catalog-sort>
+    </div>
+    <div class="product-list-wrapper">
+      <catalog-item
+        v-for="product in products"
+        :key="product.pk"
+        :product="product"
+      ></catalog-item>
+    </div>
+    <dub-pagination
+      class="pagination-grid"
+      :value="filters.page.current"
+      :total="filters.page.total"
+      @change="paginationHandler"
+    ></dub-pagination>
+  </div>
+<!--
   <div class="search-content">
     <dub-breadcrumbs :breadcrumbs="breadcrumbs"></dub-breadcrumbs>
     <div class="header">
@@ -32,102 +59,75 @@
           ></dub-pagination>
     </div>
   </div>
+-->
 </template>
 
 <script>
 import CatalogItem from '@/components/catalog/CatalogItem';
-
-import DubSelect from '@/components/base/DubSelect';
+import CatalogSort from '@/components/catalog/CatalogSort';
 import DubPagination from '@/components/base/DubPagination';
+import { getFilters, getQuery } from '@/plugins/utils/catalog';
 
 export default {
   name: 'SearchPage',
-  watchQuery: true,
   components: {
     CatalogItem,
+    CatalogSort,
     DubPagination,
-    DubSelect,
   },
   async asyncData(context) {
     const { query, app } = context;
     const { q } = query;
-    const { data } = await app.$api.get('search/', {
+    const response = await app.$api.get('search/', {
       params: { q },
     });
-
-    const { total, items: products } = data;
-
-    const page = {
-      total: 1,
-      current: 1,
-      size: 4,
-    };
-
-    if (query.page !== undefined) {
-      page.current = Number(query.page);
-    }
-    page.total = Math.ceil(total / page.size);
-
-    const sort = {
-      by: {
-        name: 'названию (А-Я)',
-        value: 'name-asc',
-      },
-      options: [
-        { name: 'цене (по возрастанию)', value: 'price-asc' },
-        { name: 'цене (по убыванию)', value: 'price-desc' },
-        { name: 'названию (А-Я)', value: 'name-asc' },
-        { name: 'названию (Я-А)', value: 'name-desc' },
-      ],
-    };
-
-    if (query.sort !== undefined) {
-      const queryOption = sort.options.find(option => option.value === query.sort);
-      sort.by = queryOption;
-    }
+    const facets = { nfacets: [], sfacets: [] };
+    const tags = [];
+    const filters = getFilters(query, response.data, facets, tags);
     return {
-      total,
-      products,
+      filters,
       q,
-      filters: {
-        page,
-        sort,
-      },
+      products: response.data.items,
+      totalProducts: response.data.total,
+      facets,
+      tags,
     };
   },
   data: () => ({
-    breadcrumbs: [],
+    breadcrumbs() {
+      return [{ label: 'Главная', link: '/' }, { label: 'Поиск', link: '' }];
+    },
   }),
   methods: {
-    async selectHandler(e) {
-      this.filters.sort.by = e;
-      const query = Object.assign({}, this.$route.query);
-      query.sort = this.filters.sort.by.value;
-      this.$router.push({ query });
-      const { data } = await this.$api.get('search/', {
-        params: {
-          q: this.q,
-          sort: query.sort,
-          page: query.page,
-        },
-      });
-      this.total = data.total;
-      this.products = data.items;
-    },
     async paginationHandler(e) {
-      this.filters.page.current = e;
-      const query = Object.assign({}, this.$route.query);
+      this.$set(this.filters.page, 'current', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
       query.page = this.filters.page.current;
       this.$router.push({ query });
-      const { data } = await this.$api.get('search/', {
-        params: {
-          q: this.q,
-          sort: query.sort,
-          page: query.page,
-        },
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      await this.getProducts(query);
+    },
+    async sortHandler(e) {
+      this.$set(this.filters.sort, 'by', e);
+      const filtersQuery = getQuery(this.filters);
+      const query = { ...this.$route.query, ...filtersQuery };
+      query.sort =
+        this.filters.sort.by.direction === 'none'
+          ? undefined
+          : `${this.filters.sort.by.code}-${this.filters.sort.by.direction}`;
+      this.$set(this.filters.page, 'current', 1);
+      query.page = 1;
+      this.$router.push({ query });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      await this.getProducts(query);
+    },
+    async getProducts(query) {
+      const products = await this.$api.get('search/', {
+        params: { q: this.q, query },
       });
-      this.total = data.total;
-      this.products = data.items;
+      this.products = products.items;
+      this.totalProducts = products.total;
     },
   },
 };
@@ -135,6 +135,72 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.catalog-list-wrapper {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(16px, 1fr) [main-start] repeat(16, [col-start] minmax(8px, 100px))
+    [main-end] minmax(16px, 1fr) [full-end];
+  grid-column-gap: 24px;
+  grid-template-rows: repeat(3, auto);
+  align-items: start;
+}
+.catalog-header {
+  margin: 32px 0 16px 0;
+  grid-column: main-start / main-end;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      align-items: flex-end,
+    ),
+    webkit ms
+  );
+  .header-title {
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 32px;
+    font-family: $main_font;
+    letter-spacing: 0px;
+    z-index: 1;
+  }
+  .total-products {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    font-family: $main_font;
+    letter-spacing: 0px;
+    margin: 0 24px 0 8px;
+  }
+  .header-sort {
+    flex: 1;
+  }
+}
+.product-list-wrapper {
+  grid-column: main-start / main-end;
+  display: grid;
+  grid-template-columns: repeat(12, [col-start] 1fr);
+  grid-gap: 16px;
+  padding: 24px 0;
+}
+.product-list-wrapper > div:not(.first) {
+  grid-column-start: auto;
+}
+.product-list-wrapper > div {
+  grid-column: col-start 1 / span 3;
+}
+.product-list-wrapper > div:not(:nth-child(4n))::after {
+  content: '';
+  height: 100%;
+  width: 1px;
+  position: absolute;
+  right: -8px;
+  top: 0;
+  background-color: rgba(40, 40, 40, 0.2);
+}
+.pagination-grid {
+  grid-column: main-start / main-end;
+  grid-row: 4;
+}
 .search-content {
   position: relative;
   flex: 1;

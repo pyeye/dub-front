@@ -1,20 +1,20 @@
 <template>
   <div class="price">
     <slot name="oldPrice">
-      <span class="price-old" v-if="specialPrice">
-        {{ formatPrice(regularPrice) }} &#x20bd;
+      <span class="price-old" v-if="formatedSpecialPrice !== formatedRegularPrice">
+        {{ formatedRegularPrice }} &#x20bd;
       </span>
     </slot>
 
     <slot name="specialPrice">
-      <span class="price-special" v-if="specialPrice">
-        {{ formatPrice(specialPrice) }} &#x20bd;
+      <span class="price-special" v-if="formatedSpecialPrice !== formatedRegularPrice">
+        {{ formatedSpecialPrice }} &#x20bd;
       </span>
     </slot>
 
     <slot name="regularPrice">
-      <span class="price-regular"  v-if="!specialPrice">
-        {{ formatPrice(regularPrice) }} &#x20bd;
+      <span class="price-regular"  v-if="formatedSpecialPrice === formatedRegularPrice">
+        {{ formatedRegularPrice }} &#x20bd;
       </span>
     </slot>
   </div>
@@ -31,6 +31,14 @@ export default {
     specialPrice: {
       type: String,
       default: null,
+    },
+  },
+  computed: {
+    formatedRegularPrice() {
+      return this.formatPrice(this.regularPrice);
+    },
+    formatedSpecialPrice() {
+      return this.formatPrice(this.specialPrice);
     },
   },
   methods: {
@@ -59,11 +67,13 @@ export default {
 .price {
   @include prefix(
     (
-      align-self: flex-end,
+      display: flex,
+      flex-direction: column,
+      align-self: flex-start,
     ),
     webkit ms
   );
-  font-family: $accent_font;
+  font-family: $main_font;
   font-size: 28px;
   font-weight: 300;
   letter-spacing: 0px;
@@ -73,7 +83,7 @@ export default {
   color: #e83841;
 }
 .price-old {
-  align-self: flex-end;
+  align-self: flex-start;
   text-decoration: line-through;
   font-size: 14px;
   line-height: 14px;

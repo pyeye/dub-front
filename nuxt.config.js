@@ -20,7 +20,7 @@ module.exports = {
         rel: 'stylesheet',
         href:
           // eslint-disable-next-line max-len
-          'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Open+Sans:wght@300;400;700&display=swap',
+          'https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@200;300;400;500;700;800&display=swap',
       },
     ],
   },
@@ -32,7 +32,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fc0', height: '5px' },
+  loading: { color: 'rgba(0, 0, 0, 0.8)', height: '2px' },
 
   plugins: [
     { src: '~/plugins/api' },

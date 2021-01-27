@@ -42,18 +42,30 @@
               v-for="number in [activeSaleIndex]"
               :key="number"
             >
+            <div class="transition-wrapper">
               <span class="slider-title-text">
           <span class="underline">
-            {{ activeSale.name }}
+            <nuxt-link  :to="`/sales/${activeSale.pk}`">{{ activeSale.name }}</nuxt-link>
+            
           </span>
         </span>
         <div class="slider-title-description">
           {{ activeSale.description }}
         </div>
+        
         <div class="slider-pagination">
-          <dub-icon  width=24 height=24 class="icon-link" @click.native="prevSlide"><icon-left/></dub-icon>
-          {{ realSaleIndex + 1 }} / {{ sales.length }}
-          <dub-icon  width=24 height=24 class="icon-link" @click.native="nextSlide"><icon-right/></dub-icon>
+          <div class="pagination-link">
+          </div>
+          <div class="pagination-bullets">
+            <span
+              class="pagination-bullet"
+              :class="{'pagination-bullet-active': index === realSaleIndex}" 
+              v-for="(sale, index) in sales" :key="index"
+              @click="setActiveSale(index)">
+              0{{index + 1}}
+            </span>
+          </div>
+        </div>
         </div>
             </div>
           </transition-group>
@@ -131,6 +143,14 @@ export default {
     prevSlide() {
       this.activeSaleIndex = this.activeSaleIndex - 1;
     },
+    manualNextSlide() {
+      this.nextSlide();
+      this.restartSlider();
+    },
+    manualPrevSlide() {
+      this.prevSlide();
+      this.restartSlider();
+    },
     startSlider() {
       this.sliderInterval = setInterval(this.nextSlide, this.duration);
     },
@@ -140,6 +160,11 @@ export default {
     },
     restartSlider() {
       this.stopSlider();
+      this.startSlider();
+    },
+    setActiveSale(index) {
+      this.stopSlider();
+      this.activeSaleIndex = index;
       this.startSlider();
     },
     beforeLeaveHandler() {
@@ -167,14 +192,13 @@ export default {
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  margin: 24px 0 -36px 0;
-  font-size: 136px;
+  margin: 48px 0 48px 0;
+  font-size: 164px;
   color: $overlay_color;
-  font-weight: 700;
-  line-height: 140px;
-  height: 140px;
-  font-family: $accent_font;
-  letter-spacing: -0.64px;
+  font-weight: 300;
+  line-height: 164px;
+  height: 164px;
+  letter-spacing: 16px;
   font-family: $accent_font;
   text-transform: uppercase;
   cursor: default;
@@ -187,11 +211,11 @@ export default {
 }
 
 .slider-title-wrapper {
-  grid-column: full-start / 6;
+  grid-column: full-start / 7;
   grid-row: 2;
   display: grid;
   grid-template-columns: [full-start] minmax(16px, 1fr) [main-start] repeat(
-      4,
+      5,
       [col-start] minmax(8px, 100px)
     );
   grid-column-gap: 24px;
@@ -199,7 +223,7 @@ export default {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  margin: 96px 0 32px 0;
+  align-self: center;
 }
 
 .slider-title-overlay {
@@ -208,42 +232,92 @@ export default {
   background-color: $overlay_color;
   position: relative;
   height: 100%;
-  margin-top: 32px;
+  margin-top: 48px;
+  z-index: 3;
+}
+
+.transition-wrapper {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
 }
 
 .slider-title {
   grid-column: 2 / -1;
   grid-row: 1;
   position: relative;
-  height: 300px;
+  height: 350px;
+  padding-right: 24px;
+  z-index: 3;
 }
 
 .slider-title-text {
   position: relative;
-  font-size: 46px;
+  font-size: 64px;
   font-weight: 300;
   letter-spacing: 0px;
-  line-height: 52px;
-  font-family: $main_font;
+  line-height: 64px;
+  font-family: $accent_font;
+  margin-right: 24px;
 }
 
 .slider-title-description {
   position: relative;
-  margin: 24px 0;
+  margin: 32px 24px 32px 0;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 28px;
+  letter-spacing: 0px;
+  color: $secondary_text_color;
+}
+
+.more-button {
+  position: relative;
+  align-self: flex-start;
+  margin-left: 4px;
   font-size: 16px;
   font-weight: 400;
-  line-height: 22px;
-  letter-spacing: 0px;
+  line-height: 24px;
+  letter-spacing: -0.16px;
+  text-transform: uppercase;
 }
 
 .slider-pagination {
-  position: relative;
+  position: absolute;
+  bottom: -24px;
+  right: 24px;
   margin: 16px 0;
-  font-size: 28px;
-  font-weight: 300;
+  font-size: 24px;
+  font-weight: 400;
   line-height: 36px;
   letter-spacing: 0px;
-  margin-left: auto;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+      justify-content: space-between,
+      align-items: center,
+    ),
+    webkit ms
+  );
+  .pagination-link {
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 26px;
+    letter-spacing: 0px;
+  }
+  .pagination-bullet {
+    margin-left: 8px;
+    opacity: 0.4;
+    cursor: pointer;
+  }
+  .pagination-bullet-active {
+    opacity: 1;
+  }
 }
 
 .underline {
@@ -268,7 +342,6 @@ export default {
   bottom: 0;
   width: 300px;
   background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
-  border-radius: 4px;
 }
 .slider-bullets {
   z-index: 3;
@@ -341,7 +414,6 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  border-radius: 4px;
 }
 .nuxt-link {
   cursor: pointer;
@@ -365,10 +437,9 @@ export default {
 }
 .slider-box {
   position: relative;
-  grid-column: 7 / full-end;
+  grid-column: 6 / full-end;
   grid-row: 2;
-  height: 600px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  height: 750px;
   z-index: 2;
 }
 .transition-box {
@@ -400,16 +471,15 @@ export default {
 .revealer-box {
   position: relative;
   overflow: hidden;
-  top: -600px;
-  height: 600px;
+  top: -750px;
+  height: 750px;
   width: 100%;
-  border-radius: 4px;
 }
 .revealer-title-box {
   position: relative;
   overflow: hidden;
-  top: -80px;
-  height: 80px;
+  top: -164px;
+  height: 164px;
   width: 100%;
 }
 .slide-enter-active {
@@ -554,16 +624,34 @@ a {
   background: transparent;
 }
 @media (max-width: 1450px) {
+  .slider-title-wrapper {
+    grid-column: full-start / 7;
+    margin-top: -48px;
+  }
   .slider-box {
-    height: 450px;
+    height: 550px;
+  }
+  .slider-header {
+    margin: 32px 0;
+    font-size: 106px;
+    line-height: 106px;
+    height: 106px;
+    letter-spacing: 8px;
   }
   .revealer-box {
-    top: -450px;
-    height: 450px;
+    top: -550px;
+    height: 550px;
   }
   .revealer-title-box {
-    top: -140px;
-    height: 140px;
+    top: -106px;
+    height: 106px;
+  }
+  .lider-title {
+    padding-right: 16px;
+  }
+  .slider-title {
+    height: 300px;
+    padding-right: 24px;
   }
   .slider-name {
     right: -38px;
@@ -574,8 +662,50 @@ a {
     font-size: 16px;
     line-height: 16px;
   }
+  .slider-pagination {
+    font-size: 28px;
+  }
   .link {
     margin: 8px;
+  }
+  .slider-title-overlay {
+    margin-top: 32px;
+  }
+  .slider-title-text {
+    font-size: 42px;
+    line-height: 42px;
+  }
+  .slider-title-description {
+    margin: 24px 16px 24px 0;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: 0px;
+  }
+
+  .more-button {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: -0.16px;
+  }
+
+  .slider-pagination {
+    bottom: -16px;
+    right: 16px;
+    margin: 8px 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 0px;
+
+    .pagination-link {
+      font-size: 20px;
+      line-height: 26px;
+      letter-spacing: 0px;
+    }
+    .pagination-bullet {
+      margin-left: 8px;
+    }
   }
 }
 </style>
