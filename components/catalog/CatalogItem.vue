@@ -1,7 +1,8 @@
 <template>
   <div class="catalog-item " v-response.masked.large>
     <nuxt-link class="" :to="productLink">
-    <div class="link-box" >
+    <div class="column">
+      <div class="link-box" >
        
       <div class="description-box">
         <div class="name">
@@ -10,10 +11,27 @@
               {{ product.name }}
             </span>
           </span>
+          <div class="name-locale">{{ product.name_locale }}</div>
+          <div class="facet-info variants">
+          2 варианта
+        </div>
        
           
        
       </div>
+        
+        <div class="facet-info number-facet">
+          <div class="facet-measure">{{formatMeasure(product.instance.measure)}}</div>
+           <div class="facet-strength">{{ strength }}% </div>
+        </div>
+        
+        <div class="string-facets">
+<div class="facet-info" v-for="param in params.reverse()" :key="param.pk">
+          {{ param.values[0].name }}
+        </div>
+        </div>
+        
+        
       <!--
         <div class="amount">
           <div class="value">
@@ -22,7 +40,9 @@
             </div>
           </div>
         </div>
-        -->
+       
+
+
         <div class="facet-info number-facet">
           <div class="facet-measure">{{formatMeasure(product.instance.measure)}}</div>
           <div class="facet-strength">{{ strength }}% </div>
@@ -30,13 +50,14 @@
         <div class="facet-info" v-for="param in params.reverse()" :key="param.pk">
           {{ param.values[0].name }}
         </div>
-        <!--
+
+
+        
         <div class="storage">
           <div class="value">В наличии</div>
         </div>
         -->
-        <div class="flex"></div>
-        <dub-price :regular-price="product.instance.base_price" :special-price="product.instance.price"></dub-price>
+        
       </div>
       <div class="image-box">
         <nuxt-link class="" :to="productLink">
@@ -45,6 +66,25 @@
       </div>
        
     </div>
+    <div class="flex"></div>
+    <div class="price-row">
+      <span class="price-special" 
+        v-if="formatPrice(product.instance.price) !== formatPrice(product.instance.base_price)">
+        {{ formatPrice(product.instance.price) }} &#x20bd;
+      </span>
+      <span class="price-old" 
+        v-if="formatPrice(product.instance.price) !== formatPrice(product.instance.base_price)"
+      >
+        {{ formatPrice(product.instance.base_price) }} &#x20bd;
+      </span>
+      <span class="price-regular" 
+        v-if="formatPrice(product.instance.price) === formatPrice(product.instance.base_price)">
+        {{ formatPrice(product.instance.price) }} &#x20bd;
+      </span>
+    </div>
+    
+    </div>
+    
     </nuxt-link>
     <div class="floating" v-if="product.instance.sales.length !== 0">
       <sales-badge v-for="label in getSaleLabels(product.instance.sales)" :key="label">
@@ -98,6 +138,10 @@ export default {
     }-${this.product.name_slug}`;
   },
   methods: {
+    formatPrice(price) {
+      const [intPart, decimalPart] = price.split('.');
+      return decimalPart === '00' ? intPart : price;
+    },
     getSaleLabels(sales) {
       let [hasFixed, hasCondition, hasPercent] = [false, false, false];
       const labels = [];
@@ -132,7 +176,6 @@ export default {
   margin-bottom: 32px;
   background-color: $upper_layer_color;
   border-radius: 2px;
-  padding: 16px;
   transition: box-shadow 0.25s ease;
   .link-box {
     @include prefix(
@@ -161,12 +204,21 @@ export default {
       max-width: 100%;
     }
     .name {
-      padding: 16px 0 32px 0;
+      padding: 16px 0 24px 8px;
       font-family: $accent_font;
       font-size: 24px;
       font-weight: 300;
       letter-spacing: 0px;
       line-height: 30px;
+    }
+    .name-locale {
+      font-family: $main_font;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0px;
+      line-height: 20px;
+      opacity: 0.5;
+      margin-top: 4px;
     }
   }
   &:hover {
@@ -183,6 +235,17 @@ export default {
   background-size: 0% 100%;
   transition: background-size 0.4s ease;
 }
+.column {
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: column,
+    ),
+    webkit ms
+  );
+  position: relative;
+  height: 100%;
+}
 
 .description-box {
   width: 50%;
@@ -197,12 +260,12 @@ export default {
 .facet-info {
   font-size: 14px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 22px;
   letter-spacing: 0.16px;
   opacity: 0.7;
+  padding-left: 8px;
 }
 .number-facet {
-  margin-bottom: 8px;
   @include prefix(
     (
       display: flex,
@@ -213,6 +276,11 @@ export default {
   .facet-measure {
     margin-right: 8px;
   }
+}
+.string-facets {
+  height: calc(22px * 4);
+  overflow: hidden;
+  margin-bottom: 16px;
 }
 .amount {
   @include prefix(
@@ -254,6 +322,50 @@ export default {
       }
     }
   }
+}
+.price-row {
+  margin-top: 4px;
+  padding: 8px 0 8px 8px;
+  border-top: 1px solid $border_color;
+  border-bottom: 1px solid $border_color;
+  @include prefix(
+    (
+      display: flex,
+      flex-direction: row,
+    ),
+    webkit ms
+  );
+  .price-special {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    line-height: 24px;
+    color: #e83841;
+  }
+  .price-regular {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 0px;
+    line-height: 24px;
+  }
+  .price-old {
+    align-self: flex-end;
+    text-decoration: line-through;
+    font-size: 16px;
+    line-height: 16px;
+    opacity: 0.6;
+    margin-left: 8px;
+  }
+}
+.variants {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.16px;
+  opacity: 0.6;
+  font-family: $main_font;
+  padding-left: 0px;
 }
 .storage {
   @include prefix(
@@ -426,7 +538,7 @@ a {
 .floating {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   margin: 4px;
 }
 .floating-product {

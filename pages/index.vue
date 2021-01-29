@@ -871,7 +871,6 @@ a {
   .grid-new-products {
     grid-template-columns: repeat(16, [col-start] 1fr);
     grid-gap: 16px;
-    max-height: 866px;
     overflow: hidden;
   }
   .grid-new-products > div {
@@ -885,9 +884,13 @@ a {
     height: 100%;
     width: 1px;
     position: absolute;
-    right: -12px;
+    right: -8px;
     top: 0;
     background-color: rgba(40, 40, 40, 0.2);
+  }
+  .grid-new-products > div:nth-child(9),
+  .grid-new-products > div:nth-child(10) {
+    display: none;
   }
   .collection-wrapper {
     grid-column: main-start / main-end;
@@ -937,7 +940,6 @@ a {
       display: grid;
       grid-template-columns: repeat(8, [col-start] 1fr);
       grid-gap: 16px;
-      max-height: 866px;
       overflow: hidden;
     }
     .collection-products > div:not(.first) {
