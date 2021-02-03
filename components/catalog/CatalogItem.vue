@@ -12,8 +12,8 @@
             </span>
           </span>
           <div class="name-locale">{{ product.name_locale }}</div>
-          <div class="facet-info variants">
-          2 варианта
+          <div class="facet-info variants" v-if="product.count_instances > 1">
+          {{ product.count_instances }} варианта
         </div>
        
           

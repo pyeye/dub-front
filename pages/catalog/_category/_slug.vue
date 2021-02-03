@@ -60,7 +60,7 @@
       </div>
       
       <div class="image">
-        <catalog-gallery :images="activeInstance.images"></catalog-gallery>
+        <catalog-gallery :images="activeInstance.images" :key="activeInstance.pk"></catalog-gallery>
         <!--
         <div class="image-product"></div>
         <img class="image-shadow" src="http://api.mydubbelsite.ru/img/static/ombre-bouteille-3880.png" />
@@ -69,7 +69,7 @@
 
       <div class="secondary">
         <div class="paragraph">Характеристики</div>      
-        <div class="secondary-list" v-for="facet in product.facets" :key="`sfacet_${facet.pk}`">
+        <div class="secondary-list" v-for="facet in product.facets" :key="getRandom(facet.pk)">
           <div class="secondary-description">{{facet.name}}</div>
           <div v-if="facet.type === 'string'">
             <span class="secondary-value" v-for="value in facet.values" :key="`sfacet_val_${value.pk}`">
@@ -363,7 +363,7 @@ export default {
   },
   methods: {
     selectInstance(instance) {
-      this.activeInstance = instance;
+      this.activeInstance = Object.assign({}, instance);
       let query = Object.assign({}, this.$route.query);
       if (this.baseInstanceId === instance.pk.toString()) {
         query = {};
@@ -401,6 +401,10 @@ export default {
     },
     isActiveInstance(instance) {
       return instance.pk === this.activeInstance.pk;
+    },
+    getRandom(facetPk) {
+      const randomInt = Math.random();
+      return `${randomInt}_facet_${facetPk}`;
     },
   },
 };
